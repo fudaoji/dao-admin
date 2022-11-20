@@ -1,0 +1,51 @@
+<!--单文件上传-->
+<div class="layui-form-item">
+    <label class="layui-form-label {$form['extra_class']}" for="{$form['name']}">
+        {if condition="is_int(strpos($form['extra_attr'], 'required'))"}
+        <span class="text-danger">*</span>
+        {/if}
+        {$form['title']}
+    </label>
+    <div class="layui-input-block">
+        <input style="display: inline-block;width: 75%;"
+               placeholder="{$form['tip'] ?? ''}"
+               type="text"
+               value="{$form['value'] ?? ''}"
+               id="{$form['name']}"
+               name="{$form['name']}"
+               class="layui-input"
+               {$form['extra_attr']}
+        ／>
+        <div class="layui-btn-group" style="margin-left: -5px;margin-top: -3px;">
+            <a href="javascript:;" class="layui-btn layui-btn-primary" id="picker-{$form['name']}">选择文件</a>
+        </div>
+    </div>
+
+    <script>
+        layui.use(['upload', 'jquery'], function () {
+            var upload = layui.upload
+                , $ = layui.jquery;
+
+            var upload_index;
+            upload.render({
+                elem: '#picker-{$form["name"]}'
+                ,url: '{:url("uploader/filePost")}'
+                ,multiple: false
+                ,accept: 'file' //允许上传的文件类型
+                ,size: "{$form['options']['size'] ? $form['options']['size'] : (config('system.upload.file_size') ? config('system.upload.file_size')/1000 : 10240)}" //最大允许上传的文件大小
+                ,exts: "{$form['options']['ext'] ? $form['options']['ext'] : (config('system.upload.file_ext') ? config('system.upload.file_ext') : 'jpg,gif,png,jpeg,zip,rar,tar,gz,7z,doc,docx,txt,xml,mp3,mp4,xls,xlsx,pdf,tar.gz')}".split(',').join('|')
+                ,before: function () {
+                    upload_index = layer.load(1);
+                }
+                ,done: function(res, index, upload){ //上传后的回调
+                    layer.close(upload_index);
+                    if(res.code !== 1){
+                        layer.alert(res.msg);
+                        return;
+                    }
+                    $("#{$form['name']}").val(res.data[0].url);
+                }
+            });
+        });
+    </script>
+</div>

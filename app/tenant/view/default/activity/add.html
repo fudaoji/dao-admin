@@ -1,0 +1,754 @@
+{extend name="default:layout:base" /}
+
+{block name="main"}
+<script src="__LIB__/jquery/jquery-1.11.0.min.js"></script>
+
+<div class="layui-tab layui-tab-brief" lay-filter="tabBrief" id="app">
+    <div class="layui-tab-content">
+        <form class="layui-form" action="{$post_url ?? ''}" id="ajax-form" method="post">
+            {if condition="!empty($tip)"}
+            <blockquote class="layui-elem-quote">{$tip|raw}</blockquote>
+            {/if}
+
+            <input type="hidden" id="__token__" name="__token__" value="{:token()}" />
+
+            <fieldset class="layui-elem-field">
+                <legend>基本信息</legend>
+                <div class="layui-field-box">
+                    <div class="layui-form-item layui-row">
+                        <div class="layui-col-md6">
+                            <label class="layui-form-label"><span class="text-danger">*</span>活动标题</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="title" autocomplete="off" class="layui-input" required>
+                            </div>
+                        </div>
+                        <div class="layui-col-md6">
+                            <label class="layui-form-label"><span class="text-danger">*</span>活动时间</label>
+                            <div class="layui-input-block">
+                                <input
+                                        type="text"
+                                        id="time_range"
+                                        placeholder="活动时间"
+                                        class="layui-input" required >
+                                <tip class="form-tip">最长30天，结束前一天将截止报名</tip>
+                                <input type="hidden" name="start_time" value="">
+                                <input type="hidden" name="end_time" value="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-row">
+                        <div class="layui-col-md6">
+                            <label class="layui-form-label">咚咚账号</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="dongdong" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-col-md6">
+                            <label class="layui-form-label">QQ</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="qq" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+
+            <fieldset class="layui-elem-field">
+                <legend>商品要求</legend>
+                <div class="layui-field-box">
+                    <div class="layui-form-item layui-row">
+                        <div class="layui-col-md6">
+                            <label class="layui-form-label">商品种类</label>
+                            <div class="layui-input-block">
+                                <label>
+                                    <input lay-filter="goods_type"
+                                           type="radio"
+                                           name="goods_type"
+                                           value="-1"
+                                           title="不限"
+                                           checked="checked"
+                                    />
+                                </label>
+                                <label>
+                                    <input lay-filter="goods_type"
+                                           type="radio"
+                                           name="goods_type"
+                                           value="1"
+                                           title="自营"
+                                    />
+                                </label>
+                                <label>
+                                    <input lay-filter="goods_type"
+                                           type="radio"
+                                           name="goods_type"
+                                           value="2"
+                                           title="POP"
+                                    />
+                                </label>
+                                <label class="error-msg"></label>
+                            </div>
+                        </div>
+                        <!--商品价格-->
+                        <div class="layui-col-md6">
+                            <label class="layui-form-label">商品价格</label>
+                            <div class="layui-input-block">
+                                <label>
+                                    <input
+                                            type="radio"
+                                            name="price"
+                                            value="-1"
+                                            title="不限"
+                                            checked="checked"
+                                    >
+                                </label>
+                                <input type="radio" name="price">
+                                ￥<input type="text" name="price_min"  placeholder="最低价格" autocomplete="off" class="layui-input input-range">
+                                -
+                                ￥<input type="text" name="price_max"  placeholder="最高价格" autocomplete="off" class="layui-input input-range">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-row">
+                        <!--近七天销量-->
+                        <div class="layui-col-md6">
+                            <label class="layui-form-label">近七天销量</label>
+                            <div class="layui-input-block">
+                                <label>
+                                    <input
+                                            type="radio"
+                                            value="-1"
+                                            title="不限"
+                                            checked="checked"
+                                            name="label_weekly_sales"
+                                    />
+                                </label>
+                                <label>
+                                    <input type="radio" name="label_weekly_sales" />
+                                    <input type="text" name="weekly_sales" autocomplete="off" class="layui-input input-range"> 件及以上
+                                </label>
+                            </div>
+                        </div>
+                        <!--好评率-->
+                        <div class="layui-col-md6">
+                            <label class="layui-form-label">好评率</label>
+                            <div class="layui-input-block">
+                                <label>
+                                    <input
+                                            type="radio"
+                                            value="0"
+                                            title="不限"
+                                            checked="checked"
+                                            name="label_favorable_rate"
+                                    />
+                                </label>
+                                <label>
+                                    <input type="radio" name="label_favorable_rate" />
+                                    <input type="text" name="favorable_rate" autocomplete="off" class="layui-input input-range"> %及以上
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-row">
+                        <!--评论数量-->
+                        <div class="layui-col-md6">
+                            <label class="layui-form-label">评论数量</label>
+                            <div class="layui-input-block">
+                                <label>
+                                    <input
+                                            type="radio"
+                                            value="-1"
+                                            title="不限"
+                                            checked="checked"
+                                            name="label_evaluation_cnt"
+                                    />
+                                </label>
+                                <label>
+                                    <input type="radio" name="label_evaluation_cnt" />
+                                    <input type="text" name="evaluation_cnt" autocomplete="off" class="layui-input input-range"> 个及以上
+                                </label>
+                            </div>
+                        </div>
+                        <!--是否有优惠券-->
+                        <div class="layui-col-md6">
+                            <label class="layui-form-label" style="width: 120px;">是否有优惠券</label>
+                            <div class="layui-input-block">
+                                <label>
+                                    <input
+                                            type="radio"
+                                            value="-1"
+                                            title="不限"
+                                            name="coupon"
+                                            checked="checked"
+                                    />
+                                </label>
+                                <label>
+                                    <input
+                                            type="radio"
+                                            value="1"
+                                            name="coupon"
+                                            title="要求有券"
+                                    />
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-row">
+                        <div class="layui-col-md6">
+                            <label class="layui-form-label">运费险</label>
+                            <div class="layui-input-block">
+                                <label>
+                                    <input
+                                            type="radio"
+                                            name="freight_insurance"
+                                            value="-1"
+                                            title="不限"
+                                            checked="checked"
+                                    />
+                                </label>
+                                <label>
+                                    <input
+                                            type="radio"
+                                            name="freight_insurance"
+                                            value="1"
+                                            title="是"
+                                    />
+                                </label>
+                                <label>
+                                    <input
+                                            type="radio"
+                                            name="goods_type"
+                                            value="2"
+                                            title="否"
+                                    />
+                                </label>
+                                <label class="error-msg"></label>
+                            </div>
+                        </div>
+                        <div class="layui-col-md6">
+                            <label class="layui-form-label">限拼购</label>
+                            <div class="layui-input-block">
+                                <label>
+                                    <input
+                                            type="radio"
+                                            name="purchase"
+                                            value="-1"
+                                            title="不限"
+                                            checked="checked"
+                                    />
+                                </label>
+                                <label>
+                                    <input
+                                            type="radio"
+                                            name="purchase"
+                                            value="1"
+                                            title="是"
+                                    />
+                                </label>
+                                <label>
+                                    <input
+                                            type="radio"
+                                            name="purchase"
+                                            value="2"
+                                            title="否"
+                                    />
+                                </label>
+                                <label class="error-msg"></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-row">
+                        <div class="layui-col-md6">
+                            <label class="layui-form-label">京东物流</label>
+                            <div class="layui-input-block">
+                                <label>
+                                    <input
+                                            type="radio"
+                                            name="jd_logistics"
+                                            value="-1"
+                                            title="不限"
+                                            checked="checked"
+                                    />
+                                </label>
+                                <label>
+                                    <input
+                                            type="radio"
+                                            name="jd_logistics"
+                                            value="1"
+                                            title="是"
+                                    />
+                                </label>
+                                <label>
+                                    <input
+                                            type="radio"
+                                            name="jd_logistics"
+                                            value="2"
+                                            title="否"
+                                    />
+                                </label>
+                                <label class="error-msg"></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+
+            <fieldset class="layui-elem-field">
+                <legend>店铺要求</legend>
+                <div class="layui-field-box">
+                    <div class="layui-form-item layui-row">
+                        <div class="layui-col-md12">
+                            <label class="layui-form-label" style="width: 120px;">是否为京东好店</label>
+                            <div class="layui-input-block">
+                                <label>
+                                    <input
+                                            type="radio"
+                                            name="jd_good_shop"
+                                            value="-1"
+                                            title="不限"
+                                            checked="checked"
+                                    />
+                                </label>
+                                <label>
+                                    <input
+                                            type="radio"
+                                            name="jd_good_shop"
+                                            value="1"
+                                            title="是"
+                                    />
+                                </label>
+                                <label class="error-msg"></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+
+            <fieldset class="layui-elem-field">
+                <legend>营销要求</legend>
+                <div class="layui-field-box">
+                    <div class="layui-tab layui-tab-card tab-yx">
+                        <ul class="layui-tab-title">
+                            <li class="layui-this tab-1">自营</li>
+                            <li class="tab-2">POP</li>
+                        </ul>
+                        <div class="layui-tab-content">
+                            <div class="layui-tab-item layui-show tab-content-1" data-type="self">
+                                <fieldset class="layui-elem-field fieldset-in">
+                                    <legend>自营商品服务费要求</legend>
+                                    <div class="layui-input-block">
+                                        <label class="layui-form-label"><span class="text-danger">*</span>服务费率</label>
+                                        <input type="text" min="0.1" max="20" value="0.1" name="service_min" autocomplete="off" class="layui-input input-range js-service-rate"> %，
+                                        <label class="error-msg">需小于等于20%</label>
+                                    </div>
+                                </fieldset>
+
+                                <fieldset class="layui-elem-field fieldset-in">
+                                    <legend>自营商品佣金要求</legend>
+                                    <div class="layui-row">
+                                        <div class="layui-col-md5">
+                                            <p>1.请选择商品的类目要求：</p>
+                                            <div class="layui-row">
+                                                <div class="layui-col-md4"><span class="text-danger">*</span>一级类目</div>
+                                                <div class="layui-col-md4">二级类目</div>
+                                                <div class="layui-col-md4">三级类目</div>
+                                            </div>
+
+                                            <div class="layui-row table-cate">
+                                                <div class="layui-col-md4 box-c1">
+                                                    <p><input type="checkbox" title="全选" lay-skin="primary" lay-filter="checkAll"></p>
+                                                    {foreach $cates as $c1}
+                                                    <p class="self-p" data-level="1">
+                                                        <input lay-filter="checkCate" class="self-cb1" type="checkbox" data-id="{$c1.id}" title="{$c1.title}" lay-skin="primary"> <span class="arrow-gt">&gt;</span>
+                                                    </p>
+                                                    {/foreach}
+                                                </div>
+                                                <div class="layui-col-md4 box-c2"></div>
+                                                <div class="layui-col-md4 box-c3"></div>
+                                            </div>
+                                        </div>
+                                        <div class="layui-col-md5 layui-col-md-offset1">
+                                            <p>2.请设置已选类目的佣金比例：</p>
+                                            <div class="layui-row">
+                                                <p class="text-danger">1)服务费比例+佣金比例<=80%, 且 服务费比例: 佣金比例<=35%。<a href="https://union.jd.com/helpcenter/13304-13309-61171" target="_blank" class="text-danger">查看服务费率说明 &gt;</a> </p>
+                                                <p class="text-danger">2)佣金比例需在<span class="service-rate-text">0.3%~79.99%</span>之间。</p>
+                                            </div>
+                                            <div class="layui-row" style="line-height: 40px;text-align: center;background: #f2f2f2;">
+                                                <div class="layui-col-md6">类目</div>
+                                                <div class="layui-col-md6">佣金比例</div>
+                                            </div>
+                                            <div style="overflow: scroll; height: 200px;text-align: center;">
+                                                <table class="layui-table table-rate" lay-skin="nob">
+                                                    <colgroup><col width="45%"><col width="45%"></colgroup>
+                                                </table>
+                                            </div>
+                                            <div class="layui-row" style="padding: 0 5px;line-height: 40px;text-align: center;background: #f2f2f2;">
+                                                <div class="layui-col-md6 text-left">已选 <span class="chosen-num">0</span></div>
+                                                <div class="layui-col-md6 text-right">
+                                                    <a class="layui-btn layui-btn-xs layui-btn-primary js-batch-rate">批量设置佣金比例</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                            <div class="layui-tab-item tab-content-2" data-type="pop">
+                                <fieldset class="layui-elem-field fieldset-in">
+                                    <legend>POP商品服务费要求</legend>
+                                    <div class="layui-input-block">
+                                        <label class="layui-form-label"><span class="text-danger">*</span>服务费率</label>
+                                        <input type="text" min="0.1" max="20" value="0.1" name="pop_service_min" autocomplete="off" class="layui-input input-range js-service-rate"> %，
+                                        <label class="error-msg">需小于等于26%</label>
+                                    </div>
+                                </fieldset>
+
+                                <fieldset class="layui-elem-field fieldset-in">
+                                    <legend>POP商品佣金要求</legend>
+                                    <div class="layui-row">
+                                        <div class="layui-col-md5">
+                                            <p>1.请选择商品的类目要求：</p>
+                                            <div class="layui-row">
+                                                <div class="layui-col-md4"><span class="text-danger">*</span>一级类目</div>
+                                                <div class="layui-col-md4">二级类目</div>
+                                                <div class="layui-col-md4">三级类目</div>
+                                            </div>
+                                            <div class="layui-row table-cate">
+                                                <div class="layui-col-md4 box-c1">
+                                                    <p><input type="checkbox" title="全选" lay-skin="primary" lay-filter="checkAll"></p>
+                                                    {foreach $cates as $c1}
+                                                    <p class="self-p" data-level="1">
+                                                        <input lay-filter="checkCate" class="self-cb1" type="checkbox" data-id="{$c1.id}" title="{$c1.title}" lay-skin="primary"> <span class="arrow-gt">&gt;</span>
+                                                    </p>
+                                                    {/foreach}
+                                                </div>
+                                                <div class="layui-col-md4 box-c2"></div>
+                                                <div class="layui-col-md4 box-c3"></div>
+                                            </div>
+                                        </div>
+                                        <div class="layui-col-md5 layui-col-md-offset1">
+                                            <p>2.请设置已选类目的佣金比例：</p>
+                                            <div class="layui-row">
+                                                <p class="text-danger">1)服务费比例+佣金比例<=80%, 且 服务费比例: 佣金比例<=50%。<a href="https://union.jd.com/helpcenter/13304-13309-61171" target="_blank" class="text-danger">查看服务费率说明 &gt;</a> </p>
+                                                <p class="text-danger">2)佣金比例需在<span class="service-rate-text">0.3%~79.99%</span>之间。</p>
+                                            </div>
+                                            <div class="layui-row" style="line-height: 40px;text-align: center;background: #f2f2f2;">
+                                                <div class="layui-col-md6">类目</div>
+                                                <div class="layui-col-md6">佣金比例</div>
+                                            </div>
+                                            <div style="overflow: scroll; height: 200px;text-align: center;">
+                                                <table class="layui-table table-rate" lay-skin="nob">
+                                                    <colgroup><col width="45%"><col width="45%"></colgroup>
+                                                </table>
+                                            </div>
+                                            <div class="layui-row" style="padding: 0 5px;line-height: 40px;text-align: center;background: #f2f2f2;">
+                                                <div class="layui-col-md6 text-left">已选 <span class="chosen-num">0</span></div>
+                                                <div class="layui-col-md6 text-right">
+                                                    <a class="layui-btn layui-btn-xs layui-btn-primary js-batch-rate">批量设置佣金比例</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+
+            <fieldset class="layui-elem-field">
+                <legend>效果预估</legend>
+                <div class="layui-field-box">
+                    <div class="layui-form-item layui-row">
+                        <div class="layui-col-md12">
+                            <label class="layui-form-label" style="width: 120px;"><span class="text-danger">*</span>预估sku销售数量</label>
+                            <input style="width: 200px;" type="text" name="estimate_sales"  placeholder="请输入预估数量" autocomplete="off" class="layui-input input-range"> 个
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+
+            <div id="form-btn-group">
+                {if config('app.debug')}
+                <a class="layui-btn" href="javascript:location.reload();">刷新页面</a>
+                {/if}
+                <button class="layui-btn layui-btn-normal" type="submit">提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </form>
+    </div>
+    <!--模版-->
+    <script id="rate-template" class="hide" type="text/html">
+        <tr class="tr-rate" data-level="LEVEL" data-id="ID">
+            <td>TITLE</td>
+            <td>
+                <input name="TYPE_rate[]" type="text" class="layui-input input-range commission-rate" min="0.3" required> %
+                <input name="TYPE_cate[]" type="hidden" value="CATE" required>
+            </td>
+            <td><i class="layui-icon layui-icon-close" title="移除"></i></td>
+        </tr>
+    </script>
+</div>
+
+<style>
+    .layui-icon-close{color: red;cursor: pointer;}
+    .table-cate{overflow: scroll; height: 350px;}
+    .table-cate p:hover{background: #F2F2F2;}
+    .arrow-gt{float: right;margin-right: 10px;}
+    .layui-elem-field{margin-top: 20px;}
+    .fieldset-in{border: none;padding: 0;border-top: 1px solid #eee;margin-top: 20px;padding-top: 15px;}
+    .fieldset-in p{line-height: 28px;font-size: 13px;}
+    .input-range{width: 100px; display: inline-block;}
+</style>
+<!--<script src="https://unpkg.com/vue@3.2.40/dist/vue.global.prod.js"></script>-->
+<script src="__LIB__/jq-module/jquery-validation/jquery.validate.js"></script>
+<script src="__LIB__/jq-module/jquery-validation/localization/messages_zh.js"></script>
+
+<script>
+    layui.use(['form','miniTab','laydate','layer'], function(){
+        var form = layui.form
+                ,miniTab = layui.miniTab
+                ,layer = layui.layer;
+
+        //===============类目佣金=============
+        //初始化类目dom
+        var cateTree = {:json_encode($cates)},
+            cates2 = {}
+                , cates3 = {}
+                , checkedCates = [];
+        var buildCate = function (obj) {
+            var cates2Html = ''
+                    , cates3Html = ''
+            , type = $(obj).closest('.layui-tab-item').data('type');
+            if(!$.isEmptyObject(cates2)){
+                for(var i in cates2){
+                    var item = cates2[i]
+                    , checked = checkedCates.indexOf(type+item.id) >=0 ? 'checked' : '';
+                    cates2Html += `<p class="self-p" data-level="2" data-pid="${item.pid}" data-id="${item.id}">
+                                                        <input ${checked}  lay-filter="checkCate" type="checkbox" data-pid="${item.pid}" data-id="${item.id}" title="${item.title}" lay-skin="primary"> <span class="arrow-gt">&gt;</span>
+                                                    </p>`;
+                }
+                $(obj).html(cates2Html);
+            }
+
+            if(!$.isEmptyObject(cates3)){
+                for(var i in cates3){
+                    var item = cates3[i]
+                            , checked = checkedCates.indexOf(type+item.id) >=0 ? 'checked' : '';
+                    cates3Html += `<p class="self-p" data-level="3" data-ppid="${item.ppid}" data-pid="${item.pid}" data-id="${item.id}">
+                                                        <input ${checked} lay-filter="checkCate" type="checkbox" data-ppid="${item.ppid}" data-pid="${item.pid}" data-id="${item.id}" title="${item.title}" lay-skin="primary"> <span class="arrow-gt">&gt;</span>
+                                                    </p>`;
+                }
+                $(obj).html(cates3Html);
+            }
+            form.render('checkbox');
+        };
+
+        //选中分类并在右侧展现
+        var choseCate = function(elem){
+            var tableO = $(elem).closest('.layui-elem-field').find('.table-rate')
+                    , level = $(elem).parent('p').data('level')
+                    , title = $(elem).prop('title')
+                    , id = parseInt($(elem).data('id'))
+                    , pid = parseInt($(elem).data('pid'))
+                    , ppid = parseInt($(elem).data('ppid'))
+                    , checked = elem.checked
+                    , type = $(elem).closest('.layui-tab-item').data('type');
+
+            var cate = `category${level}_${id}`;
+            if(pid){
+                cate += `|category${level-1}_${pid}`
+            }
+            if(ppid){
+                cate += `|category${level-2}_${pid}`
+            }
+            console.log(cate);
+            if(checked){
+                tableO.append(
+                        $('#rate-template').html()
+                                .replace('TITLE', title)
+                                .replace('CATE', cate)
+                                .replace('LEVEL', level)
+                                .replace('ID', id)
+                                .replaceAll('TYPE', type)
+                );
+                tableO.find('.tr-rate[data-id='+pid+']').remove();
+                tableO.find('.tr-rate[data-id='+ppid+']').remove();
+                checkedCates.push(type+id);
+            }else{
+                tools.array.remove(checkedCates, type+id);
+                tableO.find('.tr-rate[data-id='+id+']').remove();
+            }
+            $(elem).closest('.layui-elem-field').find('.chosen-num').text(tableO.children('.tr-rate').length);
+        };
+        var toFix = function(num = 0.0){
+            return parseFloat(num).toFixed(1);
+        };
+
+        //批量设置佣金比例
+        $('.js-batch-rate').on('click', function () {
+            layer.prompt({
+                formType: 2,
+                value: '',
+                title: '批量设置佣金比例',
+                area: ['150px', '30px'] //自定义文本域宽高
+            }, (value, index, elem) => {
+                $(this).closest('.layui-elem-field').find('.commission-rate').val(toFix(value));
+                layer.close(index);
+            });
+        });
+
+        $('.js-service-rate').on('change', function() {
+            var rate = toFix($(this).val());
+            $(this).closest('.layui-tab-item').find('.service-rate-text').text(toFix(rate * 3) + '%~'+toFix(80 - rate)+'%');
+        });
+        //点击移除
+        $('.table-rate').delegate('.layui-icon-close','click', function () {
+            var type = $(this).closest('.layui-tab-item').data('type');
+            tools.array.remove(checkedCates, type+$(this).parents('.tr-rate').data('id'));
+            $(this).parents('.tr-rate').remove();
+        });
+        //鼠标移到分类上
+        var mouseEnter = false;
+        $('.table-cate').delegate('.self-p', 'mouseenter', function () {
+            if(mouseEnter === true){ //已经移入直接返回
+                return;
+            }
+            mouseEnter = true;
+            var level = parseInt($(this).data('level'))
+                    ,id = parseInt($(this).children('input').data('id'))
+            , obj;
+            switch (level) {
+                case 1:
+                    cates2 = cateTree[id].children;
+                    cates3 = {};
+                    obj = $(this).closest('.table-cate').find('.box-c2');
+                    break;
+                case 2:
+                    cates3 = cates2[id].children;
+                    obj = $(this).closest('.table-cate').find('.box-c3');
+                    break;
+                default:
+                    return;
+            }
+            buildCate(obj);
+        }).delegate('.self-p', 'mouseleave', function () {
+            mouseEnter = false;
+        });
+
+        //点击分类
+        form.on('checkbox(checkCate)', (data) => {
+            choseCate(data.elem);
+            return true;
+        });
+        //点击全选
+        form.on('checkbox(checkAll)', function(data) {
+            $(data.elem).closest('.table-cate').find('.self-cb1').prop('checked', data.elem.checked);
+            form.render('checkbox');
+            $(data.elem).closest('.table-cate').find('.self-cb1').each(function () {
+                choseCate(this);
+            });
+        });
+        form.on('radio(goods_type)', (data) => {
+            var goodsType = parseInt(data.value);
+            if(goodsType === -1){
+                $('.tab-yx .layui-tab-title').children().removeClass('hide');
+            }else{
+                $('.tab-yx .layui-tab-title').children().addClass('hide').removeClass('layui-this');
+                $('.tab-yx .layui-tab-content').children().removeClass('layui-show');
+                $('.tab-'+goodsType).removeClass('hide').addClass('layui-this');
+                $('.layui-tab-content .tab-content-'+goodsType).addClass('layui-show');
+            }
+        });
+        //===============类目佣金end========
+
+        //=====================时间组件====================
+        var laydate = layui.laydate;
+        var params = {
+            elem: "#time_range"
+            ,type: 'date'
+            ,min: '{:date("Y-m-d")}'
+            ,range: true
+            ,done: function(value, date, endDate){
+                $("input[name=start_time]").val(''+date.year+'-'+date.month+'-'+date.date);
+                $("input[name=end_time").val(''+endDate.year+'-'+endDate.month+'-'+endDate.date);
+            }
+        };
+        //执行一个laydate实例
+        laydate.render(params);
+        //=====================时间组件end====================
+
+        //=====================提交=====================
+        var parent_index = parent.layer.getFrameIndex(window.name);
+
+        //刷新界面 所有元素
+        form.render();
+
+        var loading_index;
+
+        //增加扩展规则
+        $.validator.addMethod("phone", function(value) {
+            if(value.length){
+                const pattern = /^1[2-9]\d{9}$/;
+                return pattern.test(value);
+            }
+            return true;
+        }, '手机号码格式错误');
+
+        /**
+         * 添加、修改的表单提交
+         * @param form
+         */
+        $('#ajax-form').validate({
+            errorClass: 'error-msg',
+            submitHandler: function(form) {  //通过之后回调
+                var param = $(form).serialize();
+                layer.confirm('一旦发布将不可修改，确认吗?', function(index){
+                    $.ajax({
+                        url : $(form).attr('action'),
+                        method: 'post',
+                        data: param,
+                        beforeSend: function(){
+                            loading_index = layer.load(1);
+                        },
+                        success : function(res) {
+                            switch (res.code) {
+                                case 1:
+                                    layer.msg(res.msg, {time: 1500}, function(){
+                                        if(res.url){
+                                            location.href = res.url;
+                                        }else{
+                                            if(parent_index){ //表单页为内页的情况
+                                                parent.layer.close(parent_index);
+                                                parent.location.reload();
+                                            }else{
+                                                miniTab.deleteCurrentByIframe();
+                                            }
+                                        }
+                                    });
+                                    break;
+                                case 0:
+                                    $('#__token__').val(res.data.token);
+                                    layer.alert(res.msg);
+                                    break;
+                                default:
+                                    layer.alert(res.msg);
+                                    break;
+                            }
+                        },
+                        error: function(request, textStatus){
+                            layer.msg('500 Internal Server Error');
+                        },
+                        complete: function(){
+                            layer.close(loading_index);
+                        }
+                    });
+                    layer.close(index);
+                });
+            },
+            invalidHandler: function(form, validator) {  //不通过回调
+                return false;
+            },
+        });
+    });
+</script>
+
+{/block}

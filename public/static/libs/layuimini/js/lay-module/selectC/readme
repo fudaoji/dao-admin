@@ -1,0 +1,34 @@
+使用方法:
+	//初始化
+	var condition = selectC(options);
+
+options(参数):
+	{
+		elem: "#ID", //标签ID,带#号
+		number: 1, //数量
+		reset:false,//清空按钮，默认不启用
+		options: [{ //选项
+				type: "",//input
+				name: "",//标签的name属性
+				elemName: ""//名称
+			}, {
+				type: "",//select
+				name: "",//标签的name属性
+				elemName: "",//名称
+				data: [{//下拉框选项,直接赋值
+						name: "",//名称
+						value: ""//值
+					}
+				],
+				url: "",//数据请求地址,返回格式{code:0成功，其他失败,data:[{name:名称,value:值}]}
+			    field: {nameField:'name',valueField:'value'}//候选项数据的键名,默认
+			}, {
+				type: "",//date
+				name: "",//标签的name属性
+				elemName: ""//名称
+			}
+		],
+		search:function(data){//查询按钮点击事件回调
+			console.log(data),//获取填写的条件json串
+		}
+	}

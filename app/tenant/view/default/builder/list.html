@@ -1,0 +1,526 @@
+{extend name="default:layout:base" /}
+
+{block name="main"}
+<div class="layui-tab layui-tab-brief" lay-filter="{$controller}-tab">
+    {notempty name="tab_nav"}
+    <ul class="layui-tab-title">
+        {volist name="tab_nav.tab_list" id="tab"}
+        <li class="{if $key eq $tab_nav['current_tab']}layui-this{/if}"><a href="{$tab.href}">{$tab.title}</a></li>
+        {/volist}
+    </ul>
+    {/notempty}
+    <div class="layui-tab-content">
+        {if condition="!empty($tip)"}
+        <blockquote class="layui-elem-quote">{$tip|raw}</blockquote>
+        {/if}
+
+        {notempty name="search"}
+        <fieldset class="table-search-fieldset">
+            <div style="margin: 10px 10px 10px 10px">
+                <form class="layui-form layui-form-pane">
+                    <div class="layui-form-item">
+                        {foreach $search as $v}
+                        {switch name="v.type" }
+                        {case complex}
+                        <div class="layui-inline">
+                            <div id="{$v.name}"></div>
+                        </div>
+                        <script>
+                            layui.use(['selectC'], function() {
+                                var selectC = layui.selectC;
+                                /**动态条件控件**/
+                                var condition = selectC({
+                                    title:"{$v.title}",
+                                    elem: "#{$v.name}", //标签ID,带#号
+                                    number: 1, //数量
+                                    form: false,//清空按钮，默认不启用
+                                    value:"{$v.value??''}",
+                                    options: {:json_encode($v.options)}
+                                });
+                            });
+                        </script>
+                        {/case}
+                        {case linkage}
+                        <!--下拉框联动-->
+                        <div class="layui-form-item" lay-filter="filter-{$v.name}">
+                            <label class="layui-form-label">{$v['title']}</label>
+                            <div class="layui-input-block" id="linkage-{$v.name}"></div>
+                            <script>
+                                layui.use(['selectN'], function () {
+                                    var selectN = layui.selectN;
+                                    var cateData = {:json_encode($v.options.data)}
+                                , selectedData = {:json_encode(empty($v['options']['values']) ? [] : $v['options']['values'])}
+                                , tips = {if empty($v['options']['tips'])}"请选择"{else/}{:json_encode($v['options']['values'])}{/if};
+
+                                    //无限级分类-所有配置
+                                    var catIns2 = selectN({
+                                        //元素容器【必填】
+                                        elem: '#linkage-{$v.name}'
+                                        //候选数据【必填】
+                                        , data: cateData
+                                        //设置了长度
+                                        , width: null
+                                        //默认值
+                                        , selected: selectedData
+                                        , search: true
+                                        , tips: tips
+                                        , name: '{$v.name}'
+                                        , delimiter: ','
+                                        , field: {idName: 'id', titleName: 'title', childName: 'children'}
+                                    });
+
+                                });
+                            </script>
+                        </div>
+                        {/case}
+                        {case datetime_range}
+                        <div class="layui-inline">
+                            <label class="layui-form-label">{$v.title}</label>
+                            <div class="layui-input-inline" style="width: 290px;">
+                                <input type="text" id="{$v.name}" name="{$v.name}" value="{$v.value ?? ''}" class="layui-input" placeholder="{$v.placeholder ?? $v.title}">
+                            </div>
+                        </div>
+                        <script>
+                            layui.use(['laydate'], function() {
+                                var laydate = layui.laydate;
+
+                                //执行一个laydate实例
+                                laydate.render({
+                                    elem: '#{$v.name}'
+                                    , type: 'datetime'
+                                    , max: 1 //7天后
+                                    , range: '~'
+                                });
+                            });
+                        </script>
+                        {/case}
+                        {case date_range}
+                        <div class="layui-inline">
+                            <label class="layui-form-label">{$v.title}</label>
+                            <div class="layui-input-inline" style="width: 200px;">
+                                <input type="text" id="{$v.name}" name="{$v.name}" value="{$v.value ?? ''}" class="layui-input" placeholder="{$v.placeholder ?? $v.title}">
+                            </div>
+                        </div>
+                        <script>
+                            layui.use(['laydate'], function() {
+                                var laydate = layui.laydate;
+
+                                //执行一个laydate实例
+                                laydate.render({
+                                    elem: '#{$v.name}'
+                                    , type: 'date'
+                                    , range: '~'
+                                });
+                            });
+                        </script>
+                        {/case}
+                        {case select}
+                        <div class="layui-inline">
+                            <label class="layui-form-label">{$v.title}</label>
+                            <div class="layui-input-inline">
+                                <select name="{$v.name}">
+                                    {volist name="v.options" id="o"}
+                                    <option value="{$key}" {if isset($v.value) && $v.value==$key}selected{/if}>{$o}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                        </div>
+                        {/case}
+                        {default /}
+                        <div class="layui-inline">
+                            <label class="layui-form-label">{$v.title}</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="{$v.name}" autocomplete="off" class="layui-input" placeholder="{$v.placeholder ?? $v.title}" value="{$v.value??''}">
+                            </div>
+                        </div>
+                        {/switch}
+                        {/foreach}
+                        <div class="layui-inline">
+                            <button type="submit" class="layui-btn layui-btn-primary"  lay-submit lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </fieldset>
+        {/notempty}
+
+        {notempty name="top_button_list"}
+        <script type="text/html" id="top-btns">
+            {foreach $top_button_list as $button}
+            <button type="button" {$button['attribute']|raw} >{$button['title']}</button>&nbsp;
+            {/foreach}
+        </script>
+        {/notempty}
+
+        <table class="layui-hide" id="{$controller}-table" lay-filter="{$controller}-table"></table>
+
+        {notempty name="right_button_list"}
+        <script type="text/html" id="right-btns">
+            <div class="layui-btn-group">
+            {foreach $right_button_list as $button}
+            <button type="button" {$button['attribute']|raw} >{$button['title']}</button>&nbsp;
+            {/foreach}
+            </div>
+        </script>
+        {/notempty}
+    </div>
+</div>
+
+<style>
+    .layui-table-total{padding: 8px;}
+</style>
+{notempty name="css"}
+<style>{$css|raw}</style>
+{/notempty}
+
+{notempty name="js"}{$js|raw}{/notempty}
+
+<script>
+    layui.use(['form', 'table', 'element', 'miniTab', 'jquery'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            table = layui.table,
+        miniTab = layui.miniTab;
+
+        var cols = {:json_encode($table_column_list)};
+        var table_data_page = {:json_encode($table_data_page)};
+        var list_limit = table_data_page == null ? 15 : table_data_page.limit;
+        var total_row = parseInt("{:empty($total_row) ? 0 : 1}");
+        cols = cols.map((item, i) => {
+            switch(item.type){
+                case 'article':
+                    item = Object.assign(item, {templet: function (d) {
+                            return templets.article(d[item.field]);
+                        }});
+                    break;
+                case 'pre':
+                    item = Object.assign(item, {templet: function (d) {
+                            return "<pre>"+d[item.field]+"</pre>";
+                        }});
+                    break;
+                case 'index':
+                    item = Object.assign(item, {minWidth: 50,templet: function (d) {
+                            return d.LAY_TABLE_INDEX + 1;
+                        }});
+                    break;
+                case 'enum':
+                    var options = item.options;
+                    item = Object.assign(item, {templet: function (d) {
+                            return options.hasOwnProperty(d[item.field]) ? options[d[item.field]] : '--';
+                        }});
+                    break;
+                case 'video':
+                    item = Object.assign(item, {templet: function (d) {
+                            return templets.video(d[item.field]);
+                        }});
+                    break;
+                case 'price':
+                    item = Object.assign(item, {templet: function (d) {
+                            return (parseInt(d[item.field]) / 100).toFixed(2);
+                        }});
+                    break;
+                case 'pay_status':
+                    var status = ['未支付', '已支付', '已退款'];
+                    item = Object.assign(item, {templet: function (d) {
+                            return status[d[item.field]];
+                        }});
+                    break;
+                case 'datetime':
+                    item = Object.assign(item, {templet: function (d) {
+                            return d[item.field] > 0 ? tools.timeChange(d[item.field], 'timestamp','Y-m-d H:i:s') : '--';
+                        }});
+                    break;
+                case 'yesorno':
+                    item = Object.assign(item, {templet: function (d) {
+                            return d[item.field] ? '是' : '否';
+                        }});
+                    break;
+                case 'picture':
+                    item = Object.assign(item, {templet: function (d) {
+                        return templets.picture(d[item.field]);
+                    }});
+                    break;
+                case 'toolbar':
+                    item = Object.assign(item, {toolbar: '#right-btns', align: "center",fixed: 'right'});
+                    break;
+            }
+            return item;
+        });
+
+        var tt = table.render({
+            elem: '#{$controller}-table',
+            url: '{:empty($data_url) ? url($action, request()->get()) : $data_url}',
+            toolbar: '#top-btns'
+            ,method: 'post'
+            ,cols: [cols],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: list_limit,
+            page: true,
+            skin: 'line',
+            loading: true
+            ,parseData: function(res){ //res 即为原始返回的数据
+                var data = {
+                    "code": Math.abs(res.code - 1), //解析接口状态
+                    "msg": res.msg, //解析提示文本
+                    "count": res.data.total, //解析数据长度
+                    "data": res.data.list, //解析数据列表
+                    "totalRow": res.data.total_row ? res.data.total_row : false,
+                    "extra": res.data
+                };
+                /*if(res.data.total_row) {
+                    data.totalRow = res.data.total_row;
+                }*/
+                if(res.data.total_row_text){
+                    $('.layui-table-total').html(res.data.total_row_text);
+                }
+                return data;
+            }
+            , text: {
+                none: kyDicts.emptyData
+            }
+            , done: function(res, curr, count){
+                //如果是异步请求数据方式，res即为你接口返回的信息。
+                //如果是直接赋值的方式，res即为：{data: [], count: 99} data为当前页数据、count为数据总长度
+                //console.log(res);
+                //得到当前页码
+                //console.log(curr);
+                //得到数据总量
+                //console.log(count);
+                if(res.totalRow && res.code === 0 && this.page.curr <= 1){
+                    var extra = res.extra;
+                    $.post(extra.total_row_url, {where: extra.total_row_where}, function(r){
+                        if(r.code === 1){
+                            $('.layui-table-total').html(r.data.total_row_text);
+                        }else{
+                            layer.alert(r.msg);
+                        }
+                    }, 'json').error(function (xhr, status, info) {
+                        layer.alert('系统繁忙，请刷新重试或联系管理员');
+                    });
+                }
+                if(typeof window.table.done === 'function'){
+                    window.table.done(res, curr, count);
+                }
+                form.render();
+            }
+            , totalRow: total_row
+        });
+
+        {notempty name="search"}
+        // 监听搜索操作
+        /*$('button[lay-filter=data-search-btn]').on('click', function () {
+            var arr = $('form').serializeArray();
+            var data = {};
+            for(var i =0;i < arr.length;i++){
+                data[arr[i].name] = arr[i]['value'];
+            }
+            //执行搜索重载
+            table.reload('{$controller}-table', {
+                page: {
+                    curr: 1
+                }
+                , where: data
+            }, false);
+        });*/
+        form.on('submit(data-search-btn)', function (data) {
+            //执行搜索重载
+            table.reload('{$controller}-table', {
+                page: {
+                    curr: 1
+                }
+                , where: data.field
+            }, 'data');
+            return false;
+        });
+        {/notempty}
+
+        {notempty name="top_button_list"}
+        //顶部按钮监听事件
+        table.on('toolbar({$controller}-table)', function (obj) {
+            var href = $(this).attr('href')
+            , title = $(this).attr('title');
+
+            switch (obj.event) {
+                case 'add':
+                    var index = layer.open({
+                        title: title,
+                        type: 2,
+                        shade: 0.2,
+                        maxmin:true,
+                        area: ['95%', '95%'],
+                        content: href,
+                    });
+                    $(window).on("resize", function () {
+                        layer.full(index);
+                    });
+                    return false;
+                case 'delete':
+                        layer.confirm('确认删除?', function(index){
+                            var ids = table.checkStatus('{$controller}-table').data.map((item,index) => {return item.id});
+                            var params = {ids: ids};
+                            requestPost(href, params, function (res) {
+                                table.reload('{$controller}-table');  // 刷新(异步模式)
+                            });
+                            layer.close(index);
+                        });
+                        break;
+                case 'forbid':
+                    layer.confirm('确认批量禁用吗?', function(index){
+                        var ids = table.checkStatus('{$controller}-table').data.map((item,index) => {return item.id});
+                        var params = {ids: ids};
+                        requestPost(href, params, function (res) {
+                            table.reload('{$controller}-table');  // 刷新(异步模式)
+                        });
+                        layer.close(index);
+                    });
+                    break;
+                case 'self':
+                    if($(this).data('ajax')){
+                        if($(this).data('confirm')) {
+                            layer.confirm($(this).attr('confirm') ? $(this).attr('confirm') : "确认操作吗？", function(index){
+                                var ids = table.checkStatus('{$controller}-table').data.map((item,index) => {return item.id});
+                                var params = {ids: ids};
+                                requestPost(href, params, function (res) {
+                                    table.reload('{$controller}-table');  // 刷新(异步模式)
+                                });
+                                layer.close(index);
+                            });
+                        }else{
+                            requestPost(href, [], function (res) {
+                                table.reload('{$controller}-table');  // 刷新(异步模式)
+                            });
+                        }
+                    }else{
+                        var target = $(this).attr('target');
+                        switch (target) {
+                            case '_blank':
+                                window.open(href);
+                                break;
+                            case '_self':
+                                location.href = href;
+                                break;
+                            default:
+                                miniTab.openNewTabByIframe({
+                                    href: href,
+                                    title: $(this).attr('title'),
+                                });
+                        }
+                    }
+                    break;
+            }
+        });
+        {/notempty}
+
+            //监听操作栏按钮
+        {notempty name="right_button_list"}
+        table.on('tool({$controller}-table)', function (obj) {
+            var data = obj.data
+            , layEvent = obj.event
+                , title = $(this).attr('title')
+            , href = $(this).attr('href').replaceAll('__data_id__', data.id);
+            for (var k in data){
+                href = href.replaceAll(`__data_${k}__`, data[k])
+            }
+
+            switch (layEvent) {
+                case 'copy':
+                    var clipboard = new ClipboardJS('[lay-event="copy"]', {
+                        text: function(trigger) {
+                            return trigger.getAttribute('copy-text').replace('__data_id__', data.id);
+                        }
+                    });
+                    clipboard.on('success', function (e) {
+                        layer.msg("已复制！");
+                        e.clearSelection();
+                    });
+                    clipboard.on('error', function (e) {
+                        console.error('复制失败：');
+                        console.log(e);
+                    });
+                    break;
+                case 'export':
+                    requestPost(href, {activity_id: data.id}, function (res) {
+                        var fields = res.data.fields
+                        , data = res.data.data_list
+                        , ext = res.data.ext ? res.data.ext : 'xls';
+                        table.exportFile(fields, data, ext); //默认导出 csv，也可以为：xls
+                    });
+                    break;
+                case 'edit':
+                    var index = layer.open({
+                        title: title,
+                        type: 2,
+                        shade: 0.2,
+                        area: ['95%', '95%'],
+                        content: href,
+                    });
+                    $(window).on("resize", function () {
+                        layer.full(index);
+                    });
+                    return false;
+                case 'forbid':
+                    var tip = $(this).attr('confirm') ? $(this).attr('confirm') : "确认禁用吗？";
+                    layer.confirm(tip, function(index){
+                        var  params = {ids: data.id};
+                        requestPost(href, params, function (res) {
+                            table.reload('{$controller}-table');  // 刷新(异步模式)
+                        });
+                        layer.close(index);
+                    });
+                    break;
+                case 'resume':
+                    var tip = $(this).attr('confirm') ? $(this).attr('confirm') : "确认启用吗？";
+                    layer.confirm(tip, function(index){
+                        var  params = {ids: data.id};
+                        requestPost(href, params, function (res) {
+                            table.reload('{$controller}-table');  // 刷新(异步模式)
+                        });
+                        layer.close(index);
+                    });
+                    break;
+                case 'delete':
+                    layer.confirm('确认删除?', function(index){
+                        var  params = {ids: data.id};
+                        requestPost(href, params, function (res) {
+                            table.reload('{$controller}-table');  // 刷新(异步模式)
+                        });
+                        layer.close(index);
+                    });
+                    break;
+                case 'self':
+                    if($(this).data('ajax')){
+                        if($(this).data('confirm')) {
+                            layer.confirm($(this).attr('confirm') ? $(this).attr('confirm') : "确认操作吗？", function(index){
+                                requestPost(href, data, function (res) {
+                                    table.reload('{$controller}-table');  // 刷新(异步模式)
+                                });
+                                layer.close(index);
+                            });
+                        }else{
+                            requestPost(href, data, function (res) {
+                                table.reload('{$controller}-table');  // 刷新(异步模式)
+                            });
+                        }
+                    }else{
+                        var target = $(this).attr('target');
+                        switch (target) {
+                            case '_blank':
+                                window.open(href);
+                                break;
+                            case '_self':
+                                location.href = href;
+                                break;
+                            default:
+                                miniTab.openNewTabByIframe({
+                                    href: href,
+                                    title: $(this).attr('title'),
+                                });
+                        }
+                    }
+                    break;
+            }
+        });
+        {/notempty}
+        });
+</script>
+{/block}

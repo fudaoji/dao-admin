@@ -1,0 +1,13 @@
+{extend name="default:builder:list" /}
+
+{block name="js"}
+<script>
+    layui.use(['jquery'], function () {
+        var $ = layui.jquery;
+        window.table.done = function () {
+            $("td[data-field=status][data-content='1']").closest('tr').find('.js-verify').remove();
+            $("td[data-field=status][data-content='2']").closest('tr').find('.js-verify').remove();
+        };
+    });
+</script>
+{/block}

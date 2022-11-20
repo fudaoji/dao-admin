@@ -1,0 +1,153 @@
+<!--控制组件显示隐藏-->
+<div class="layui-form-item media-box" id="media-box-{$form.name}">
+    <style>
+        .media-box .layui-card{padding-top: 30px;}
+        .media-box .box{
+            font-size: 16px;line-height: 80px;text-align: center;width: 90%;border: #e7e7eb 1px solid;margin-bottom: 7px;
+            cursor: pointer;
+        }
+        .media-box .box i{color: #B2B2B2;}
+        .media-box .box:hover{background-color: #f4f6f9; color: var(--green);}
+        .media-box .box:hover i{color: var(--green);}
+        .media-content img{width: 180px;border: #e7e7eb 1px solid;}
+        .media-content .addon-logo{width: 30px;margin-right: 15px;}
+        .media-box video{width: 210px;height: 169px;}
+    </style>
+    <label class="layui-form-label {$form['extra_class']??''}">
+        {if condition="is_int(strpos($form['extra_attr'], 'required'))"}
+        <span class="text-danger">*</span>
+        {/if}
+        {$form['title']}
+    </label>
+    <div class="layui-input-block">
+        <input type="hidden" name="{$form.name}_type" value="{$form['options']['type'] ?? ''}">
+        <input type="hidden" name="{$form.name}_id" value="{$form['options']['id'] ?? ''}">
+        <div class="layui-card">
+            <div class="layui-card-body">
+                <div class="layui-row">
+                    <?php foreach($form['options']['types'] as $k => $type):?>
+                    <div class="layui-col-xs6 layui-col-md3">
+                        <div class="box" data-type="{$k}" data-type-title="{$type}">
+                            <i class="fa fa-<?php
+                                $icons=['text'=>'pencil','image'=>'image','file'=>'file-o','video'=>'file-video-o','link'=>'address-card','addon' => 'cube'];
+                                echo $icons[$k];
+                            ?>
+                            "></i>&nbsp;<?= $type;?>
+                        </div>
+                    </div>
+                    <?php endforeach;?>
+
+                    <br><hr><br>
+                    <fieldset class="layui-elem-field">
+                        <legend>内容预览</legend>
+                        <div class="layui-field-box">
+                            <div class="media-content">
+                                <!--选中结果-->
+                                {if condition="isset($form['options']['id']) && !empty($material)"}
+                                {switch $form.options.type}
+                                {case text}<pre>{$material.content}</pre>{/case}
+                                {case image}<img src="{$material.url}">{/case}
+                                {case file}<i class="fa fa-file-o"></i> <a href='{$material.url}' target='_blank'>{$material.title}</a>{/case}
+                                {case link}
+                                <div class="layui-row">
+                                    <div class="layui-col-xs8">
+                                        <p class="link-title">{$material.title}</p>
+                                        <p class="link-desc" style="color: #a29c9c;">{$material.desc}</p>
+                                    </div>
+                                    <div class="layui-col-xs4">
+                                        <img src="{$material.image_url}" alt="" style="width: 50px;">
+                                    </div>
+                                </div>
+                                {/case}
+                                {case video}
+                                <video style="width: 210px;height: 169px;" controls>
+                                    <source src="{$material.url}"  type="video/mp4">
+                                    <source src="{$material.url}"  type="video/ogg">
+                                    您的浏览器不支持 HTML5 video 标签。
+                                </video>
+                                {/case}
+                                {/switch}
+                                {/if}
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        if(typeof setAddonValue === 'undefined'){
+            var setAddonValue = function(res, field){
+                $("input[name={$form.name}_id]").val(res.id);
+                $("input[name={$form.name}_type]").val("addon");
+                $("#media-box-{$form.name} .media-content").html('<img src="'+res.logo+'" class="addon-logo">'+res.name);
+                $("#media-box-{$form.name} hr").show();
+            };
+        }
+
+        if(typeof setLinkValue === 'undefined'){
+            var setLinkValue = function(res, field){
+                var item = res[0];
+                $("input[name={$form.name}_id]").val(item.id);
+                $("input[name={$form.name}_type]").val("link");
+                $("#media-box-{$form.name} .media-content").html('<div class="layui-row"><div class="layui-col-xs4">' +
+                    '                                    <p class="link-title">'+item.title+'</p>' +
+                    '                                    <p class="link-desc" style="color: #a29c9c;">'+item.desc+'</p>' +
+                    '                                </div><div class="layui-col-xs2">' +
+                    '                                    <img src="'+item.image_url+'" alt="" style="width: 50px;"></div>' +
+                    '                            </div>');
+                $("#media-box-{$form.name} hr").show();
+            };
+        }
+
+        if(typeof setVideoValue === 'undefined'){
+            var setVideoValue = function(res, field){
+                $("input[name={$form.name}_id]").val(res[0].id);
+                $("input[name={$form.name}_type]").val("video");
+                $("#media-box-{$form.name} .media-content").html('<video controls>\
+                        <source src="url"  type="video/mp4">您的浏览器不支持 HTML5 video 标签。\
+                        </video>'.replace("url", res[0].url));
+                $("#media-box-{$form.name} hr").show();
+            };
+        }
+
+        if(typeof setFileValue === 'undefined'){
+            var setFileValue = function(res, field){
+                $("input[name={$form.name}_id]").val(res[0].id);
+                $("input[name={$form.name}_type]").val("file");
+                $("#media-box-{$form.name} .media-content").html("<a href='"+res[0].url+"' target='_blank'>"+res[0].title+"</a>");
+                $("#media-box-{$form.name} hr").show();
+            };
+        }
+
+        if(typeof setTextValue === 'undefined'){
+            var setTextValue = function(res, field){
+                $("input[name={$form.name}_id]").val(res[0].id);
+                $("input[name={$form.name}_type]").val("text");
+                $("#media-box-{$form.name} .media-content").html("<pre>"+res[0].content+"</pre>");
+                $("#media-box-{$form.name} hr").show();
+            };
+        }
+
+        if(typeof setPictureValue === 'undefined'){
+            var setPictureValue = function(res, field){
+                $("input[name={$form.name}_id]").val(res[0].id);
+                $("input[name={$form.name}_type]").val("image");
+                $("#media-box-{$form.name} .media-content").html("<img src='"+res[0].url+"' />");
+                $("#media-box-{$form.name} hr").show();
+            };
+        }
+
+        $("#media-box-{$form.name}").on('click', '.box', function () {
+            layer.open({
+                type: 2,
+                title: $(this).data('type-title'),
+                shadeClose: false,
+                shade: 0.8,
+                area: ['80%', '80%'],
+                content: ['/admin/media/handle?type=' + $(this).data('type')+'&controller={$controller}'] //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: ['http://sentsin.com', 'no']
+            });
+        });
+    </script>
+</div>
