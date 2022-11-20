@@ -1,6 +1,7 @@
 {
   "name": "fudaoji/dao-admin",
   "type": "project",
+  "version": "1.0.0",
   "keywords": [
     "daoadmin",
     "webman",
@@ -19,7 +20,7 @@
     }
   ],
   "support": {
-    "email": "walkor@workerman.net",
+    "email": "461960962@qq.com",
     "issues": "https://gitee.com/fudaoji/dao-admin/issues",
     "forum": "http://kyphp.kuryun.com/",
     "wiki": "http://kyphp.kuryun.com/",
