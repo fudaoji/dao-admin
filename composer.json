@@ -1,30 +1,32 @@
 {
-  "name": "workerman/webman",
+  "name": "fudaoji/dao-admin",
   "type": "project",
   "keywords": [
+    "daoadmin",
+    "webman",
     "high performance",
     "http service"
   ],
-  "homepage": "http://www.workerman.net",
+  "homepage": "http://kyphp.kuryun.com",
   "license": "MIT",
   "description": "High performance HTTP Service Framework.",
   "authors": [
     {
-      "name": "walkor",
-      "email": "walkor@workerman.net",
-      "homepage": "http://www.workerman.net",
+      "name": "Rocky",
+      "email": "461960962@qq.com",
+      "homepage": "http://www.i366211.com",
       "role": "Developer"
     }
   ],
   "support": {
     "email": "walkor@workerman.net",
-    "issues": "https://github.com/walkor/webman/issues",
-    "forum": "http://wenda.workerman.net/",
-    "wiki": "http://workerman.net/doc/webman",
-    "source": "https://github.com/walkor/webman"
+    "issues": "https://gitee.com/fudaoji/dao-admin/issues",
+    "forum": "http://kyphp.kuryun.com/",
+    "wiki": "http://kyphp.kuryun.com/",
+    "source": "https://gitee.com/fudaoji/dao-admin"
   },
   "require": {
-    "php": ">=7.2",
+    "php": ">=7.4",
     "workerman/webman-framework": "^1.4.3",
     "monolog/monolog": "^2.0",
     "topthink/think-template": "^2.0",
