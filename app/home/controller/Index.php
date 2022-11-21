@@ -9,17 +9,9 @@
 
 namespace App\home\controller;
 
-use app\coroutine\Client;
-
 class Index
 {
     public function index(){
-        $res = Client::instance(['port' => 9502])->send(range(1, 900));
-        return response($res);
-    }
-
-    public function testExec(){
-        exec('ls -al', $arr, $res);
-        var_dump($arr, $res);
+        return response("Hello, DaoAdmin");
     }
 }

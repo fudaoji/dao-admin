@@ -9,7 +9,7 @@
 
 namespace app\common\middleware;
 
-use App\common\model\Setting;
+use app\common\model\Setting;
 use think\facade\Cache;
 use think\facade\Db;
 use Webman\Http\Request;

@@ -8,6 +8,25 @@ use think\Model;
 define('SESSION_ADMIN', 'adminInfo');
 define('SESSION_TENANT', 'tenantInfo');
 
+if (!function_exists('system_reload')) {
+    /**
+     * 重载系统
+     * return bool
+     */
+    function system_reload(): bool
+    {
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            return false;
+        }
+        if (function_exists('posix_kill')
+            && function_exists('posix_getppid')) {
+            posix_kill(posix_getppid(), SIGUSR1);
+            return true;
+        }
+        return false;
+    }
+}
+
 if(! function_exists('generate_token')) {
     function generate_token($len) {
         $header = request()->header();

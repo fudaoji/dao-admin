@@ -1,11 +1,4 @@
 <?php
-// +----------------------------------------------------------------------
-// | [KyPHP System] Copyright (c) 2020 http://www.kuryun.com/
-// +----------------------------------------------------------------------
-// | [KyPHP] 并不是自由软件,你可免费使用,未经许可不能去掉KyPHP相关版权
-// +----------------------------------------------------------------------
-// | Author: fudaoji <fdj@kuryun.cn>
-// +----------------------------------------------------------------------
 
 /**
  * Created by PhpStorm.
@@ -17,7 +10,7 @@
 namespace app\admin\controller;
 
 use app\AdminController;
-use App\common\model\Setting;
+use app\common\model\Setting;
 use app\common\service\Upload;
 
 class Uploader extends AdminController
@@ -25,11 +18,11 @@ class Uploader extends AdminController
     /**
      * @var Upload
      */
-    protected $model;
+    protected $uploadService;
     public function __construct(){
         parent::__construct();
         Setting::instance()->settings();
-        $this->model = new Upload(fa_config('system.upload'));
+        $this->uploadService = new Upload(fa_config('system.upload'));
     }
 
     /**
@@ -38,7 +31,7 @@ class Uploader extends AdminController
      */
     public function picturePost()
     {
-        $upload_config_pic = $this->model->config();
+        $upload_config_pic = $this->uploadService->config();
         return $this->upload($upload_config_pic);
     }
 
@@ -47,7 +40,7 @@ class Uploader extends AdminController
      * Author: Doogie <461960962@qq.com>
      */
     public function filePost(){
-        $upload_config_file = $this->model->config('file');
+        $upload_config_file = $this->uploadService->config('file');
         return $this->upload($upload_config_file);
     }
 
@@ -60,7 +53,7 @@ class Uploader extends AdminController
      */
     private function upload($config = []){
         /* 调用文件上传组件上传文件 */
-        $return = $this->model->upload(request()->file(), $config, ['uid' => $this->adminInfo('id')]);
+        $return = $this->uploadService->upload(request()->file(), $config, ['uid' => $this->adminInfo('id')]);
         return json($return);
     }
 
@@ -70,7 +63,7 @@ class Uploader extends AdminController
      */
     public function editorPost(){
         $action = input('get.action');
-        $ue_config = $this->model->ueConfig();
+        $ue_config = $this->uploadService->ueConfig();
         switch ($action) {
             case 'config':
                 $return = $ue_config;
@@ -83,14 +76,14 @@ class Uploader extends AdminController
             case 'uploadvideo':
                 /* 上传文件 */
             case 'uploadfile':
-                $return = $this->model->ueUpload($action, ['from' => 2, 'uid' => $this->adminInfo('id')]);
+                $return = $this->uploadService->ueUpload($action, ['from' => 2, 'uid' => $this->adminInfo('id')]);
                 break;
 
             /* 列出图片 */
             case 'listimage':
                 /* 列出文件 */
             case 'listfile':
-                $return = $this->model->ueList($action, ['uid' => $this->adminInfo('id')]);
+                $return = $this->uploadService->ueList($action, ['uid' => $this->adminInfo('id')]);
                 break;
             /* 抓取远程文件 */
             case 'catchimage':

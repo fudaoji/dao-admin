@@ -36,6 +36,10 @@ class Setting extends AdminController
             'upload' => [
                 'title' => '附件设置',
                 'href' => url('index', ['name' => 'upload'])
+            ],
+            'sms' => [
+                'title' => '短信设置',
+                'href' => url('index', ['name' => 'sms'])
             ]
         ];
     }
@@ -60,7 +64,7 @@ class Setting extends AdminController
             if(empty($setting)){
                 $res = $this->model->save([
                     'name' => $current_name,
-                    'title' => $this->tabList[$current_name]['title'],
+                    'title' => $this->tabList()[$current_name]['title'],
                     'value' => json_encode($post_data, JSON_UNESCAPED_UNICODE)
                 ]);
             }else{
@@ -85,6 +89,11 @@ class Setting extends AdminController
 
         $builder = new FormBuilder();
         switch ($current_name){
+            case 'sms':
+                $builder->addFormItem('channel', 'text', '短信商', '短信运营商', [], 'required maxlength=150')
+                    ->addFormItem('account', 'text', 'sms账号', 'sms账号', [], 'required maxlength=150')
+                    ->addFormItem('pwd', 'text', 'sms密码', 'sms密码', [], 'required maxlength=150');
+                break;
             case 'site':
                 empty($data) && $data['close'] = 0;
                 $builder->addFormItem('project_title', 'text', '平台名称', '平台名称')
@@ -103,7 +112,7 @@ class Setting extends AdminController
                 $builder->addFormItem('driver_title', 'legend', '上传驱动', '上传驱动')
                     ->addFormItem('driver', 'radio', '上传驱动', '上传驱动', Upload::locations())
                     ->addFormItem('local_title', 'legend', '本地上传', '本地上传')
-                    ->addFormItem('upload_path', 'text', '上传目录', '上传目录')
+                    ->addFormItem('upload_path', 'text', '上传目录', '请填写public下的目录，不用写public')
                     ->addFormItem('qiniu_title', 'legend', '七牛上传', '七牛上传')
                     ->addFormItem('qiniu_ak', 'text', '七牛accessKey', '七牛accessKey')
                     ->addFormItem('qiniu_sk', 'text', '七牛secretKey', '七牛secretKey')

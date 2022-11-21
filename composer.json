@@ -9,7 +9,7 @@
     "http service"
   ],
   "homepage": "http://kyphp.kuryun.com",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "description": "High performance HTTP Service Framework.",
   "authors": [
     {
@@ -43,7 +43,9 @@
     "qiniu/php-sdk": "^7.7",
     "guzzlehttp/guzzle": "^7.5",
     "workerman/crontab": "^1.0",
-    "webman/console": "^1.2"
+    "webman/console": "^1.2",
+    "fudaoji/php-upload": "^1.0.1",
+    "webman/cors": "^1.0"
   },
   "suggest": {
     "ext-event": "For better performance. "
@@ -51,7 +53,7 @@
   "autoload": {
     "psr-4": {
       "": "./",
-      "App\\": "./app"
+      "app\\": "./app"
     },
     "files": [
       "./support/helpers.php"

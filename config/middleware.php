@@ -14,20 +14,24 @@
 
 return [
     '' => [
+        app\common\middleware\CheckInstall::class,
         \Webman\Cors\CORS::class,
-        //app\common\middleware\CrossDomain::class,
         app\common\middleware\AppInitialize::class,
-        app\common\middleware\AppLang::class,
-        app\common\middleware\FaconfigInitialize::class,
+        app\common\middleware\AppLang::class
+    ],
+    'install' => [
+        \app\install\middleware\Check::class,
     ],
     'admin' => [
+        app\common\middleware\FaconfigInitialize::class,
         \app\admin\middleware\CheckAuth::class,
     ],
     'tenant' => [
-        \app\tenant\middleware\DeviceDetect::class,
+        app\common\middleware\FaconfigInitialize::class,
         \app\tenant\middleware\CheckAuth::class
     ],
     'api' => [
+        app\common\middleware\FaconfigInitialize::class,
         \app\api\middleware\CheckAuth::class,
     ],
 ];

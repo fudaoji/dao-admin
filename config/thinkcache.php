@@ -1,9 +1,10 @@
 <?php
 
-$expire = getenv('CACHE_EXPIRE', 3600);
-$prefix = getenv('CACHE_PREFIX', 'fa_');
+$expire = getenv('CACHE_EXPIRE') ?: 3600;
+$prefix = getenv('CACHE_PREFIX') ?: 'dao_';
+$driver = getenv('CACHE_DRIVER') ?: 'file';
 return [
-    'default' => getenv('CACHE_DRIVER', 'file'),
+    'default' => $driver,
     'stores' => [
         'file' => [
             'type' => 'File',
@@ -16,10 +17,17 @@ return [
         ],
         'redis' => [
             'type' => 'redis',
-            'host' => getenv('REDIS_HOST', '127.0.0.1'),
-            'port' => getenv('REDIS_PORT', 6379),
+            'host' => getenv('REDIS_HOST') ?: '127.0.0.1',
+            'port' => getenv('REDIS_PORT') ?: 6379,
             'prefix' => $prefix,
             'expire' => $expire,
+        ],
+        'memcache' => [
+            'type'  => 'memcached',
+            // 缓存前缀
+            'prefix' => $prefix,
+            'host'  => getenv('MEMCACHE_HOST') ?: '127.0.0.1',
+            'port'  => getenv('MEMCACHE_PORT') ?: 11211
         ],
     ],
 ];

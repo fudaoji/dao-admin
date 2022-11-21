@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d532f4e524dd7e05a30ee8674fb4d4ce",
+    "content-hash": "3c7efa569db20e440935e3f40491a991",
     "packages": [
         {
             "name": "doctrine/inflector",
@@ -102,6 +102,38 @@
                 }
             ],
             "time": "2021-10-22T20:16:43+00:00"
+        },
+        {
+            "name": "fudaoji/php-upload",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://gitee.com/fudaoji/php-upload",
+                "reference": "6a0b16883fc8ecffb3db7a89f8090d7efcb419e4"
+            },
+            "require": {
+                "php": ">=7.1.0",
+                "qiniu/php-sdk": "^7.7"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [],
+                "psr-4": {
+                    "Dao\\Upload\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Rocky",
+                    "email": "461960962@qq.com"
+                }
+            ],
+            "description": "Upload Manager",
+            "time": "2022-11-21T07:07:38+00:00"
         },
         {
             "name": "graham-campbell/result-type",
@@ -3111,6 +3143,42 @@
                 "wiki": "http://www.workerman.net/doc/webman"
             },
             "time": "2022-09-28T07:16:22+00:00"
+        },
+        {
+            "name": "webman/cors",
+            "version": "v1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/webman-php/cors.git",
+                "reference": "a5396634fd2ee4e7b15abba0bab45f28e1c1ad02"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/webman-php/cors/zipball/a5396634fd2ee4e7b15abba0bab45f28e1c1ad02",
+                "reference": "a5396634fd2ee4e7b15abba0bab45f28e1c1ad02",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Webman\\Cors\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "support": {
+                "issues": "https://github.com/webman-php/cors/issues",
+                "source": "https://github.com/webman-php/cors/tree/v1.0.1"
+            },
+            "time": "2022-11-05T11:16:20+00:00"
         },
         {
             "name": "webman/think-cache",

@@ -9,7 +9,7 @@
 
 namespace app\common\service;
 
-use ky\Upload\Upload as Uploader;
+use Dao\Upload\Upload as Uploader;
 
 class Upload
 {
@@ -57,9 +57,6 @@ class Upload
      */
     public function upload($files, $config = [], $extra = []){
         /* 上传文件 */
-        //$config['callback'] = [$this, 'isFile'];
-        //$config['removeTrash'] = [$this, 'removeTrash'];
-
         $driver = self::$setting['driver'];
         $Upload = new Uploader($config, $driver, self::driverConfig($driver));
         $info   = $Upload->upload($files, $extra['uid'] . '-');
@@ -268,7 +265,7 @@ class Upload
             'exts'     => self::$setting['image_ext'] ?: 'jpg,gif,png,jpeg,bmp', //允许上传的文件后缀
             'autoSub'  => true, //自动子目录保存文件
             'subName'  => ['date', 'Y-m-d'], //子目录创建方式，[0]-函数名，[1]-参数，多个参数使用数组
-            'rootPath' => public_path() .'/'. self::$setting['upload_path'], //保存根路径
+            'rootPath' => public_path() .'/'.  (self::$setting['upload_path'] ?? 'uploads/'), //保存根路径
             'savePath' => '/image/', //保存路径
             'saveName' => ['uniqid', ''], //上传文件命名规则，[0]-函数名，[1]-参数，多个参数使用数组
             'saveExt'  => '', //文件保存后缀，空则使用原后缀

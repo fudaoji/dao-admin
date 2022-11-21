@@ -15,7 +15,7 @@
 use support\Request;
 
 return [
-    'debug' => getenv('APP_DEBUG') ? true : false,
+    'debug' => getenv('APP_DEBUG') ? true : true,
     'app_key' => getenv('APP_KEY') ?? '123456',
     'version' => '0.1',
     'error_reporting' => E_ALL,
@@ -27,7 +27,7 @@ return [
     'controller_reuse' => true,
 
     // 默认应用
-    'default_app' => 'tenant',
+    'default_app' => 'admin',
     // 禁止URL访问的应用列表（自动多应用模式有效）
     'deny_app_list' => ['common'],
 
