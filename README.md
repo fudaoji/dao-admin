@@ -19,7 +19,7 @@ DaoAdmin是一款基于webman的高性能中后台框架。
 - 要求PHP >= 7.4
 - 创建项目：
 ~~~shell script
-composer create-project fudaoji/daoadmin  daoadmin
+composer create-project fudaoji/dao-admin  daoadmin
 ~~~
 - 运行服务
 
