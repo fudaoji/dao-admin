@@ -32,11 +32,11 @@ class Index extends AdminController
             'href'  => '/admin/index/welcome',
         ];
         $logoInfo = [
-            'title' => fa_config('system.site.project_title'),
+            'title' => dao_config('system.site.project_title'),
             'href' => '/admin/index/index',
             'image' => '/static/imgs/admin/logo-167x167.png',
         ];
-        isset(fa_config('system.site')['logo']) && $logoInfo['image'] = fa_config('system.site.logo');
+        isset(dao_config('system.site')['logo']) && $logoInfo['image'] = dao_config('system.site.logo');
         $menuInfo = \App\admin\service\Auth::getMenuList($this->adminInfo());
         $systemInit = [
             'homeInfo' => $homeInfo,

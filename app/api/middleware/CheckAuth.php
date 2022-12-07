@@ -56,11 +56,11 @@ class CheckAuth implements MiddlewareInterface
         if(Auth::needToken($request)){
             $header = request()->header();
             if(empty($header['token'])){
-                return ['code' => ErrorCode::TokenInvalid, 'msg' => fa_trans('token缺失')];
+                return ['code' => ErrorCode::TokenInvalid, 'msg' => dao_trans('token缺失')];
             }
 
             if(! Auth::checkToken($header['token'])){
-                return ['code' => ErrorCode::TokenInvalid, 'msg' => fa_trans('token过期')];
+                return ['code' => ErrorCode::TokenInvalid, 'msg' => dao_trans('token过期')];
             }
             Auth::refreshToken($header['token']);
         }
@@ -81,7 +81,7 @@ class CheckAuth implements MiddlewareInterface
         $header = request()->header();
         if(Auth::needLogin($request)){
             if(! Auth::checkLogin($header['token'])){
-                return ['code' => ErrorCode::NotLogin, 'msg' => fa_trans('会话过期, 请先登录')];
+                return ['code' => ErrorCode::NotLogin, 'msg' => dao_trans('会话过期, 请先登录')];
             }
         }
         return  true;

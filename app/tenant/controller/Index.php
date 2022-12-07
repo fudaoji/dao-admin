@@ -166,10 +166,10 @@ class Index extends TenantController
             'href'  => '/'.request()->app.'/index/welcome',
         ];
         $logoInfo = [
-            'title' => fa_config('system.site.project_title'),
+            'title' => dao_config('system.site.project_title'),
             'href' => '/'.request()->app.'/index/index'
         ];
-        isset(fa_config('system.site')['logo']) && $logoInfo['image'] = fa_config('system.site')['logo'];
+        isset(dao_config('system.site')['logo']) && $logoInfo['image'] = dao_config('system.site')['logo'];
         $menuInfo = \app\tenant\service\Auth::getMenuList($this->tenantInfo());
         $systemInit = [
             'homeInfo' => $homeInfo,

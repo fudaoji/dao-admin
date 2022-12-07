@@ -39,7 +39,7 @@ body{font-family: '微软雅黑',serif; color: #CCC; font-size: 16px;background:
             </div>
             <p class="error">{$msg|strip_tags=###}</p>
         {/switch}
-        <p class="jump">{:fa_trans('页面自动')} <a id="href" href="{$url??'javascript:history.back(-1);'}" target="_self">{:fa_trans('跳转')}</a> {:fa_trans('等待时间')}：<b id="wait">{$wait??3}</b>S
+        <p class="jump">{:dao_trans('页面自动')} <a id="href" href="{$url??'javascript:history.back(-1);'}" target="_self">{:dao_trans('跳转')}</a> {:dao_trans('等待时间')}：<b id="wait">{$wait??3}</b>S
         </p>
     </div>
 </body>

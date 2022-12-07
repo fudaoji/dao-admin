@@ -183,13 +183,13 @@ if (!function_exists('cache')) {
     }
 }
 
-if (!function_exists('fa_config')) {
+if (!function_exists('dao_config')) {
     /**
      * @param string $name
      * @param null $value
      * @return array|mixed|null
      */
-    function fa_config(string $name = '', $value = null)
+    function dao_config(string $name = '', $value = null)
     {
         if (is_array($name)) {
             return Faconfig::set($name, $value);
@@ -305,7 +305,7 @@ if (!function_exists('input')) {
     }
 }
 
-if (!function_exists('fa_trans')) {
+if (!function_exists('dao_trans')) {
     /**
      * 全局多语言函数
      * @param $str
@@ -314,7 +314,7 @@ if (!function_exists('fa_trans')) {
      * @param null $locale
      * @return string
      */
-    function fa_trans($str, $parameters = [], $domain = null, $locale = null)
+    function dao_trans($str, $parameters = [], $domain = null, $locale = null)
     {
         $lang = session('lang', 'zh-CN');
         if (is_numeric($str) || strstr($lang, 'zh-CN')) {

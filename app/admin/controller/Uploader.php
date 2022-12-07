@@ -22,7 +22,7 @@ class Uploader extends AdminController
     public function __construct(){
         parent::__construct();
         Setting::instance()->settings();
-        $this->uploadService = new Upload(fa_config('system.upload'));
+        $this->uploadService = new Upload(dao_config('system.upload'));
     }
 
     /**

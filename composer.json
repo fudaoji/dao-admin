@@ -45,7 +45,9 @@
     "workerman/crontab": "^1.0",
     "webman/console": "^1.2",
     "fudaoji/php-upload": "^1.0.1",
-    "webman/cors": "^1.0"
+    "webman/cors": "^1.0",
+    "illuminate/database": "^8.83",
+    "illuminate/events": "^8.83"
   },
   "suggest": {
     "ext-event": "For better performance. "

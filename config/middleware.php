@@ -19,9 +19,7 @@ return [
         app\common\middleware\AppInitialize::class,
         app\common\middleware\AppLang::class
     ],
-    'install' => [
-        \app\install\middleware\Check::class,
-    ],
+
     'admin' => [
         app\common\middleware\FaconfigInitialize::class,
         \app\admin\middleware\CheckAuth::class,

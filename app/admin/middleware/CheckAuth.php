@@ -34,7 +34,7 @@ class CheckAuth implements MiddlewareInterface
 
         }else{
             if(! Auth::check($admin_info, '/' . $app . '/'. $controller . '/' . $action)){
-                $res = ['code' => 0, 'msg' => fa_trans('暂无权限')];
+                $res = ['code' => 0, 'msg' => dao_trans('暂无权限')];
                 return \request()->isAjax() ? json($res) :
                     \view(config('app.dispatch_error'), $res);
             }

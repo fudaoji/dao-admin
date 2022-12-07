@@ -35,7 +35,7 @@ class ApiController extends BaseController
      */
     protected function jSuccess($msg = '操作失败!', $data = '', int $code = 1, array $header = []): Response
     {
-        $msg = fa_trans($msg);
+        $msg = dao_trans($msg);
         $result = [
             'code'  => $code,
             'msg'   => $msg,
@@ -57,7 +57,7 @@ class ApiController extends BaseController
      */
     protected function jError($msg = '操作失败!', int $code = ErrorCode::BadParam, $data = '', array $header = []): Response
     {
-        $msg = fa_trans($msg);
+        $msg = dao_trans($msg);
         $result = [
             'code' => $code,
             'msg'  => $msg,

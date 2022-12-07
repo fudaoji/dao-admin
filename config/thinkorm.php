@@ -21,7 +21,7 @@ return [
             // 数据库编码默认采用utf8
             'charset' => getenv('DATABASE_CHARSET') ?: 'utf8mb4',
             // 数据库表前缀
-            'prefix' => getenv('DATABASE_PREFIX') ?: 'fa_',
+            'prefix' => getenv('DATABASE_PREFIX') ?: '',
             // 断线重连
             'break_reconnect' => true,
             // 关闭SQL监听日志

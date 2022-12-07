@@ -17,7 +17,7 @@
         {notempty name="search"}
         <fieldset class="table-search-fieldset">
             <div style="margin: 10px 10px 10px 10px">
-                <form class="layui-form layui-form-pane" action="">
+                <form class="layui-form layui-form-pane" action="" id="search-{$controller}">
                     <div class="layui-form-item">
                         {foreach $search as $v}
                         {switch name="v.type" }
@@ -174,28 +174,89 @@
         var tt = table.render({
             elem: '#{$controller}-table',
             url: '{:empty($data_url) ? url($action, request()->get()) : $data_url}',
-            toolbar: '#top-btns'
-            ,method: 'post'
-            ,cols: [cols],
+            toolbar: '#top-btns',
+            method: 'post',
+            cols: [cols],
             limits: [10, 15, 20, 25, 50, 100],
             limit: list_limit,
             page: true,
             skin: 'line',
-            loading: true
-            ,parseData: function(res){ //res 即为原始返回的数据
+            loading: true,
+                    defaultToolbar: [{
+                        layEvent: 'refresh',
+                        icon: 'layui-icon-refresh',
+                    }, 'filter', 'print', 'exports'],
+            parseData: function(res){ //res 即为原始返回的数据
                 return {
                     "code": Math.abs(res.code - 1), //解析接口状态
                     "msg": res.msg, //解析提示文本
                     "count": res.data.total, //解析数据长度
                     "data": res.data.list //解析数据列表
                 };
-            }
-            , text: {
+            },
+            text: {
                 none: kyDicts.emptyData
             }
         });
 
         {notempty name="search"}
+        formToggle({
+            elem: "#search-{$controller}",
+        });
+        //展开|折叠
+        function formToggle(options) {
+            var defaultsOpt = {
+                isExpand: false,
+                prefixIcon: "layui-icon",
+                toggleIcon: ['layui-icon-down', 'layui-icon-up'],
+                toggleText: ['展开', '折叠'],
+            }
+            var opt = $.extend({}, defaultsOpt, options);
+            var elem = opt.elem; // 绑定的表单元素,必填
+            var min = opt.min; // 最小显示数,默认显示一行
+            var isExpand = opt.isExpand; // 初始展开
+            var prefixIcon = opt.prefixIcon + " "; // 图标前缀
+            var toggleIcon = opt.toggleIcon; // 折叠和展开时的图标类[unExpandIcon, ExpandIcon]
+            var toggleText = opt.toggleText; // 折叠和展开时的文本
+
+            var eleDOM = $(elem + " .layui-inline");
+            var firstElTop = eleDOM.first().offset().top;
+            var targetEl = eleDOM.filter(function(index) {
+                var isGtMin = (index + 1) > min;
+                var isGtFirstElTop = $(this).offset().top > firstElTop;
+                var isNeqLast = (index + 1) != eleDOM.length;
+                return min ? isGtMin && isNeqLast : isGtFirstElTop && isNeqLast;
+            });
+
+            var unExpandIcon = prefixIcon + toggleIcon[0];
+            var expandIcon = prefixIcon + toggleIcon[1];
+            var unExpandText = toggleText[0];
+            var expandText = toggleText[1];
+            var btnSelector = elem + " .expand";
+            $(btnSelector).append("<i></i>")
+            if (targetEl.length > 0) {
+                if (isExpand) {
+                    $(btnSelector).prepend("<span>" + expandText + "</span>");
+                    $(btnSelector + ">i").addClass(expandIcon);
+                } else {
+                    $(btnSelector).prepend("<span>" + unExpandText + "</span>")
+                    $(btnSelector + ">i").addClass(unExpandIcon)
+                    targetEl.addClass("layui-hide");
+                }
+                $(btnSelector).click(function() {
+                    isExpand = !isExpand;
+                    if (isExpand) {
+                        $(btnSelector + ">span").html(expandText);
+                        $(btnSelector + ">i").removeClass(unExpandIcon).addClass(expandIcon);
+                        targetEl.removeClass("layui-hide")
+                    } else {
+                        $(btnSelector + ">span").html(unExpandText);
+                        $(btnSelector + ">i").removeClass(expandIcon).addClass(unExpandIcon);
+                        targetEl.addClass("layui-hide")
+                    }
+                })
+            }
+        }
         // 监听搜索操作
         form.on('submit(data-search-btn)', function (data) {
             //执行搜索重载
@@ -216,6 +277,9 @@
             , title = $(this).attr('title');
 
             switch (obj.event) {
+                case 'refresh':
+                    table.reload('{$controller}-table');
+                    break;
                 case 'add':
                     var index = layer.open({
                         title: title,
@@ -293,6 +357,9 @@
             , layEvent = obj.event
                 , title = $(this).attr('title')
             , href = $(this).attr('href').replace('__data_id__', data.id);
+            for (var k in data){
+                href = href.replaceAll(`__data_${k}__`, data[k])
+            }
 
             switch (layEvent) {
                 case 'edit':
@@ -301,7 +368,7 @@
                         type: 2,
                         shade: 0.2,
                         area: ['95%', '95%'],
-                        content: href + '/id/' + data.id,
+                        content: href,
                     });
                     $(window).on("resize", function () {
                         layer.full(index);
