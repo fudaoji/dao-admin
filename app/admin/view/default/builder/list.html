@@ -21,6 +21,67 @@
                     <div class="layui-form-item">
                         {foreach $search as $v}
                         {switch name="v.type" }
+                        {case btn_group}
+                        <!--按钮组-->
+                        <div class="layui-inline" lay-filter="filter-{$v.name}">
+                            <div class="layui-input-inline" style="width: auto;">
+                                <div class="layui-btn-group">
+                                    {volist name="v.options" id="o"}
+                                    <button type="button"
+                                            class="js-btngroup-{$v.name} layui-btn {:isset($v.value) && $v.value == $key ? 'layui-btn-normal' : 'layui-btn-primary'}"
+                                            data-value="{$key}"
+                                    >{$o}</button>
+                                    {/volist}
+                                </div>
+                                <input type="hidden" name="{$v.name}" id="btn_group-{$v.name}">
+                            </div>
+                            <script>
+                                layui.use(['jquery'], function (){
+                                    var $ = layui.jquery;
+                                    $(".js-btngroup-{$v.name}").on('click', function () {
+                                        $('.js-btngroup-{$v.name}').addClass("layui-btn-primary").removeClass('layui-btn-normal');
+                                        $(this).addClass("layui-btn-normal").removeClass("layui-btn-primary");
+                                        $("#btn_group-{$v.name}").val($(this).data('value'));
+
+                                        $('button[lay-filter="data-search-btn"]').trigger('click');
+                                    });
+                                });
+                            </script>
+                        </div>
+                        {/case}
+                        {case linkage}
+                        <!--下拉框联动-->
+                        <div class="layui-form-item" lay-filter="filter-{$v.name}">
+                            <label class="layui-form-label">{$v['title']}</label>
+                            <div class="layui-input-block" id="linkage-{$v.name}"></div>
+                            <script>
+                                layui.use(['selectN'], function () {
+                                    var selectN = layui.selectN;
+                                    var cateData = {:json_encode($v.options.data)}
+                                , selectedData = {:json_encode(empty($v['options']['values']) ? [] : $v['options']['values'])}
+                                , tips = {if empty($v['options']['tips'])}"请选择"{else/}{:json_encode($v['options']['values'])}{/if};
+
+                                    //无限级分类-所有配置
+                                    var catIns2 = selectN({
+                                        //元素容器【必填】
+                                        elem: '#linkage-{$v.name}'
+                                        //候选数据【必填】
+                                        , data: cateData
+                                        //设置了长度
+                                        , width: null
+                                        //默认值
+                                        , selected: selectedData
+                                        , search: true
+                                        , tips: tips
+                                        , name: '{$v.name}'
+                                        , delimiter: ','
+                                        , field: {idName: 'id', titleName: 'title', childName: 'children'}
+                                    });
+
+                                });
+                            </script>
+                        </div>
+                        {/case}
                         {case datetime_range}
                         <div class="layui-inline">
                             <label class="layui-form-label">{$v.title}</label>
@@ -75,7 +136,7 @@
         {notempty name="top_button_list"}
         <script type="text/html" id="top-btns">
             {foreach $top_button_list as $button}
-            <button type="button" {$button['attribute']|raw} >{$button['title']}</button>&nbsp;
+            <button type="button" {$button['attribute']|raw} >{$button['text']??$button['title']}</button>&nbsp;
             {/foreach}
         </script>
         {/notempty}
@@ -86,7 +147,7 @@
         <script type="text/html" id="right-btns">
             <div class="layui-btn-group">
             {foreach $right_button_list as $button}
-            <button type="button" {$button['attribute']|raw} >{$button['title']}</button>&nbsp;
+            <button type="button" {$button['attribute']|raw} >{$button['text']??$button['title']}</button>&nbsp;
             {/foreach}
             </div>
         </script>
@@ -94,6 +155,9 @@
     </div>
 </div>
 
+<style>
+    .layui-table-total{padding: 8px;}
+</style>
 {notempty name="css"}
 <style>
     {$css|raw}
@@ -112,6 +176,11 @@
         var list_limit = table_data_page == null ? 15 : table_data_page.limit;
         cols = cols.map((item, i) => {
             switch(item.type){
+                case 'array':
+                    item = Object.assign(item, {templet: function (d) {
+                            return "<div>"+d[item.field].join(',')+"</div>";
+                        }});
+                    break;
                 case 'article':
                     item = Object.assign(item, {templet: function (d) {
                             return templets.article(d[item.field]);
@@ -182,7 +251,8 @@
             page: true,
             skin: 'line',
             loading: true,
-                    defaultToolbar: [{
+            autoSort: false,
+            defaultToolbar: [{
                         layEvent: 'refresh',
                         icon: 'layui-icon-refresh',
                     }, 'filter', 'print', 'exports'],
@@ -191,11 +261,29 @@
                     "code": Math.abs(res.code - 1), //解析接口状态
                     "msg": res.msg, //解析提示文本
                     "count": res.data.total, //解析数据长度
-                    "data": res.data.list //解析数据列表
+                    "data": res.data.list, //解析数据列表
+                    "extra": res.data
                 };
             },
             text: {
                 none: kyDicts.emptyData
+            },
+            done: function(res, curr, count){
+                if(res.totalRow && res.code === 0 && this.page.curr <= 1){
+                    var extra = res.extra;
+                    $.post(extra.total_row_url, {where: extra.total_row_where}, function(r){
+                        if(r.code === 1){
+                            $('.layui-table-total').html(r.data.total_row_text).removeClass('hide');
+                        }else{
+                            layer.alert(r.msg);
+                        }
+                    }, 'json').error(function (xhr, status, info) {
+                        layer.alert('系统繁忙，请刷新重试或联系管理员');
+                    });
+                }
+                if(window.table && typeof window.table.done === 'function'){
+                    window.table.done(res, curr, count);
+                }
             }
         });
 
@@ -259,6 +347,7 @@
         }
         // 监听搜索操作
         form.on('submit(data-search-btn)', function (data) {
+            tt.config.where = data.field;
             //执行搜索重载
             table.reload('{$controller}-table', {
                 page: {
@@ -349,6 +438,19 @@
             }
         });
         {/notempty}
+            //触发排序事件
+            table.on('sort({$controller}-table)', function(obj){
+                table.reload('{$controller}-table', {
+                    page: {
+                        curr: 1
+                    }
+                    , where: Object.assign(tt.config.where, {
+                        order_field: obj.field //排序字段
+                        ,order_type: obj.type //排序方式
+                    })
+                }, 'data');
+                return false;
+            });
 
         {notempty name="right_button_list"}
         //监听操作栏按钮

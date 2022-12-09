@@ -30,6 +30,160 @@ class Database extends AdminController
         ];
     }
 
+    /**
+     * 索引删除
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    public function indexDelPost(){
+        if(!$table_name = input('table_name')){
+            return $this->error(dao_trans('页面丢失'));
+        }
+        if(!$field = input('index')){
+            return $this->error(dao_trans('页面丢失'));
+        }
+        DatabaseService::dropIndex($table_name, $field);
+        return $this->success(dao_trans('删除成功！'));
+    }
+
+    /**
+     * 新建索引
+     * @return mixed|\support\Response
+     * Author: fudaoji<fdj@kuryun.cn>
+     * @throws \think\db\exception\BindParamException
+     */
+    public function indexAdd()
+    {
+        if (!$table_name = input('table_name')) {
+            return $this->error(dao_trans('页面丢失'));
+        }
+
+        $data = [
+            'type' => 'normal',
+            'method' => 'BTREE'
+        ];
+        $builder = new FormBuilder();
+        $builder->setMetaTitle('新增索引')  //设置页面标题
+            ->setPostUrl(url('indexSavePost', ['table_name' => $table_name])) //设置表单提交地址
+            ->addFormItem('name', 'text', '名称', '长度2-20', [], ' minlength="2" maxlength="20"')
+            ->addFormItem('columns', 'chosen_multi', '字段', '选择字段', DatabaseService::getColumnHash($table_name), 'required')
+            ->addFormItem('type', 'radio', '索引类型', '索引类型', DatabaseConst::indexTypes(), 'required')
+            ->addFormItem('method', 'radio', '索引方法', '索引方法', DatabaseConst::indexMethods(), 'required')
+            ->addFormItem('comment', 'text', '备注', '备注', [], ' maxlength="30"')
+            ->setFormData($data);
+
+        return $builder->show();
+    }
+
+    /**
+     * 编辑索引
+     * @return mixed|\support\Response
+     * Author: fudaoji<fdj@kuryun.cn>
+     * @throws \think\db\exception\BindParamException
+     */
+    public function indexEdit()
+    {
+        if (!$table_name = input('table_name')) {
+            return $this->error(dao_trans('页面丢失'));
+        }
+        if(!$index = input('index')){
+            return $this->error(dao_trans('页面丢失'));
+        }
+
+        $index = DatabaseService::getIndex($table_name, $index);
+        $index['old_field'] = $index['name'];
+
+        $data = array_merge([
+            'type' => 'normal',
+            'method' => 'BTREE'
+        ], $index);
+        $builder = new FormBuilder();
+        $builder->setMetaTitle('新增索引')  //设置页面标题
+            ->setPostUrl(url('indexSavePost', ['table_name' => $table_name, 'op' => 'edit'])) //设置表单提交地址
+            ->addFormItem('old_field', 'hidden', '字段', '长度2-20')
+            ->addFormItem('name', 'text', '名称', '长度2-20', [], ' minlength="2" maxlength="20"')
+            ->addFormItem('columns', 'chosen_multi', '字段', '选择字段', DatabaseService::getColumnHash($table_name), 'required')
+            ->addFormItem('type', 'radio', '索引类型', '索引类型', DatabaseConst::indexTypes(), 'required')
+            ->addFormItem('method', 'radio', '索引方法', '索引方法', DatabaseConst::indexMethods(), 'required')
+            ->addFormItem('comment', 'text', '备注', '备注', [], ' maxlength="30"')
+            ->setFormData($data);
+
+        return $builder->show();
+    }
+
+    public function indexSavePost(){
+        if(!$table_name = input('table_name')){
+            return $this->error(dao_trans('页面丢失'));
+        }
+        if(request()->isPost()){
+            $post_data = input('post.');
+            try{
+                $name = $post_data['name'] ?: implode('_', explode(',', $post_data['columns']));
+                $type = $post_data['type'] == 'normal' ? '' : $post_data['type'];
+                $comment = empty($post_data['comment']) ? '' : "COMMENT '{$post_data['comment']}'";
+                $method = empty($post_data['method']) ? '' : "USING {$post_data['method']} ";
+                $columns = $post_data['columns'];
+
+                $drop = '';
+                if(input('op', 'add') != 'add'){
+                    $drop = " DROP INDEX `{$post_data['old_field']}`, ";
+                }
+                $sql = "ALTER TABLE `{$table_name}` 
+{$drop}
+ADD {$type} INDEX `{$name}`({$columns}) {$method}  {$comment};";
+                Db::query($sql);
+                return $this->success(dao_trans('操作成功'));
+            }catch (\Exception $e){
+                return $this->error(dao_trans('操作失败'));
+            }
+        }
+    }
+    /**
+     * 索引
+     * @return mixed|\support\Response
+     * @throws \think\db\exception\BindParamException
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    public function indexs(){
+        if(!$table_name = input('table_name')){
+            return $this->error(dao_trans('页面丢失'));
+        }
+
+        if(request()->isPost()){
+            $post_data = input('post.');
+            $list = DatabaseService::getSchema($table_name, 'keys');
+            $total = count($list);
+            return $this->success('success', '', ['total' => $total, 'list' => $list]);
+        }
+
+        $builder = new ListBuilder();
+        $builder->setTabNav($this->tabList($table_name), __FUNCTION__)
+            ->addTopButton('addnew', ['title' => '新增索引', 'href' => url('indexAdd', ['table_name' => $table_name])])
+            ->addTableColumn(['title' => '序号', 'type' => 'index','minwidth' => 70])
+            ->addTableColumn(['title' => '索引名称', 'field' => 'name'])
+            ->addTableColumn(['title' => '字段', 'field' => 'columns', 'type' => 'array'])
+            ->addTableColumn(['title' => '索引类型', 'field' => 'type', 'type' => 'enum','options' => DatabaseConst::indexTypes()])
+            ->addTableColumn(['title' => '索引方法', 'field' => 'method'])
+            ->addTableColumn(['title' => '注释', 'field' => 'comment'])
+            ->addTableColumn(['title' => '操作', 'width' => 120, 'type' => 'toolbar'])
+            ->addRightButton('edit', ['title' => '编辑索引', 'href' => url('indexedit', ['table_name' => $table_name, 'index' => '__data_name__'])])
+            ->addRightButton('delete', ['href' => url('indexdelpost', ['table_name' => $table_name, 'index' => '__data_name__'])]);
+        return $builder->show();
+    }
+
+    /**
+     * 字段删除
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    public function columnDelPost(){
+        if(!$table_name = input('table_name')){
+            return $this->error(dao_trans('页面丢失'));
+        }
+        if(!$field = input('field')){
+            return $this->error(dao_trans('页面丢失'));
+        }
+        DatabaseService::dropColumn($table_name, $field);
+        return $this->success(dao_trans('删除成功！'));
+    }
     public function columnSavePost(){
         if(!$table_name = input('table_name')){
             return $this->error(dao_trans('页面丢失'));
@@ -38,7 +192,7 @@ class Database extends AdminController
             $post_data = input('post.');
 
             try{
-                //int(10) UNSIGNED ZEROFILL NOT NULL DEFAULT 0 AUTO_INCREMENT
+                $field = $post_data['field'];
                 $type = $post_data['type'];
                 $comment = empty($post_data['comment']) ? '' : "COMMENT '{$post_data['comment']}'";
                 $nullable = empty($post_data['nullable']) ? 'NOT NULL' : "NULL";
@@ -68,10 +222,11 @@ class Database extends AdminController
                         return $this->error('字段['.$post_data['field'].']已存在');
                     }
                     $sql = "ALTER TABLE `{$table_name}` 
-ADD COLUMN `{$post_data['field']}` {$type} {$unsigned} {$zerofill} {$nullable} {$default} {$auto_increment} {$comment} ";
+ADD COLUMN `{$field}` {$type} {$unsigned} {$zerofill} {$nullable} {$default} {$auto_increment} {$comment} ";
                 }else{
+                    $old_field = $post_data['old_field'];
                     $sql = "ALTER TABLE `{$table_name}` 
-MODIFY COLUMN `{$post_data['field']}` {$type} {$unsigned} {$zerofill} {$nullable} {$default} {$auto_increment} {$comment} ";
+CHANGE COLUMN `{$old_field}` `{$field}` {$type} {$unsigned} {$zerofill} {$nullable} {$default} {$auto_increment} {$comment} ";
                 }
 
                 Db::query($sql);
@@ -97,7 +252,7 @@ MODIFY COLUMN `{$post_data['field']}` {$type} {$unsigned} {$zerofill} {$nullable
         }
 
         $column = DatabaseService::getColumn($table_name, $field);
-        var_dump($column);
+        $column['old_field'] = $column['field'];
         $data = array_merge([
             'length' => 0,
             'decimal' => 0,
@@ -111,6 +266,7 @@ MODIFY COLUMN `{$post_data['field']}` {$type} {$unsigned} {$zerofill} {$nullable
         $builder = new FormBuilder();
         $builder->setMetaTitle('编辑字段')  //设置页面标题
             ->setPostUrl(url('columnSavePost', ['table_name' => $table_name,'op' => 'edit'])) //设置表单提交地址
+            ->addFormItem('old_field', 'hidden', '字段', '长度2-20')
             ->addFormItem('field', 'text', '字段', '长度2-20', [], 'required minlength="2" maxlength="20"')
             ->addFormItem('type', 'chosen', '类型', '类型', DatabaseConst::columnTypes(), 'required')
             ->addFormItem('length', 'number', '长度', '长度', [], 'min=0')
@@ -129,12 +285,6 @@ MODIFY COLUMN `{$post_data['field']}` {$type} {$unsigned} {$zerofill} {$nullable
     }
 
     /**
-     * ALTER TABLE `fasaas`.`dao_tenant_setting`
-     MODIFY COLUMN `update_time` int(10) UNSIGNED ZEROFILL NOT NULL DEFAULT 0 AFTER `create_time`,
-    ADD COLUMN `name` varchar(30) NOT NULL DEFAULT '' COMMENT '标识' AFTER `update_time`,
-    ADD COLUMN `tenant_id` int(10) UNSIGNED NOT NULL DEFAULT 0 AFTER `name`;
-     */
-    /**
      * 新建字段
      * @return mixed|\support\Response
      * Author: fudaoji<fdj@kuryun.cn>
@@ -143,47 +293,6 @@ MODIFY COLUMN `{$post_data['field']}` {$type} {$unsigned} {$zerofill} {$nullable
     public function columnAdd(){
         if(!$table_name = input('table_name')){
             return $this->error(dao_trans('页面丢失'));
-        }
-        if(request()->isPost()){
-            $post_data = input('post.');
-
-            if (DatabaseService::checkColumnExist($table_name, $post_data['field'])) {
-                return $this->error('字段['.$post_data['field'].']已存在');
-            }
-
-            try{
-                //int(10) UNSIGNED ZEROFILL NOT NULL DEFAULT 0 AUTO_INCREMENT
-                $type = $post_data['type'];
-                $comment = empty($post_data['comment']) ? '' : "COMMENT '{$post_data['comment']}'";
-                $nullable = empty($post_data['nullable']) ? 'NOT NULL' : "NULL";
-                $default = "DEFAULT '{$post_data['default']}'";
-                $unsigned = "";
-                $zerofill = "";
-                $auto_increment = "";
-                //长度
-                if (in_array($post_data['type'], ['int', 'tinyint', 'smallint','mediumint','bigint','char','varchar','datetime',
-                    'time', 'timestamp', 'binary', 'varbinary', 'bit'])){
-                    $type .= "({$post_data['length']})";
-                }elseif (in_array($post_data['type'], ['decimal', 'float', 'double'])){
-                    $type .= "({$post_data['length']},{$post_data['decimal']})";
-                }
-                //unsigned
-                if (in_array($post_data['type'], ['int', 'tinyint', 'smallint','mediumint','bigint','decimal', 'float', 'double'])){
-                    !empty($post_data['unsigned']) && $unsigned .= "UNSIGNED";
-                }
-                //zerofill
-                if (in_array($post_data['type'], ['int', 'tinyint', 'smallint','mediumint','bigint','decimal', 'float', 'double'])){
-                    !empty($post_data['zerofill']) && $unsigned .= "ZEROFILL";
-                }
-
-                $sql = "ALTER TABLE `{$table_name}` 
-ADD COLUMN `{$post_data['field']}` {$type} {$unsigned} {$zerofill} {$nullable} {$default} {$auto_increment} {$comment} ";
-
-                Db::query($sql);
-                return $this->success(dao_trans('新增成功'));
-            }catch (\Exception $e){
-                return $this->error(dao_trans('新增失败' . $e->getMessage()));
-            }
         }
 
         $data = [
@@ -235,7 +344,7 @@ ADD COLUMN `{$post_data['field']}` {$type} {$unsigned} {$zerofill} {$nullable} {
 
         $builder = new ListBuilder();
         $builder->setTabNav($this->tabList($table_name), 'columns')
-            ->addTopButton('addnew', ['href' => url('columnAdd', ['table_name' => $table_name])])
+            ->addTopButton('addnew', ['title' => '新增字段','href' => url('columnAdd', ['table_name' => $table_name])])
             ->addTableColumn(['title' => '序号', 'type' => 'index','minwidth' => 70])
             ->addTableColumn(['title' => '字段', 'field' => 'field'])
             ->addTableColumn(['title' => '备注', 'field' => 'comment'])
@@ -246,7 +355,7 @@ ADD COLUMN `{$post_data['field']}` {$type} {$unsigned} {$zerofill} {$nullable} {
             ->addTableColumn(['title' => '自增', 'field' => 'auto_increment', 'type' => 'enum','options' => Common::yesOrNo()])
             ->addTableColumn(['title' => '可为空', 'field' => 'nullable', 'type' => 'enum','options' => Common::yesOrNo()])
             ->addTableColumn(['title' => '操作', 'width' => 120, 'type' => 'toolbar'])
-            ->addRightButton('edit', ['href' => url('columnedit', ['table_name' => $table_name, 'field' => '__data_field__'])])
+            ->addRightButton('edit', ['title' => '编辑字段', 'href' => url('columnedit', ['table_name' => $table_name, 'field' => '__data_field__'])])
             ->addRightButton('delete', ['href' => url('columndelpost', ['table_name' => $table_name, 'field' => '__data_field__'])]);
         return $builder->show();
     }
@@ -281,7 +390,7 @@ ADD COLUMN `{$post_data['field']}` {$type} {$unsigned} {$zerofill} {$nullable} {
         $builder->setSearch([
             ['type' => 'text', 'name' => 'search_key', 'title' => '搜索词','placeholder' => '表名'],
         ])
-            ->addTopButton('addnew', ['href' => url('tableAdd')])
+            ->addTopButton('addnew', ['title' => '新增表','href' => url('tableAdd')])
             ->addTableColumn(['title' => '序号', 'type' => 'index','minwidth' => 70])
             ->addTableColumn(['title' => '表名', 'field' => 'table_name'])
             ->addTableColumn(['title' => '记录数', 'field' => 'table_rows'])
@@ -290,7 +399,7 @@ ADD COLUMN `{$post_data['field']}` {$type} {$unsigned} {$zerofill} {$nullable} {
             ->addTableColumn(['title' => '字符集', 'field' => 'table_collation'])
             ->addTableColumn(['title' => '创建时间', 'field' => 'create_time'])
             ->addTableColumn(['title' => '操作', 'width' => 120, 'type' => 'toolbar'])
-            ->addRightButton('edit', ['href' => url('tableedit', ['table_name' => '__data_table_name__'])])
+            ->addRightButton('edit', ['title' => '编辑表', 'href' => url('tableedit', ['table_name' => '__data_table_name__'])])
             ->addRightButton('delete', ['href' => url('tabledelpost', ['table_name' => '__data_table_name__'])]);
         return $builder->show();
     }

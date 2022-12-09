@@ -116,6 +116,7 @@ class ListBuilder extends BaseController
         switch ($type) {
             case 'addnew':  // 添加新增按钮
                 // 预定义按钮属性以简化使用
+                $my_attribute['text'] = '新增';
                 $my_attribute['title'] = '新增';
                 $my_attribute['class'] = 'layui-btn layui-btn-normal layui-btn-sm';
                 $my_attribute['lay-event']  = 'add';
@@ -265,6 +266,7 @@ class ListBuilder extends BaseController
         switch ($type) {
             case 'edit':  // 编辑按钮
                 // 预定义按钮属性以简化使用
+                $my_attribute['text'] = '编辑';
                 $my_attribute['title'] = '编辑';
                 $my_attribute['class'] = 'layui-btn layui-btn-normal layui-btn-xs';
                 $my_attribute['lay-event']  = 'edit';

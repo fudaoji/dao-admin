@@ -9,11 +9,33 @@
 
 namespace app\admin\service;
 
+use Illuminate\Database\Schema\Blueprint;
 use support\Db;
 use think\facade\Db as ThinkDb;
 
 class Database
 {
+    /**
+     * 获取字段hash {name:name, ...}
+     * @param string $table
+     * @param string $database
+     * @return array|false
+     * @throws \think\db\exception\BindParamException
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    static function getColumnHash($table = '', $database = ''){
+        empty($database) && $database = self::getDatabaseName();
+        $res = ThinkDb::query("select COLUMN_NAME from information_schema.COLUMNS where TABLE_SCHEMA = '$database' and table_name = '$table'");
+        $arr = [];
+        foreach ($res as $item){
+            $arr[$item['COLUMN_NAME']] = $item['COLUMN_NAME'];
+        }
+        return  $arr;
+    }
+
+    static function getDatabaseName(){
+        return config('database.connections')[config('database.default')]['database'];
+    }
     /**
      * 修改表名
      * @param string $from
@@ -54,25 +76,21 @@ class Database
         $table_schema = $section == 'table' || !$section ? ThinkDb::query("SELECT * FROM  information_schema.`TABLES` WHERE  TABLE_SCHEMA='$database' and TABLE_NAME='$table'") : [];
         $indexes = $section == 'keys' || !$section ? ThinkDb::query("SHOW INDEX FROM $table") : [];
         $keys = [];
+
         foreach ($indexes as $index) {
             $key_name = $index['Key_name'];
             if ($key_name == 'PRIMARY') {
                 continue;
             }
             if (!isset($keys[$key_name])) {
-                $keys[$key_name] = [
-                    'name' => $key_name,
-                    'columns' => [],
-                    'type' => $index['Non_unique'] == 0 ? 'unique' : 'normal'
-                ];
+                $keys[$key_name] = self::indexInfoMap($index);
             }
-            $keys[$key_name]['columns'][] = $index['Column_name'];
+            !in_array($index['Column_name'], $keys[$key_name]['columns']) && $keys[$key_name]['columns'][] = $index['Column_name'];
         }
-
         $data = [
             'table' => !empty($table_schema[0]) ? self::tableInfoMap($table_schema[0]) : [],
             'columns' => $columns,
-            'keys' => array_reverse($keys, true)
+            'keys' => array_values($keys)
         ];
         return $section ? $data[$section] : $data;
     }
@@ -86,10 +104,26 @@ class Database
      * Author: fudaoji<fdj@kuryun.cn>
      */
     static function getColumn($table = '', $column = ''){
-        $database = config('database.connections')[config('database.default')]['database'];
+        $database = self::getDatabaseName();
         $list = ThinkDb::query("select * from information_schema.COLUMNS where TABLE_SCHEMA = '$database' and table_name = '$table' and COLUMN_NAME='{$column}'");
         if(count($list)){
             return self::columnInfoMap($list[0]);
+        }
+        return [];
+    }
+
+    static function getIndex($table = '', $index = ''){
+        $list = ThinkDb::query("SHOW INDEX FROM $table where  Key_name='{$index}'");
+        if($list){
+            $keys = [];
+            foreach ($list as $index){
+                $key_name = $index['Key_name'];
+                if (!isset($keys[$key_name])) {
+                    $keys[$key_name] = self::indexInfoMap($index);
+                }
+                !in_array($index['Column_name'], $keys[$key_name]['columns']) && $keys[$key_name]['columns'][] = $index['Column_name'];
+            }
+            return array_values($keys)[0];
         }
         return [];
     }
@@ -145,6 +179,21 @@ class Database
         return '';
     }
 
+    /**
+     * 索引信息整理
+     * @param array $item
+     * @return array
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    static function indexInfoMap($item = []){
+        return  [
+            'name' => $item["Key_name"],
+            'columns' => [$item["Column_name"]],
+            'type' => $item['Non_unique'] == 0 ? 'unique' : 'normal',
+            'method' => $item['Index_type'],
+            'comment' => $item["Index_comment"]
+        ];
+    }
     /**
      * 表格信息整理
      * @param array $old
@@ -228,5 +277,18 @@ class Database
     public static function dropTable($table_name = '')
     {
         self::schema()->drop(self::tableName($table_name));
+    }
+
+    public static function dropColumn($table_name = '', $column = ''){
+        self::schema()->table(self::tableName($table_name), function (Blueprint $table) use ($column) {
+            $table->dropColumn($column);
+        });
+    }
+
+    public static function dropIndex($table_name, $index)
+    {
+        self::schema()->table(self::tableName($table_name), function (Blueprint $table) use ($index) {
+            $table->dropIndex($index);
+        });
     }
 }

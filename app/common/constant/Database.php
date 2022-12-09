@@ -15,6 +15,34 @@ class Database
     const MYISAM = 'MyISAM';
 
     /**
+     * 索引类型
+     * @return array
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    static function indexMethods()
+    {
+        return  [
+            'BTREE' => 'BTREE',
+            'HASH' => 'HASH',
+        ];
+    }
+
+    /**
+     * 索引类型
+     * @return array
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    static function indexTypes()
+    {
+        return  [
+            'normal' => 'NORMAL',
+            'unique' => 'UNIQUE',
+            'fulltext' => 'FULLTEXT',
+            'spatial' => 'SPATIAL',
+        ];
+    }
+
+    /**
      * 字段类型
      * @return array
      * Author: fudaoji<fdj@kuryun.cn>
