@@ -15,7 +15,7 @@
 use Webman\Route;
 
 Route::any('/', function (){
-    return redirect('/'.config('app.default_app'));
+    return redirect('/'.config("app.default_app"));
 });
 
 Route::fallback(function ($request) {

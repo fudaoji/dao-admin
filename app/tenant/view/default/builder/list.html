@@ -308,20 +308,6 @@
 
         {notempty name="search"}
         // 监听搜索操作
-        /*$('button[lay-filter=data-search-btn]').on('click', function () {
-            var arr = $('form').serializeArray();
-            var data = {};
-            for(var i =0;i < arr.length;i++){
-                data[arr[i].name] = arr[i]['value'];
-            }
-            //执行搜索重载
-            table.reload('{$controller}-table', {
-                page: {
-                    curr: 1
-                }
-                , where: data
-            }, false);
-        });*/
         form.on('submit(data-search-btn)', function (data) {
             //执行搜索重载
             table.reload('{$controller}-table', {

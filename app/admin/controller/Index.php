@@ -6,6 +6,7 @@ use App\admin\model\AdminGroup;
 use App\admin\model\AdminRule;
 use app\AdminController;
 use support\Response;
+use think\facade\Cache;
 
 class Index extends AdminController
 {
@@ -54,5 +55,16 @@ class Index extends AdminController
     {
         session([SESSION_ADMIN => null]);
         return $this->success('安全退出', url('auth/login'));
+    }
+
+    /**
+     * 清除缓存
+     * @return Response
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    public function clearCache(){
+        // 清除缓存
+        Cache::clear();
+        return $this->success('清理成功');
     }
 }

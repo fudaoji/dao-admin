@@ -66,7 +66,7 @@ class Admingroup extends AdminController
             ->addTableColumn(['title' => '状态', 'field' => 'status', 'type' => 'enum', 'options' => [1 => '启用', 0 => '禁用']])
             ->addTableColumn(['title' => '操作', 'width' => 150, 'type' => 'toolbar'])
             ->addRightButton('edit')
-            ->addRightButton('edit', ['title' => '授权','class' => 'layui-btn layui-btn-xs', 'href' => url('admingroup/auth', ['group_id' => '__data_id__'])])
+            ->addRightButton('edit', ['text' => '授权','class' => 'layui-btn layui-btn-xs', 'href' => url('auth', ['group_id' => '__data_id__'])])
             ->addRightButton('delete');
         return $builder->show();
     }

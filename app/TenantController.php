@@ -2,7 +2,6 @@
 
 namespace app;
 
-use app\common\model\TenantInfo;
 use app\common\service\Tenant as TenantService;
 use app\tenant\service\Auth;
 use Webman\Http\Request;
@@ -42,6 +41,7 @@ class TenantController extends BaseController
 
     protected $pk = 'id';
     protected $captchaKey = 'captchaTenant';
+    protected $insertCompanyId = true;
 
     /**
      * 构造函数
@@ -85,18 +85,6 @@ class TenantController extends BaseController
     }
 
     /**
-     * 租户扩展信息
-     * @param null $key
-     * @return mixed|null
-     * Author: fudaoji<fdj@kuryun.cn>
-     */
-    public function tenantExtendInfo($key = null){
-        $admin = request()->session()->get(SESSION_TENANT);
-        $extend = TenantInfo::find($admin['id']);
-        return $extend ? ($key!==null ? $extend[$key] : $extend) : '';
-    }
-
-    /**
      * 设置一条或者多条数据的状态
      * @Author  fudaoji<fdj@kuryun.cn>
      */
@@ -121,29 +109,7 @@ class TenantController extends BaseController
                 'success' => '操作成功！',
                 'error'   => '操作失败！',
             ];
-            switch ($status) {
-                case 'forbid' :  // 禁用条目
-                    $data['status'] = 0;
-                    break;
-                case 'resume' :  // 启用条目
-                    $data['status'] = 1;
-                    break;
-                case 'hide' :  // 隐藏条目
-                    $data['status'] = 2;
-                    break;
-                case 'show' :  // 显示条目
-                    $data['status'] = 1;
-                    break;
-                case 'recycle' :  // 移动至回收站
-                    $data['status'] = 1;
-                    break;
-                case 'restore' :  // 从回收站还原
-                    $data['status'] = 1;
-                    break;
-                default:
-                    return $this->error('参数错误');
-                    break;
-            }
+            $data['status'] = abs(input('val', 0) - 1);
             foreach($ids as $id){
                 $data[$this->pk] = $id;
                 $arr[] = $data;
@@ -167,6 +133,7 @@ class TenantController extends BaseController
         $post_data = $data ? $data : request()->post();
         try {
             if(empty($post_data[$this->pk])){
+                $this->insertCompanyId && $post_data['company_id'] = TenantService::getCompanyId();
                 $res = $this->model->create($post_data);
             }else {
                 $res = $this->model->update($post_data);

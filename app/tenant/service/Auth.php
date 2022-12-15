@@ -9,13 +9,29 @@
 
 namespace app\tenant\service;
 
-use app\common\model\Tenant;
+use app\common\model\TenantDepartment;
 use app\common\model\TenantGroup;
 use app\common\model\TenantRule;
+use app\common\service\Tenant;
 use support\Log;
 
 class Auth
 {
+    /**
+     * 部门
+     * @param null $admin
+     * @return array
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    public static function getDepartments($admin = null){
+        empty($admin) && $admin = request()->session()->get(SESSION_TENANT);
+        $where = [
+            ['status','=', 1],
+            ['company_id','=', Tenant::getCompanyId($admin)]
+        ];
+        return TenantDepartment::where($where)
+            ->column('title', 'id');
+    }
 
     /**
      * 能够看到的角色
@@ -25,10 +41,10 @@ class Auth
      */
     public static function getGroups($admin = null){
         empty($admin) && $admin = request()->session()->get(SESSION_TENANT);
-        $where = [['status','=', 1]];
-        if(! self::isSuperAdmin()) {
-            $where[] = ['id','>', 1];
-        }
+        $where = [
+            ['status','=', 1],
+            ['company_id','=', Tenant::getCompanyId($admin)]
+        ];
         return TenantGroup::instance()->where($where)
             ->column('title', 'id');
     }
@@ -45,9 +61,9 @@ class Auth
      */
     public static function check($admin = null, $node = ''){
         empty($admin) && $admin = request()->session()->get(SESSION_TENANT);
-        /*if(self::isSuperAdmin($admin)){
+        if(self::isSuperAdmin($admin)){
             return true;
-        }*/
+        }
         if(! $rule = TenantRule::where('href', 'like', '%'.$node.'%')->find()){
             return true;
         }
@@ -58,7 +74,7 @@ class Auth
 
     public static function isSuperAdmin($admin = null){
         empty($admin) && $admin = request()->session()->get(SESSION_TENANT);
-        return $admin['pid'] == 0;
+        return $admin['company_id'] == 0;
     }
 
     /**
@@ -72,16 +88,14 @@ class Auth
      */
     public static function getMenuList($admin = null){
         empty($admin) && $admin = request()->session()->get(SESSION_TENANT);
-        $group = TenantGroup::find($admin['group_id']);
         $where = [
             ['status','=', 1],
-            ['type', '=', TenantRule::TYPE_MENU],
-            ['id', 'in', explode(',', $group['rules'])]
+            ['type', '=', TenantRule::TYPE_MENU]
         ];
-        /*if(!self::isSuperAdmin($admin)) {
+        if(!self::isSuperAdmin($admin)) {
             $group = TenantGroup::find($admin['group_id']);
             $where[] = ['id', 'in', explode(',', $group['rules'])];
-        }*/
+        }
         $menus = TenantRule::field('id,pid,title,icon,href,target')
             ->where($where)
             ->order('sort', 'desc')
@@ -106,7 +120,6 @@ class Auth
                 if (!empty($child)) {
                     $node['child'] = $child;
                 }
-                // todo 后续此处加上用户的权限判断
                 $treeList[] = $node;
             }
         }
@@ -125,12 +138,6 @@ class Auth
      */
     public static function getAuthList($admin = null){
         empty($admin) && $admin = request()->session()->get(SESSION_TENANT);
-
-        /*if(!self::isSuperAdmin($admin)){
-            $group = TenantGroup::find($admin['group_id']);
-            $where[] = ['id', 'in', explode(',', $group['rules'])];
-        }*/
-
         return TenantGroup::getAuthList($admin);
     }
 
@@ -147,9 +154,9 @@ class Auth
      */
     public static function checkAuth($admin = null, $name = ''){
         empty($admin) && $admin = request()->session()->get(SESSION_TENANT);
-        /*if(self::isSuperAdmin($admin)) {
+        if(self::isSuperAdmin($admin)) {
             return  true;
-        }*/
+        }
         return in_array($name, self::getAuthList($admin));
     }
 
@@ -168,22 +175,5 @@ class Auth
             Log::error($e->getMessage());
         }
         return 0;
-    }
-
-    /**
-     * 获取渠道角色
-     * @param bool $field
-     * @return int|mixed
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException Author: fudaoji<fdj@kuryun.cn>
-     */
-    public static function getChannelGroup($field = true){
-        if($field === true){
-            $group = TenantGroup::where('name', '=', 'channel')->find();
-        }else{
-            $group = TenantGroup::where('name', '=', 'channel')->value($field);
-        }
-        return $group;
     }
 }

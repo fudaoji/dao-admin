@@ -31,18 +31,13 @@ class Tenant extends AdminController
         $this->groupM = new TenantGroup();
     }
     
-    /**
-     * 列表
-     * Author: Jason<dcq@kuryun.cn>
-     */
+
     public function index(){
         if(request()->isPost()){
             $post_data = input('post.');
             $where = [];
             !empty($post_data['search_key']) && $where[] = ['username|mobile|realname', 'like', '%'.$post_data['search_key'].'%'];
-            if(!empty($post_data['group_id'])) {
-                $where[] =['group_id', '=', $post_data['group_id']];
-            }
+
             //非超管
             if(! Auth::isSuperAdmin()) {
                 $where[] = ['id', '>', 1];
@@ -61,21 +56,16 @@ class Tenant extends AdminController
             return $this->success('success', '', ['total' => $total, 'list' => $list]);
         }
 
-        $group_list = $this->groupM->getGroups();
-
         $builder = new ListBuilder();
         $builder->setSearch([
-            ['type' => 'text', 'name' => 'search_key', 'title' => '搜索词','placeholder' => '账号、手机号、姓名'],
-            ['type' => 'select', 'name' => 'group_id', 'title' => '角色', 'options' => [0 => '全部角色'] + $group_list]
+            ['type' => 'text', 'name' => 'search_key', 'title' => '搜索词','placeholder' => '账号、手机号、名称']
         ])
             ->addTopButton('addnew')
             ->addTableColumn(['title' => 'ID', 'field' => 'id', 'minWidth' => 70])
-            ->addTableColumn(['title' => '团长', 'field' => 'pid', 'type' => 'enum', 'options' => $this->getLeaders(), 'minWidth' => 90])
             ->addTableColumn(['title' => '账号', 'field' => 'username', 'minWidth' => 80])
             ->addTableColumn(['title' => '手机号', 'field' => 'mobile', 'minWidth' => 120])
             ->addTableColumn(['title' => '名称', 'field' => 'realname', 'minWidth' => 90])
-            ->addTableColumn(['title' => '角色', 'field' => 'group_id', 'type' => 'enum', 'options' => $group_list, 'minWidth' => 90])
-            ->addTableColumn(['title' => '状态', 'field' => 'status', 'type' => 'enum', 'options' => [0 => '禁用', 1 => '启用'], 'minWidth' => 80])
+            ->addTableColumn(['title' => '状态', 'field' => 'status', 'type' => 'switch', 'minWidth' => 80])
             ->addTableColumn(['title' => '操作', 'minWidth' => 200, 'type' => 'toolbar'])
             ->addRightButton('edit')
             ->addRightButton('edit', ['title' => '修改密码','class' => 'layui-btn layui-btn-warm layui-btn-xs','href' => url('setPassword', ['id' => '__data_id__'])])
@@ -87,14 +77,11 @@ class Tenant extends AdminController
      * 添加
      */
     public function add(){
-        $groups = $this->groupM->getGroups();
         //使用FormBuilder快速建立表单页面。
         $builder = new FormBuilder();
         $builder->setMetaTitle('新增')  //设置页面标题
             ->setPostUrl(url('savepost')) //设置表单提交地址
-            ->addFormItem('group_id', 'select', '角色', '角色', $groups, 'required')
             ->addFormItem('realname', 'text', '名称', '名称')
-            ->addFormItem('pid', 'chosen', '团长', '团长', [0=>'无上级']+$this->getLeaders([['status', '=',1]]))
             ->addFormItem('username', 'text', '账号', '4-20位', [], 'required minlength="4" maxlength="20"')
             ->addFormItem('password', 'password', '密码', '6-20位', [], 'required')
             ->addFormItem('mobile', 'text', '手机', '手机');
@@ -118,8 +105,6 @@ class Tenant extends AdminController
             ->setPostUrl(url('savepost')) //设置表单提交地址
             ->addFormItem('id', 'hidden', 'id', 'id')
             ->addFormItem('realname', 'text', '名称', '名称')
-            ->addFormItem('group_id', 'select', '角色', '角色', $groups, 'required')
-            ->addFormItem('pid', 'chosen', '团长', '团长', [0=>'无上级']+$this->getLeaders([['status', '=',1], ['id','<>', $data['id']]]))
             ->addFormItem('username', 'text', '账号', '4-20位', [], 'required minlength="4" maxlength="20"')
             ->addFormItem('mobile', 'text', '手机', '手机')
             ->addFormItem('status', 'radio', '状态', '状态', [1 => '启用', 0 => '禁用'])
@@ -129,7 +114,9 @@ class Tenant extends AdminController
     }
 
     /**
-     * 编辑
+     * 修改密码
+     * @return mixed|\support\Response
+     * Author: fudaoji<fdj@kuryun.cn>
      */
     public function setPassword(){
         $id = input('id');
@@ -155,22 +142,22 @@ class Tenant extends AdminController
      * @param string $url
      * @param array $data
      * @return mixed
-     * @Author  Doogie<461960962@qq.com>
+     * @Author  fudaoji<fdj@kuryun.cn>
+     * @throws \think\db\exception\DbException
      */
     public function savePost($request, $url='', $data=[]){
         $post_data = input('post.');
         if(!empty($post_data['password'])){
             $post_data['password'] = fa_generate_pwd($post_data['password']);
         }
+        $exits_where = [['username', '=',$post_data['username']]];
+        if(! empty($post_data[$this->pk])){
+            $exits_where[] = ['id', '<>', $post_data[$this->pk]];
+        }
+        if($this->model->where($exits_where)->count()){
+            return $this->error(dao_trans('该账号已存在'));
+        }
 
         return parent::savePost($request, $url, $post_data);
-    }
-
-    private function getLeaders($map = [])
-    {
-        $where = [['pid', '=', 0]];
-        !empty($map) && $where = array_merge($where, $map);
-        return $this->model->where($where)
-            ->column('realname', 'id');
     }
 }

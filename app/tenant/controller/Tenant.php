@@ -11,10 +11,9 @@ namespace app\tenant\controller;
 
 use app\common\model\Tenant as TenantM;
 use app\common\model\TenantGroup;
-use app\common\model\TenantInfo;
-use app\common\model\TenantInfo as TenantInfoM;
 use app\TenantController;
 use app\common\service\Tenant as TenantService;
+use app\tenant\service\Auth as AuthService;
 
 class Tenant extends TenantController
 {
@@ -22,39 +21,25 @@ class Tenant extends TenantController
      * @var TenantM
      */
     protected $model;
-    /**
-     * @var TenantInfo
-     */
-    private $infoM;
 
     public function __construct(){
         parent::__construct();
         $this->model = new TenantM();
-        $this->infoM = new TenantInfo();
     }
 
-    /**
-     * 列表
-     * Author: Jason<dcq@kuryun.cn>
-     */
     public function index(){
         if(request()->isPost()){
             $post_data = input('post.');
             $where = [
-                ['pid', '=', $this->tenantInfo('id')],
-                ['group_id', '<>', \app\tenant\service\Auth::getChannelGroup('id')]
+                ['company_id', '=', TenantService::getCompanyId()]
             ];
             !empty($post_data['search_key']) && $where[] = ['username|mobile|realname', 'like', '%'.$post_data['search_key'].'%'];
 
-            $total = $this->model->where($where)
-                ->count();
+            $query = $this->model->where($where);
+            $total = $query->count();
             if ($total) {
-                $list = $this->model->where($where)
-                    ->page($post_data['page'], $post_data['limit'])
+                $list = $query->page($post_data['page'], $post_data['limit'])
                     ->order('id', 'desc')
-                    ->alias('tenant')
-                    ->leftJoin('tenant_info info','tenant.id = info.id')
-                    ->field(['tenant.*','info.cp_limit'])
                     ->select();
             } else {
                 $list = [];
@@ -72,7 +57,6 @@ class Tenant extends TenantController
             ->addTableColumn(['title' => '名称', 'field' => 'realname'])
             ->addTableColumn(['title' => '账号', 'field' => 'username'])
             ->addTableColumn(['title' => '手机号', 'field' => 'mobile'])
-            ->addTableColumn(['title' => '日发布数量', 'field' => 'cp_limit'])
             ->addTableColumn(['title' => '状态', 'field' => 'status', 'type' => 'enum', 'options' => [0 => '禁用', 1 => '启用']])
             ->addTableColumn(['title' => '操作', 'width' => 220, 'type' => 'toolbar'])
             ->addRightButton('edit')
@@ -86,10 +70,7 @@ class Tenant extends TenantController
      */
     public function edit(){
         $id = input('id');
-        $data = $this->model->alias('tenant')
-            ->leftJoin('tenant_info info','tenant.id = info.id')
-            ->field(['tenant.*','info.cp_limit'])
-            ->find($id);
+        $data = $this->model->find($id);
         if(! $data){
             return $this->error('id参数错误');
         }
@@ -101,12 +82,10 @@ class Tenant extends TenantController
             ->addFormItem('realname', 'text', '名称', '名称', [], 'required')
             ->addFormItem('username', 'text', '账号', '4-20位', [], 'required minlength="4" maxlength="20"')
             ->addFormItem('mobile', 'text', '手机', '手机')
+            ->addFormItem('department_id', 'select', '部门', '部门', AuthService::getDepartments(), 'required')
+            ->addFormItem('group_id', 'select', '角色', '角色', AuthService::getGroups(), 'required')
             ->addFormItem('status', 'radio', '状态', '状态', [1 => '启用', 0 => '禁用'])
             ->setFormData($data);
-
-        TenantService::isLeader($this->tenantInfo())
-        && $builder->addFormItem('cp_limit', 'number', '日发布数', '日发布数');
-
         return $builder->show();
     }
 
@@ -114,9 +93,6 @@ class Tenant extends TenantController
      * 添加
      */
     public function add(){
-        $data = [
-            'cp_limit' => 0
-        ];
         //使用FormBuilder快速建立表单页面。
         $builder = new FormBuilder();
         $builder->setMetaTitle('新增')  //设置页面标题
@@ -124,37 +100,9 @@ class Tenant extends TenantController
             ->addFormItem('realname', 'text', '名称', '名称', [], 'required')
             ->addFormItem('username', 'text', '账号', '4-20位', [], 'required minlength="4" maxlength="20"')
             ->addFormItem('password', 'password', '密码', '6-20位', [], 'required')
-            ->addFormItem('mobile', 'text', '手机', '手机');
-        TenantService::isLeader($this->tenantInfo())
-        && $builder->addFormItem('cp_limit', 'number', '日发布数', '日发布数')
-            ->setFormData($data);
-
-        return $builder->show();
-    }
-
-    /**
-     * 编辑
-     */
-    public function info(){
-        if(request()->isPost()){
-            $post_data = input('post.');
-            $post_data['union_cookie'] = str_replace(' ', '', $post_data['union_cookie']);
-            if($this->infoM->update($post_data)){
-                return $this->success('保存成功!', url('info'));
-            }
-            return $this->error('未修改数据无需提交!');
-        }
-        $data = \App\common\service\Tenant::getInfo(['tenant_id' => $this->tenantInfo('id')]);
-        //使用FormBuilder快速建立表单页面。
-        $builder = new FormBuilder();
-        $builder->setMetaTitle('团长账号信息')  //设置页面标题
-            ->setPostUrl(url('info')) //设置表单提交地址
-            ->addFormItem('id', 'hidden', 'id', 'id')
-            ->addFormItem('union_cookie', 'textarea', '会话cookie', '会话cookie', [], 'required')
-            ->addFormItem('app_key', 'text', 'AppKey', '应用appKey', [], 'required')
-            ->addFormItem('app_secret', 'text', 'AppSecret', '应用appSecret', [], 'required')
-            ->addFormItem('union_id', 'number', 'unionId', '联盟unionId', [], 'required')
-            ->setFormData($data);
+            ->addFormItem('mobile', 'text', '手机', '手机')
+            ->addFormItem('department_id', 'select', '部门', '部门', AuthService::getDepartments(), 'required')
+            ->addFormItem('group_id', 'select', '角色', '角色', AuthService::getGroups(), 'required');
         return $builder->show();
     }
 
@@ -219,9 +167,7 @@ class Tenant extends TenantController
      */
     public function savePost($request, $url='', $data=[]){
         $post_data = input('post.');
-        $post_data['group_id'] = \app\tenant\service\Auth::getChildGroupId();
-        $post_data['pid'] = $this->tenantInfo('id');
-        $post_data['leader_id'] = $this->tenantInfo('leader_id') ?: $this->tenantInfo('id');
+        $post_data['company_id'] = TenantService::getCompanyId();
         if(!empty($post_data['password'])){
             $post_data['password'] = fa_generate_pwd($post_data['password']);
         }
@@ -230,12 +176,7 @@ class Tenant extends TenantController
         if($res !== true){
             return $this->error($res, '', ['token' => token()]);
         }
-        if(TenantService::isLeader($this->tenantInfo())){
-            $info_data = [
-                'cp_limit' => $post_data['cp_limit']
-            ];
-            unset($post_data['cp_limit']);
-        }
+
         try {
             if(empty($post_data[$this->pk])){
                 $res = $this->model->create($post_data);
@@ -243,14 +184,6 @@ class Tenant extends TenantController
                 $res = $this->model->update($post_data);
             }
             if($res){
-                if(!empty($info_data)){
-                    $info_data = array_merge($info_data, ['id' => $res['id']]);
-                    if($info = $this->infoM->find($res['id'])){
-                        $this->infoM->update($info_data);
-                    }else{
-                        $this->infoM->create($info_data);
-                    }
-                }
                 return $this->success("操作成功!", '');
             }else{
                 return $this->error("未修改数据无需提交", null, ['token' => token()]);
@@ -259,7 +192,6 @@ class Tenant extends TenantController
             $msg = $e->getMessage();
             return $this->error($msg, null, ['token' => token()]);
         }
-        //return parent::savePost($request, $url, $post_data);
     }
 
     /**

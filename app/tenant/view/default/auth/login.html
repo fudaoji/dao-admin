@@ -5,7 +5,7 @@
     <div class="login-main">
         <div class="login-top">
             <div>{:dao_config('system.site.project_title')}</div>
-            <div class="subtitle">打造京东优惠捡漏新生态</div>
+            <div class="subtitle">{:dao_config('system.site.slogan')}</div>
             <span class="bg1"></span>
             <span class="bg2"></span>
         </div>
@@ -43,9 +43,8 @@
     </div>
 </div>
 <div class="footer">
-    ©版权所有 2020-{:date('Y')} {:config('system.site.project_title')}<span class="padding-5">|</span>
-    <a target="_blank" href="http://www.miitbeian.gov.cn">{:config('system.site.beian')}
-</a>
+    ©版权所有 2020-{:date('Y')} {:dao_config('system.site.project_title')}<span class="padding-5">|</span>
+    <a target="_blank" href="http://www.miitbeian.gov.cn">{:dao_config('system.site.beian')}</a>
 </div>
 
 <script>
@@ -59,10 +58,6 @@
             layer = layui.layer;
 
         var keepLogin = 0;
-
-        /*$('#code-img').on('click', function () {
-            $(this).attr('src', '{:url("verify")}?' + Math.random());
-        });*/
 
         // 登录过期的时候，跳出ifram框架
         if (top.location != self.location) top.location = self.location;

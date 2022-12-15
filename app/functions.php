@@ -1,12 +1,26 @@
 <?php
 
+use support\Log;
 use think\facade\Cache;
 use think\helper\Str;
 use ky\Faconfig;
 use think\Model;
 
-define('SESSION_ADMIN', 'adminInfo');
-define('SESSION_TENANT', 'tenantInfo');
+require_once app_path() . DIRECTORY_SEPARATOR . 'define.php';
+
+if (!function_exists('dao_log')) {
+
+    /**
+     * @param string $plugin
+     * @param string $handler
+     * @return \Monolog\Logger
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    function dao_log($plugin = '', $handler = 'default')
+    {
+        return Log::channel($plugin ? "plugin.{$plugin}.{$handler}" : $handler);
+    }
+}
 
 if (!function_exists('system_reload')) {
     /**
@@ -61,14 +75,14 @@ if (!function_exists('jd_cdn')) {
     }
 }
 
-if (!function_exists('fa_money_format')) {
+if (!function_exists('dao_money_format')) {
     /**
      * 金额快速格式化
      * @param float $decimal
      * @return string
      * Author: fudaoji<fdj@kuryun.cn>
      */
-    function fa_money_format($decimal = 0.0)
+    function dao_money_format($decimal = 0.0)
     {
         return number_format($decimal, 2, '.', '');
     }
@@ -205,9 +219,10 @@ if (!function_exists('url')) {
      * @param string $url
      * @param array $vars
      * @param string $app
+     * @param string $plugin
      * @return string
      */
-    function url(string $url, array $vars = [], string $app = ''): string
+    function url(string $url, array $vars = [], string $app = '', $plugin = ''): string
     {
         $app = $app ?: request()->app;
         $url = trim($url, '/');
@@ -233,7 +248,8 @@ if (!function_exists('url')) {
         if (!Str::startsWith($url, '/')) {
             $url = DIRECTORY_SEPARATOR . $url;
         }
-        return '/' . $app . $url . $vars;
+        $plugin = $plugin ? ('app/' . $plugin . '/') : '';
+        return '/' . $plugin . $app . $url . $vars;
     }
 }
 

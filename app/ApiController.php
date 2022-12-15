@@ -9,7 +9,7 @@
 
 namespace app;
 
-use app\common\model\TenantInfo;
+use app\common\model\TenantDepartment;
 use ky\ErrorCode;
 use support\Response;
 

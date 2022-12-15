@@ -12,7 +12,7 @@ namespace app\admin\controller;
 use app\AdminController;
 use app\common\model\Setting as SettingM;
 use app\common\service\Upload;
-use support\Log;
+use app\common\service\Sms;
 
 class Setting extends AdminController
 {
@@ -37,9 +37,17 @@ class Setting extends AdminController
                 'title' => '附件设置',
                 'href' => url('index', ['name' => 'upload'])
             ],
+            'pay' => [
+                'title' => '支付设置',
+                'href' => url('index', ['name' => 'pay'])
+            ],
             'sms' => [
                 'title' => '短信设置',
                 'href' => url('index', ['name' => 'sms'])
+            ],
+            'common' => [
+                'title' => '其他设置',
+                'href' => url('index', ['name' => 'common'])
             ]
         ];
     }
@@ -89,15 +97,32 @@ class Setting extends AdminController
 
         $builder = new FormBuilder();
         switch ($current_name){
+            case 'common':
+                $builder->addFormItem('map_title', 'legend', '地图', '地图')
+                    ->addFormItem('map_qq_key', 'text', '腾讯地图key', '获取方法详见：https://lbs.qq.com/', [], 'required maxlength=150');
+                break;
+            case 'pay':
+                $builder->addFormItem('wx_title', 'legend', '微信支付', '微信支付')
+                    ->addFormItem('wx_appid', 'text', 'AppId', 'AppId', [], 'required maxlength=150')
+                    ->addFormItem('wx_mchid', 'text', '商户ID', '商户ID', [], 'required maxlength=100')
+                    ->addFormItem('wx_p_appid', 'text', '服务商AppId', '如果是服务商模式，需要填写此项', [], ' maxlength=150')
+                    ->addFormItem('wx_p_mchid', 'text', '服务商商户ID', '如果是服务商模式，需要填写此项', [], ' maxlength=100')
+                    ->addFormItem('wx_key', 'text', '支付秘钥', '支付秘钥', [], 'required maxlength=32 minlength=32')
+                    ->addFormItem('wx_cert_path', 'textarea', '支付证书cert', '请在微信商户后台下载支付证书，用记事本打开apiclient_cert.pem，并复制里面的内容粘贴到这里。', [], 'maxlength=20000')
+                    ->addFormItem('wx_key_path', 'textarea', '支付证书key', '请在微信商户后台下载支付证书，使用记事本打开apiclient_key.pem，并复制里面的内容粘贴到这里。', [], ' maxlength=20000')
+                    ->addFormItem('wx_rsa_path', 'textarea', 'RSA公钥', '企业付款到银行卡需要RSA公钥匙');
+                break;
             case 'sms':
-                $builder->addFormItem('channel', 'text', '短信商', '短信运营商', [], 'required maxlength=150')
+                $builder->addFormItem('channel', 'select', '短信商', '短信运营商', Sms::drivers(), 'required maxlength=150')
                     ->addFormItem('account', 'text', 'sms账号', 'sms账号', [], 'required maxlength=150')
                     ->addFormItem('pwd', 'text', 'sms密码', 'sms密码', [], 'required maxlength=150');
                 break;
             case 'site':
                 empty($data) && $data['close'] = 0;
                 $builder->addFormItem('project_title', 'text', '平台名称', '平台名称')
-                    ->addFormItem('logo', 'picture_url', 'Logo', 'Logo');
+                    ->addFormItem('logo', 'picture_url', 'Logo', 'Logo')
+                    ->addFormItem('slogan', 'text', 'Slogan', '宣传标语',[], 'maxlength=200')
+                    ->addFormItem('beian', 'text', '备案码', '备案码',[], 'maxlength=200');
                 break;
             case 'upload':
                 empty($data) && $data = [

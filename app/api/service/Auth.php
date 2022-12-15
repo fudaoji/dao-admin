@@ -9,7 +9,7 @@
 
 namespace app\api\service;
 
-use app\common\model\TenantInfo;
+use app\common\model\TenantDepartment;
 use Webman\Http\Request;
 
 class Auth
@@ -53,7 +53,7 @@ class Auth
      */
     public static function tenantExtendInfo($key = null){
         $admin = self::tenantInfo();
-        $extend = TenantInfo::find($admin['id']);
+        $extend = TenantDepartment::find($admin['id']);
         return $extend ? ($key!==null ? $extend[$key] : $extend) : '';
     }
     /**

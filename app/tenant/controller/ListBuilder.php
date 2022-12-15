@@ -13,10 +13,9 @@ use app\tenant\service\Auth;
 
 class ListBuilder extends \app\common\controller\ListBuilder
 {
-
     public function __construct()
     {
         parent::__construct();
-        $this->setAuth(['super' => 0, 'auth_list' => Auth::getAuthList()]);
+        $this->setAuth(['super' => Auth::isSuperAdmin(), 'auth_list' => Auth::getAuthList()]);
     }
 }

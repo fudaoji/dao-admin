@@ -15,10 +15,10 @@
         {/if}
 
         {notempty name="search"}
-        <fieldset class="table-search-fieldset">
-            <div style="margin: 10px 10px 10px 10px">
-                <form class="layui-form layui-form-pane" action="" id="search-{$controller}">
-                    <div class="layui-form-item">
+        <fieldset class="table-search-fieldset" style="padding: 0;">
+            <div>
+                <form class="layui-form layui-form-pane" id="search-{$controller}">
+                    <div class="layui-form-item" style="margin: 5px">
                         {foreach $search as $v}
                         {switch name="v.type" }
                         {case btn_group}
@@ -176,6 +176,14 @@
         var list_limit = table_data_page == null ? 15 : table_data_page.limit;
         cols = cols.map((item, i) => {
             switch(item.type){
+                case 'switch':
+                    item = Object.assign(item, {templet: function (d) {
+                            console.log(d);
+                            let val = d[item.field]
+                            return `<input type="checkbox" value="${val}" data-id="${d.id}" lay-skin="switch" lay-text="启用|禁用" lay-filter="{$controller}-switch"
+           `+(val ? "checked" : "")+`>`
+                        }});
+                    break;
                 case 'array':
                     item = Object.assign(item, {templet: function (d) {
                             return "<div>"+d[item.field].join(',')+"</div>";
@@ -287,6 +295,18 @@
             }
         });
 
+        //状态开关
+        form.on('switch({$controller}-switch)', function(obj) {
+            let href = "{:url('setstatus')}",
+                    data  = {ids: $(this).data('id'), val: obj.value}
+            layer.confirm("确认操作吗？", function(index){
+                requestPost(href, data, function (res) {
+                    table.reload('{$controller}-table');  // 刷新(异步模式)
+                    form.render('switch');
+                });
+                layer.close(index);
+            });
+        });
         {notempty name="search"}
         formToggle({
             elem: "#search-{$controller}",
@@ -322,6 +342,7 @@
             var expandText = toggleText[1];
             var btnSelector = elem + " .expand";
             $(btnSelector).append("<i></i>")
+
             if (targetEl.length > 0) {
                 if (isExpand) {
                     $(btnSelector).prepend("<span>" + expandText + "</span>");

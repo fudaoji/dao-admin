@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "176b5da95809cc649b03e714b80b21e3",
+    "content-hash": "69d549284b11c4c9bbd2dcd7bcc2db3e",
     "packages": [
         {
             "name": "doctrine/inflector",
@@ -102,6 +102,37 @@
                 }
             ],
             "time": "2021-10-22T20:16:43+00:00"
+        },
+        {
+            "name": "fudaoji/php-sms",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://gitee.com/fudaoji/php-sms.git",
+                "reference": "a6132b1c057b9f3b4c80c4181796ac46395673fb"
+            },
+            "require": {
+                "php": ">=7.1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [],
+                "psr-4": {
+                    "Dao\\Sms\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Rocky",
+                    "email": "461960962@qq.com"
+                }
+            ],
+            "description": "Sms Manager",
+            "time": "2022-12-13T01:32:44+00:00"
         },
         {
             "name": "fudaoji/php-upload",

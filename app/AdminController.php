@@ -10,7 +10,7 @@ class AdminController extends BaseController
      * 数据库实例
      * @var BaseModel
      */
-    protected $model = null;
+    protected $model;
 
     /**
      * 控制器/类名
@@ -85,29 +85,7 @@ class AdminController extends BaseController
                 'success' => '操作成功！',
                 'error'   => '操作失败！',
             ];
-            switch ($status) {
-                case 'forbid' :  // 禁用条目
-                    $data['status'] = 0;
-                    break;
-                case 'resume' :  // 启用条目
-                    $data['status'] = 1;
-                    break;
-                case 'hide' :  // 隐藏条目
-                    $data['status'] = 2;
-                    break;
-                case 'show' :  // 显示条目
-                    $data['status'] = 1;
-                    break;
-                case 'recycle' :  // 移动至回收站
-                    $data['status'] = 1;
-                    break;
-                case 'restore' :  // 从回收站还原
-                    $data['status'] = 1;
-                    break;
-                default:
-                    return $this->error('参数错误');
-                    break;
-            }
+            $data['status'] = abs(input('val', 0) - 1);
             foreach($ids as $id){
                 $data[$this->pk] = $id;
                 $arr[] = $data;

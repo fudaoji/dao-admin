@@ -7,14 +7,15 @@
  * Author: Jason<dcq@kuryun.cn>
  */
 
-namespace app\admin\controller;
+namespace app\tenant\controller;
 
-use app\AdminController;
+use app\TenantController;
 use ky\Tree;
 use app\common\model\TenantRule;
 use app\common\model\TenantGroup as TenantGroupM;
+use app\common\service\Tenant as TenantService;
 
-class Tenantgroup extends AdminController
+class Tenantgroup extends TenantController
 {
     /**
      * @var TenantRule
@@ -41,7 +42,9 @@ class Tenantgroup extends AdminController
     public function index(){
         if(request()->isPost()){
             $post_data = input('post.');
-            $where = [];
+            $where = [
+                ['company_id', '=', TenantService::getCompanyId()]
+            ];
             !empty($post_data['search_key']) && $where[] = ['title', 'like', '%'.$post_data['search_key'].'%'];
             $total = $this->model->where($where)
                 ->count();
@@ -63,9 +66,7 @@ class Tenantgroup extends AdminController
             ->addTopButton('addnew')
             ->addTableColumn(['title' => 'ID', 'field' => 'id', 'minWidth' => 60])
             ->addTableColumn(['title' => '角色名称', 'field' => 'title', 'minWidth' => 120])
-            ->addTableColumn(['title' => '角色标识', 'field' => 'name', 'minWidth' => 80])
-            ->addTableColumn(['title' => '上级', 'field' => 'pid', 'type' => 'enum', 'options' => [0 => '无上级']+$this->getGroups(),'minWidth' => 80])
-            ->addTableColumn(['title' => '备注信息', 'field' => 'remark', 'minWidth' => 100])
+           ->addTableColumn(['title' => '备注信息', 'field' => 'remark', 'minWidth' => 100])
             ->addTableColumn(['title' => '状态', 'field' => 'status', 'type' => 'enum', 'options' => [1 => '启用', 0 => '禁用'], 'minWidth' => 70])
             ->addTableColumn(['title' => '排序', 'field' => 'sort'])
             ->addTableColumn(['title' => '操作', 'minWidth' => 150, 'type' => 'toolbar'])
@@ -85,8 +86,6 @@ class Tenantgroup extends AdminController
         $builder->setMetaTitle('新增')  //设置页面标题
             ->setPostUrl(url('savepost')) //设置表单提交地址
             ->addFormItem('title', 'text', '角色名称', '角色名称', [], 'required')
-            ->addFormItem('name', 'text', '角色标识', '角色标识', [], '')
-            ->addFormItem('pid', 'select', '上级', '上级', $this->getGroups(['status' => 1]), '')
             ->addFormItem('remark', 'textarea', '备注', '备注');
 
         return $builder->show();
@@ -108,8 +107,6 @@ class Tenantgroup extends AdminController
             ->setPostUrl(url('savepost')) //设置表单提交地址
             ->addFormItem('id', 'hidden', 'id', 'id')
             ->addFormItem('title', 'text', '角色名称', '角色名称', [], 'required')
-            ->addFormItem('name', 'text', '角色标识', '角色标识', [], '')
-            ->addFormItem('pid', 'select', '上级', '上级', $this->getGroups(['status' => 1]), '')
             ->addFormItem('remark', 'textarea', '备注', '备注')
             ->addFormItem('sort', 'number', '排序', '排序', [], 'required min=0')
             ->setFormData($data);
@@ -117,14 +114,11 @@ class Tenantgroup extends AdminController
         return $builder->show();
     }
 
-    private function getGroups($where = []){
-        return $this->model->order(['sort' => 'desc'])
-            ->column('title','id');
-    }
-
     /**
      * 授权
-     * Author: Jason<dcq@kuryun.cn>
+     * @return mixed|\support\Response
+     * @throws \think\db\exception\DbException
+     * Author: fudaoji<fdj@kuryun.cn>
      */
     public function auth() {
         if(request()->isPost()) {
@@ -150,10 +144,7 @@ class Tenantgroup extends AdminController
         return $this->show(['data' => $data]);
     }
 
-    /**
-     * 节点树
-     * Author: Jason<dcq@kuryun.cn>
-     */
+
     public function getRulesTree() {
         if(request()->isPost()){
             $post_data = input('post.');

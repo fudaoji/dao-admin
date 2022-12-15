@@ -1,196 +1,33 @@
 {extend name="default:layout:base" /}
 
 {block name="main"}
-<div class="layui-row layui-col-space15">
-    <div class="layui-col-md12">
+<div class="layui-row">
+    <div class="layui-col-md6">
         <div class="layui-card">
-            <div class="layui-card-header"><i class="fa fa-warning icon"></i>数据统计</div>
-            <div class="layui-card-body">
-                <div class="welcome-module">
-                    <div class="layui-row layui-col-space10">
-                        <div class="layui-col-md3">
-                            <div class="panel layui-bg-number">
-                                <div class="panel-body">
-                                    <div class="panel-title">
-                                        <!--<span class="label pull-right layui-bg-blue">实时</span>-->
-                                        <h5>本月发布活动数</h5>
-                                    </div>
-                                    <div class="panel-content">
-                                        <h1 class="no-margins">{$summary.activity.cur_month}</h1>
-                                        <small>已完成上月的 <span class="number">{:number_format($summary.activity.cur_month/$summary.activity.last_month * 100, 2, '.', '')}%</span></small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="layui-col-md3">
-                            <div class="panel layui-bg-number">
-                                <div class="panel-body">
-                                    <div class="panel-title">
-                                        <!--<span class="label pull-right layui-bg-blue">实时</span>-->
-                                        <h5>本月商品数</h5>
-                                    </div>
-                                    <div class="panel-content">
-                                        <h1 class="no-margins">{$summary.goods.cur_month}</h1>
-                                        <small>已完成上月的 <span class="number">{:number_format($summary.goods.cur_month/$summary.goods.last_month * 100, 2, '.', '')}%</span></small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="layui-col-md3">
-                            <div class="panel layui-bg-number">
-                                <div class="panel-body">
-                                    <div class="panel-title">
-                                        <!--<span class="label pull-right layui-bg-blue">实时</span>-->
-                                        <h5>本月付款服务费</h5>
-                                    </div>
-                                    <div class="panel-content">
-                                        <h1 class="no-margins">{$summary.service_djs.cur_month}</h1>
-                                        <small>已完成上月的 <span class="number">{:number_format($summary.service_djs.cur_month/$summary.service_djs.last_month * 100, 2, '.', '')}%</span></small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="layui-col-md3">
-                            <div class="panel layui-bg-number">
-                                <div class="panel-body">
-                                    <div class="panel-title">
-                                        <!--<span class="label pull-right layui-bg-blue">实时</span>-->
-                                        <h5>本月结算服务费</h5>
-                                    </div>
-                                    <div class="panel-content">
-                                        <h1 class="no-margins">{$summary.service_yjs.cur_month}</h1>
-                                        <small>已完成上月的 <span class="number">{:number_format($summary.service_yjs.cur_month/$summary.service_yjs.last_month * 100, 2, '.', '')}%</span></small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <br>
-    <div class="layui-col-md12">
-        <div class="layui-card">
-            <div class="layui-card-header"><i class="fa fa-line-chart icon"></i>付款/结算服务费</div>
-            <div class="layui-card-body">
-                <div id="echarts-records" style="width: 100%; min-height: 500px;"></div>
-            </div>
-        </div>
-    </div>
-
-    <br>
-    <div class="layui-col-md12">
-        <div class="layui-card">
-            <div class="layui-card-header"><i class="fa fa-line-chart icon"></i>商品量</div>
-            <div class="layui-card-body">
-                <div id="echarts-goods" style="width: 100%; min-height: 500px;"></div>
+            <div class="layui-card-header"><i class="fa fa-fire icon"></i>欢迎回来，{$tenant.username}</div>
+            <div class="layui-card-body layui-text">
+                <table class="layui-table">
+                    <colgroup>
+                        <col width="150">
+                        <col>
+                    </colgroup>
+                    <tbody>
+                    <tr>
+                        <td>部门</td>
+                        <td>{$tenant.department_id}</td>
+                    </tr>
+                    <tr>
+                        <td>最近登录时间</td>
+                        <td>{:date('Y-m-d H:i:s', $tenant.last_time)}</td>
+                    </tr>
+                    <tr>
+                        <td>登录IP</td>
+                        <td>{$tenant.ip}</td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 </div>
-
-<style>
-    .layui-card {
-        border: 1px solid #f2f2f2;
-        border-radius: 5px;
-    }
-    .panel-content .number{color: red; font-weight: bold; font-size: 15px;margin-left: 10px;}
-</style>
-<script>
-    layui.use(['form', 'echarts', 'element', 'miniTab'], function () {
-        var $ = layui.jquery,
-                form = layui.form,
-                element = layui.element,
-                miniTab = layui.miniTab,
-                echarts = layui.echarts;
-
-        miniTab.listen();
-
-        var showChart = (params) => {
-            //params.xData = ['周一','周二','周三','周四','周五','周六','周日'];
-            //params.numData = [120, 132, 101, 134, 90, 230, 210];
-            //params.moneyData = [220, 182, 191, 234, 290, 330, 310];
-
-            /**
-             * 服务费
-             */
-            var echartsRecords = echarts.init(document.getElementById('echarts-records'), 'walden');
-            var optionRecords = {
-                tooltip: {
-                    trigger: 'axis'
-                },
-                legend: {
-                    data:['付款服务费','结算服务费']
-                },
-                grid: {
-                    left: '3%',
-                    right: '4%',
-                    bottom: '3%',
-                    containLabel: true
-                },
-                toolbox: {
-                    feature: {
-                        saveAsImage: {}
-                    }
-                },
-                xAxis: {
-                    type: 'category',
-                    boundaryGap: false,
-                    data: params.xData
-                },
-                yAxis: {
-                    type: 'value'
-                },
-                series: [
-                    {
-                        name:'付款服务费',
-                        type:'line',
-                        data: params.wjsData
-                    },
-                    {
-                        name:'结算服务费',
-                        type:'line',
-                        data:params.yjsData
-                    },
-                ]
-            };
-            echartsRecords.setOption(optionRecords);
-
-            /**
-             * 商品柱状图
-             */
-            var echartsGoods = echarts.init(document.getElementById('echarts-goods'), 'walden');
-            var optionGoods = {
-                legend: {},
-                tooltip: {},
-                dataset: {
-                    dimensions: ['date', '本月'],
-                    source: params.goodsData
-                },
-                xAxis: {type: 'category'},
-                yAxis: {},
-                series: [
-                    {type: 'bar'}
-                ]
-            };
-            echartsGoods.setOption(optionGoods);
-
-            // echarts 窗口缩放自适应
-            window.onresize = function(){
-                echartsRecords.resize();
-                echartsGoods.resize();
-            };
-        };
-
-        var getData = (params = {}) => {
-            requestPost("{:url('staticsPost')}", params, (res) => {
-                showChart(res.data);
-            });
-        };
-
-        getData();
-    });
-</script>
 {/block}

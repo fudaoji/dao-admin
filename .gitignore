@@ -5,3 +5,4 @@
 /tests/tmp
 .phpunit.result.cache
 /vendor
+/plugin
