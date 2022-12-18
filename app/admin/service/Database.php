@@ -36,6 +36,10 @@ class Database
     static function getDatabaseName(){
         return config('database.connections')[config('database.default')]['database'];
     }
+    static function getTablePrefix(){
+        return config('database.connections')[config('database.default')]['prefix'];
+    }
+
     /**
      * 修改表名
      * @param string $from

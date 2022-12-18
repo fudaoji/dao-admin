@@ -18,13 +18,15 @@
     <?php $form['value'] = empty($form['value']) ? [] : explode('|', $form['value']);?>
     <div class="layui-input-block">
         <div class="layui-row pictures-url" id="{$form['name']}-pictures-preview">
-            <div class="layui-col-xs2" id='picker-{$form["name"]}'>
-                <img src="http://devhhb.images.huihuiba.net/1-5f831403cda02.png" alt="">
+            <div class="layui-col-xs1">
+                <div id='picker-{$form["name"]}' style="border: 1px dashed #e2e2e2;width: 100px;height: 100px;text-align: center;">
+                    <i class="layui-icon layui-icon-add-1" style="font-size: 50px;color: #e2e2e2;margin-top: 20px;display: inline-block;"></i>
+                </div>
             </div>
             {volist name="form.value" id="src"}
-            <div class="layui-col-xs2 picture-item">
-                <img src="{$src}" alt="" >
-                <i class="fa fa-remove"></i>
+            <div class="layui-col-xs1 picture-item">
+                <img src="{$src}" alt="">
+                <span class="icon-remove"><i class="fa fa-remove"></i></span>
             </div>
             {/volist}
         </div>
@@ -32,11 +34,19 @@
 
     <style>
         .pictures-url img{width: 95%;}
-        .pictures-url .picture-item{position: relative; text-align: center;}
-        .pictures-url .fa-remove{color: red;position: absolute;
-            right: 0px;
-            font-size: 16px;
+        .pictures-url .picture-item{ text-align: right;position: relative;}
+        .pictures-url .picture-item img{width: 100px;height: 100px;}
+        .pictures-url .icon-remove{
+            position: absolute;
+            right: -3px;
+            font-size: 18px;
             top: -7px;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background-color: gray;
+            color: #fff;
+            text-align: center;
         }
     </style>
 

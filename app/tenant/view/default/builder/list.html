@@ -15,30 +15,39 @@
         {/if}
 
         {notempty name="search"}
-        <fieldset class="table-search-fieldset">
-            <div style="margin: 10px 10px 10px 10px">
-                <form class="layui-form layui-form-pane">
-                    <div class="layui-form-item">
+        <fieldset class="table-search-fieldset" style="padding: 0;">
+            <div>
+                <form class="layui-form layui-form-pane" id="search-{$controller}">
+                    <div class="layui-form-item" style="margin: 5px">
                         {foreach $search as $v}
                         {switch name="v.type" }
-                        {case complex}
-                        <div class="layui-inline">
-                            <div id="{$v.name}"></div>
-                        </div>
-                        <script>
-                            layui.use(['selectC'], function() {
-                                var selectC = layui.selectC;
-                                /**动态条件控件**/
-                                var condition = selectC({
-                                    title:"{$v.title}",
-                                    elem: "#{$v.name}", //标签ID,带#号
-                                    number: 1, //数量
-                                    form: false,//清空按钮，默认不启用
-                                    value:"{$v.value??''}",
-                                    options: {:json_encode($v.options)}
+                        {case btn_group}
+                        <!--按钮组-->
+                        <div class="layui-inline" lay-filter="filter-{$v.name}">
+                            <div class="layui-input-inline" style="width: auto;">
+                                <div class="layui-btn-group">
+                                    {volist name="v.options" id="o"}
+                                    <button type="button"
+                                            class="js-btngroup-{$v.name} layui-btn {:isset($v.value) && $v.value == $key ? 'layui-btn-normal' : 'layui-btn-primary'}"
+                                            data-value="{$key}"
+                                    >{$o}</button>
+                                    {/volist}
+                                </div>
+                                <input type="hidden" name="{$v.name}" id="btn_group-{$v.name}">
+                            </div>
+                            <script>
+                                layui.use(['jquery'], function (){
+                                    var $ = layui.jquery;
+                                    $(".js-btngroup-{$v.name}").on('click', function () {
+                                        $('.js-btngroup-{$v.name}').addClass("layui-btn-primary").removeClass('layui-btn-normal');
+                                        $(this).addClass("layui-btn-normal").removeClass("layui-btn-primary");
+                                        $("#btn_group-{$v.name}").val($(this).data('value'));
+
+                                        $('button[lay-filter="data-search-btn"]').trigger('click');
+                                    });
                                 });
-                            });
-                        </script>
+                            </script>
+                        </div>
                         {/case}
                         {case linkage}
                         <!--下拉框联动-->
@@ -77,7 +86,7 @@
                         <div class="layui-inline">
                             <label class="layui-form-label">{$v.title}</label>
                             <div class="layui-input-inline" style="width: 290px;">
-                                <input type="text" id="{$v.name}" name="{$v.name}" value="{$v.value ?? ''}" class="layui-input" placeholder="{$v.placeholder ?? $v.title}">
+                                <input type="text" id="{$v.name}" name="{$v.name}" value="" class="layui-input" placeholder="{$v.placeholder ?? $v.title}">
                             </div>
                         </div>
                         <script>
@@ -94,33 +103,13 @@
                             });
                         </script>
                         {/case}
-                        {case date_range}
-                        <div class="layui-inline">
-                            <label class="layui-form-label">{$v.title}</label>
-                            <div class="layui-input-inline" style="width: 200px;">
-                                <input type="text" id="{$v.name}" name="{$v.name}" value="{$v.value ?? ''}" class="layui-input" placeholder="{$v.placeholder ?? $v.title}">
-                            </div>
-                        </div>
-                        <script>
-                            layui.use(['laydate'], function() {
-                                var laydate = layui.laydate;
-
-                                //执行一个laydate实例
-                                laydate.render({
-                                    elem: '#{$v.name}'
-                                    , type: 'date'
-                                    , range: '~'
-                                });
-                            });
-                        </script>
-                        {/case}
                         {case select}
                         <div class="layui-inline">
                             <label class="layui-form-label">{$v.title}</label>
                             <div class="layui-input-inline">
                                 <select name="{$v.name}">
                                     {volist name="v.options" id="o"}
-                                    <option value="{$key}" {if isset($v.value) && $v.value==$key}selected{/if}>{$o}</option>
+                                    <option value="{$key}">{$o}</option>
                                     {/volist}
                                 </select>
                             </div>
@@ -147,7 +136,7 @@
         {notempty name="top_button_list"}
         <script type="text/html" id="top-btns">
             {foreach $top_button_list as $button}
-            <button type="button" {$button['attribute']|raw} >{$button['title']}</button>&nbsp;
+            <button type="button" {$button['attribute']|raw} >{$button['text']??$button['title']}</button>&nbsp;
             {/foreach}
         </script>
         {/notempty}
@@ -158,7 +147,7 @@
         <script type="text/html" id="right-btns">
             <div class="layui-btn-group">
             {foreach $right_button_list as $button}
-            <button type="button" {$button['attribute']|raw} >{$button['title']}</button>&nbsp;
+            <button type="button" {$button['attribute']|raw} >{$button['text']??$button['title']}</button>&nbsp;
             {/foreach}
             </div>
         </script>
@@ -170,10 +159,10 @@
     .layui-table-total{padding: 8px;}
 </style>
 {notempty name="css"}
-<style>{$css|raw}</style>
+<style>
+    {$css|raw}
+</style>
 {/notempty}
-
-{notempty name="js"}{$js|raw}{/notempty}
 
 <script>
     layui.use(['form', 'table', 'element', 'miniTab', 'jquery'], function () {
@@ -185,9 +174,22 @@
         var cols = {:json_encode($table_column_list)};
         var table_data_page = {:json_encode($table_data_page)};
         var list_limit = table_data_page == null ? 15 : table_data_page.limit;
-        var total_row = parseInt("{:empty($total_row) ? 0 : 1}");
         cols = cols.map((item, i) => {
             switch(item.type){
+                case 'switch':
+                    var layText = item.text ? item.text : "启用|禁用";
+                    item = Object.assign(item, {templet: function (d) {
+                            console.log(d);
+                            let val = d[item.field]
+                            return `<input type="checkbox" value="${val}" data-id="${d.id}" lay-skin="switch" lay-text="${layText}" lay-filter="{$controller}-switch"
+           `+(val ? "checked" : "")+`>`
+                        }});
+                    break;
+                case 'array':
+                    item = Object.assign(item, {templet: function (d) {
+                            return "<div>"+d[item.field].join(',')+"</div>";
+                        }});
+                    break;
                 case 'article':
                     item = Object.assign(item, {templet: function (d) {
                             return templets.article(d[item.field]);
@@ -250,47 +252,37 @@
         var tt = table.render({
             elem: '#{$controller}-table',
             url: '{:empty($data_url) ? url($action, request()->get()) : $data_url}',
-            toolbar: '#top-btns'
-            ,method: 'post'
-            ,cols: [cols],
+            toolbar: '#top-btns',
+            method: 'post',
+            cols: [cols],
             limits: [10, 15, 20, 25, 50, 100],
             limit: list_limit,
             page: true,
             skin: 'line',
-            loading: true
-            ,parseData: function(res){ //res 即为原始返回的数据
-                var data = {
+            loading: true,
+            autoSort: false,
+            defaultToolbar: [{
+                        layEvent: 'refresh',
+                        icon: 'layui-icon-refresh',
+                    }, 'filter', 'print', 'exports'],
+            parseData: function(res){ //res 即为原始返回的数据
+                return {
                     "code": Math.abs(res.code - 1), //解析接口状态
                     "msg": res.msg, //解析提示文本
                     "count": res.data.total, //解析数据长度
                     "data": res.data.list, //解析数据列表
-                    "totalRow": res.data.total_row ? res.data.total_row : false,
                     "extra": res.data
                 };
-                /*if(res.data.total_row) {
-                    data.totalRow = res.data.total_row;
-                }*/
-                if(res.data.total_row_text){
-                    $('.layui-table-total').html(res.data.total_row_text);
-                }
-                return data;
-            }
-            , text: {
+            },
+            text: {
                 none: kyDicts.emptyData
-            }
-            , done: function(res, curr, count){
-                //如果是异步请求数据方式，res即为你接口返回的信息。
-                //如果是直接赋值的方式，res即为：{data: [], count: 99} data为当前页数据、count为数据总长度
-                //console.log(res);
-                //得到当前页码
-                //console.log(curr);
-                //得到数据总量
-                //console.log(count);
+            },
+            done: function(res, curr, count){
                 if(res.totalRow && res.code === 0 && this.page.curr <= 1){
                     var extra = res.extra;
                     $.post(extra.total_row_url, {where: extra.total_row_where}, function(r){
                         if(r.code === 1){
-                            $('.layui-table-total').html(r.data.total_row_text);
+                            $('.layui-table-total').html(r.data.total_row_text).removeClass('hide');
                         }else{
                             layer.alert(r.msg);
                         }
@@ -298,17 +290,86 @@
                         layer.alert('系统繁忙，请刷新重试或联系管理员');
                     });
                 }
-                if(typeof window.table.done === 'function'){
+                if(window.table && typeof window.table.done === 'function'){
                     window.table.done(res, curr, count);
                 }
-                form.render();
             }
-            , totalRow: total_row
         });
 
+        //状态开关
+        form.on('switch({$controller}-switch)', function(obj) {
+            let href = "{:url('setstatus')}",
+                    data  = {ids: $(this).data('id'), val: obj.value}
+            layer.confirm("确认操作吗？", function(index){
+                requestPost(href, data, function (res) {
+                    table.reload('{$controller}-table');  // 刷新(异步模式)
+                    form.render('switch');
+                });
+                layer.close(index);
+            });
+        });
         {notempty name="search"}
+        formToggle({
+            elem: "#search-{$controller}",
+        });
+        //展开|折叠
+        function formToggle(options) {
+            var defaultsOpt = {
+                isExpand: false,
+                prefixIcon: "layui-icon",
+                toggleIcon: ['layui-icon-down', 'layui-icon-up'],
+                toggleText: ['展开', '折叠'],
+            }
+            var opt = $.extend({}, defaultsOpt, options);
+            var elem = opt.elem; // 绑定的表单元素,必填
+            var min = opt.min; // 最小显示数,默认显示一行
+            var isExpand = opt.isExpand; // 初始展开
+            var prefixIcon = opt.prefixIcon + " "; // 图标前缀
+            var toggleIcon = opt.toggleIcon; // 折叠和展开时的图标类[unExpandIcon, ExpandIcon]
+            var toggleText = opt.toggleText; // 折叠和展开时的文本
+
+            var eleDOM = $(elem + " .layui-inline");
+            var firstElTop = eleDOM.first().offset().top;
+            var targetEl = eleDOM.filter(function(index) {
+                var isGtMin = (index + 1) > min;
+                var isGtFirstElTop = $(this).offset().top > firstElTop;
+                var isNeqLast = (index + 1) != eleDOM.length;
+                return min ? isGtMin && isNeqLast : isGtFirstElTop && isNeqLast;
+            });
+
+            var unExpandIcon = prefixIcon + toggleIcon[0];
+            var expandIcon = prefixIcon + toggleIcon[1];
+            var unExpandText = toggleText[0];
+            var expandText = toggleText[1];
+            var btnSelector = elem + " .expand";
+            $(btnSelector).append("<i></i>")
+
+            if (targetEl.length > 0) {
+                if (isExpand) {
+                    $(btnSelector).prepend("<span>" + expandText + "</span>");
+                    $(btnSelector + ">i").addClass(expandIcon);
+                } else {
+                    $(btnSelector).prepend("<span>" + unExpandText + "</span>")
+                    $(btnSelector + ">i").addClass(unExpandIcon)
+                    targetEl.addClass("layui-hide");
+                }
+                $(btnSelector).click(function() {
+                    isExpand = !isExpand;
+                    if (isExpand) {
+                        $(btnSelector + ">span").html(expandText);
+                        $(btnSelector + ">i").removeClass(unExpandIcon).addClass(expandIcon);
+                        targetEl.removeClass("layui-hide")
+                    } else {
+                        $(btnSelector + ">span").html(unExpandText);
+                        $(btnSelector + ">i").removeClass(expandIcon).addClass(unExpandIcon);
+                        targetEl.addClass("layui-hide")
+                    }
+                })
+            }
+        }
         // 监听搜索操作
         form.on('submit(data-search-btn)', function (data) {
+            tt.config.where = data.field;
             //执行搜索重载
             table.reload('{$controller}-table', {
                 page: {
@@ -327,6 +388,9 @@
             , title = $(this).attr('title');
 
             switch (obj.event) {
+                case 'refresh':
+                    table.reload('{$controller}-table');
+                    break;
                 case 'add':
                     var index = layer.open({
                         title: title,
@@ -341,7 +405,7 @@
                     });
                     return false;
                 case 'delete':
-                        layer.confirm('确认删除?', function(index){
+                        layer.confirm('确认删除?', {title:'温馨提示'}, function(index){
                             var ids = table.checkStatus('{$controller}-table').data.map((item,index) => {return item.id});
                             var params = {ids: ids};
                             requestPost(href, params, function (res) {
@@ -363,7 +427,7 @@
                 case 'self':
                     if($(this).data('ajax')){
                         if($(this).data('confirm')) {
-                            layer.confirm($(this).attr('confirm') ? $(this).attr('confirm') : "确认操作吗？", function(index){
+                            layer.confirm('确认操作吗?', function(index){
                                 var ids = table.checkStatus('{$controller}-table').data.map((item,index) => {return item.id});
                                 var params = {ids: ids};
                                 requestPost(href, params, function (res) {
@@ -396,42 +460,32 @@
             }
         });
         {/notempty}
+            //触发排序事件
+            table.on('sort({$controller}-table)', function(obj){
+                table.reload('{$controller}-table', {
+                    page: {
+                        curr: 1
+                    }
+                    , where: Object.assign(tt.config.where, {
+                        order_field: obj.field //排序字段
+                        ,order_type: obj.type //排序方式
+                    })
+                }, 'data');
+                return false;
+            });
 
-            //监听操作栏按钮
         {notempty name="right_button_list"}
+        //监听操作栏按钮
         table.on('tool({$controller}-table)', function (obj) {
             var data = obj.data
             , layEvent = obj.event
                 , title = $(this).attr('title')
-            , href = $(this).attr('href').replaceAll('__data_id__', data.id);
+            , href = $(this).attr('href').replace('__data_id__', data.id);
             for (var k in data){
                 href = href.replaceAll(`__data_${k}__`, data[k])
             }
 
             switch (layEvent) {
-                case 'copy':
-                    var clipboard = new ClipboardJS('[lay-event="copy"]', {
-                        text: function(trigger) {
-                            return trigger.getAttribute('copy-text').replace('__data_id__', data.id);
-                        }
-                    });
-                    clipboard.on('success', function (e) {
-                        layer.msg("已复制！");
-                        e.clearSelection();
-                    });
-                    clipboard.on('error', function (e) {
-                        console.error('复制失败：');
-                        console.log(e);
-                    });
-                    break;
-                case 'export':
-                    requestPost(href, {activity_id: data.id}, function (res) {
-                        var fields = res.data.fields
-                        , data = res.data.data_list
-                        , ext = res.data.ext ? res.data.ext : 'xls';
-                        table.exportFile(fields, data, ext); //默认导出 csv，也可以为：xls
-                    });
-                    break;
                 case 'edit':
                     var index = layer.open({
                         title: title,
@@ -445,7 +499,7 @@
                     });
                     return false;
                 case 'forbid':
-                    var tip = $(this).attr('confirm') ? $(this).attr('confirm') : "确认禁用吗？";
+                    var tip = $(this).attr('confirm') ? $(this).attr('confirm') : "确认批量禁用吗？";
                     layer.confirm(tip, function(index){
                         var  params = {ids: data.id};
                         requestPost(href, params, function (res) {
@@ -455,7 +509,7 @@
                     });
                     break;
                 case 'resume':
-                    var tip = $(this).attr('confirm') ? $(this).attr('confirm') : "确认启用吗？";
+                    var tip = $(this).attr('confirm') ? $(this).attr('confirm') : "确认批量启用吗？";
                     layer.confirm(tip, function(index){
                         var  params = {ids: data.id};
                         requestPost(href, params, function (res) {
@@ -465,7 +519,7 @@
                     });
                     break;
                 case 'delete':
-                    layer.confirm('确认删除?', function(index){
+                    layer.confirm('确认'+title+'?', {title:'温馨提示'}, function(index){
                         var  params = {ids: data.id};
                         requestPost(href, params, function (res) {
                             table.reload('{$controller}-table');  // 刷新(异步模式)
@@ -476,14 +530,19 @@
                 case 'self':
                     if($(this).data('ajax')){
                         if($(this).data('confirm')) {
-                            layer.confirm($(this).attr('confirm') ? $(this).attr('confirm') : "确认操作吗？", function(index){
-                                requestPost(href, data, function (res) {
+                            var tip = $(this).data('confirm');
+                            if(typeof tip !== "string"){
+                                tip = '确认操作吗?';
+                            }
+                            layer.confirm(tip, function(index){
+                                var  params = {id: data.id};
+                                requestPost(href, params, function (res) {
                                     table.reload('{$controller}-table');  // 刷新(异步模式)
                                 });
                                 layer.close(index);
                             });
                         }else{
-                            requestPost(href, data, function (res) {
+                            requestPost(href, [], function (res) {
                                 table.reload('{$controller}-table');  // 刷新(异步模式)
                             });
                         }

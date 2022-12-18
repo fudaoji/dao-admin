@@ -7,6 +7,32 @@ use ky\Faconfig;
 use think\Model;
 
 require_once app_path() . DIRECTORY_SEPARATOR . 'define.php';
+if (!function_exists('plugin_logo')) {
+    /**
+     * 应用logo地址
+     * @param string $plugin
+     * @param string $logo
+     * @return string
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    function plugin_logo($plugin = '', $logo = '')
+    {
+        return '/app/'.$plugin.'/'.$logo;
+    }
+}
+if (!function_exists('plugin_path')) {
+    /**
+     * 插件目录
+     * @param string $plugin
+     * @param string $file
+     * @return string
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    function plugin_path($plugin = '', $file = '')
+    {
+        return base_path() . DIRECTORY_SEPARATOR . 'plugin/' . $plugin . ($file ? DIRECTORY_SEPARATOR . $file : '');
+    }
+}
 
 if (!function_exists('dao_log')) {
 
@@ -225,6 +251,7 @@ if (!function_exists('url')) {
     function url(string $url, array $vars = [], string $app = '', $plugin = ''): string
     {
         $app = $app ?: request()->app;
+        $plugin = $plugin ?: request()->plugin;
         $url = trim($url, '/');
         $path_arr = explode('/', $url);
         switch (count($path_arr)){
@@ -239,7 +266,8 @@ if (!function_exists('url')) {
                 break;
             default:
                 $action = $url;
-                $controller = request()->getController();
+                $controller_layer = explode('/', request()->getController());
+                $controller = $controller_layer[count($controller_layer) - 1];
         }
 
         $url = $controller . '/' .$action;

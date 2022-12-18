@@ -100,7 +100,6 @@ class AdminController extends BaseController
 
     /**
      * 保存数据
-     * @param Request $request
      * @param string $jump
      * @param array $data
      * @return mixed

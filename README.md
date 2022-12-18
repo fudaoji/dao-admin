@@ -13,13 +13,14 @@ DaoAdmin是一款基于webman的高性能中后台框架。
 - [x] 数据库scheme管理
 - [x] 客户管理
     - [x] 客户列表
-- [ ] 应用管理
-    - [ ] 应用列表
-    - [ ] 应用分类
+- [x] 应用管理
+    - [x] 应用列表
+    - [x] 应用分类
+- [ ] 免费应用
+    - [x] 应用demo    
 - [ ] 套餐管理
     - [ ] 套餐列表
     - [ ] 客户套餐
-
 #### 软件架构
 - [webman](https://www.workerman.net/doc/webman)
 - Mysql

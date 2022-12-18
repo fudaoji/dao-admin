@@ -159,13 +159,12 @@ class Tenant extends TenantController
 
     /**
      * 保存数据
-     * @param $request
      * @param string $url
      * @param array $data
      * @return mixed
      * @Author  Doogie<461960962@qq.com>
      */
-    public function savePost($request, $url='', $data=[]){
+    public function savePost(Request $request, $url='', $data=[]){
         $post_data = input('post.');
         $post_data['company_id'] = TenantService::getCompanyId();
         if(!empty($post_data['password'])){

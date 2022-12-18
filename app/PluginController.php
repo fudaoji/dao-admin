@@ -9,7 +9,9 @@
 
 namespace app;
 
-class PluginController extends BaseController
+use app\common\service\App;
+
+class PluginController extends TenantController
 {
 
     /**
@@ -47,6 +49,9 @@ class PluginController extends BaseController
             }
         }
         $template = $app . DIRECTORY_SEPARATOR . $this->theme. DIRECTORY_SEPARATOR. $controller . DIRECTORY_SEPARATOR . $action;
+        $assign['controller'] = $controller;
+        $assign['action'] = $action;
+        $assign['app'] = PLUGIN;
         return view($template, $assign, null);
     }
 }

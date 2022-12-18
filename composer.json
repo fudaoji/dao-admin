@@ -48,7 +48,8 @@
     "webman/cors": "^1.0",
     "illuminate/database": "^8.83",
     "illuminate/events": "^8.83",
-    "fudaoji/php-sms": "^1.0"
+    "fudaoji/php-sms": "^1.0",
+    "league/flysystem": "^2.5"
   },
   "suggest": {
     "ext-event": "For better performance. "

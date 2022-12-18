@@ -13,6 +13,7 @@ use app\admin\service\Auth;
 use app\AdminController;
 use app\common\model\TenantGroup;
 use app\common\model\Tenant as TenantM;
+use Webman\Http\Request;
 
 class Tenant extends AdminController
 {
@@ -138,14 +139,13 @@ class Tenant extends AdminController
 
     /**
      * 保存数据
-     * @param $request
      * @param string $url
      * @param array $data
      * @return mixed
      * @Author  fudaoji<fdj@kuryun.cn>
      * @throws \think\db\exception\DbException
      */
-    public function savePost($request, $url='', $data=[]){
+    public function savePost(Request $request, $url='', $data=[]){
         $post_data = input('post.');
         if(!empty($post_data['password'])){
             $post_data['password'] = fa_generate_pwd($post_data['password']);
@@ -158,6 +158,6 @@ class Tenant extends AdminController
             return $this->error(dao_trans('该账号已存在'));
         }
 
-        return parent::savePost($request, $url, $post_data);
+        return parent::savePost($url, $post_data);
     }
 }

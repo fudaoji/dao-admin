@@ -148,18 +148,17 @@ class Admin extends AdminController
 
     /**
      * 保存数据
-     * @param $request
      * @param string $url
      * @param array $data
      * @return mixed
      * @Author  Doogie<461960962@qq.com>
      */
-    public function savePost($request, $url='', $data=[]){
+    public function savePost(Request $request, $url='', $data=[]){
         $post_data = input('post.');
         if(!empty($post_data['password'])){
             $post_data['password'] = fa_generate_pwd($post_data['password']);
         }
-        return parent::savePost($request, $url, $post_data);
+        return parent::savePost($url, $post_data);
     }
 
     /**

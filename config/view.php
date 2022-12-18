@@ -29,7 +29,6 @@ return [
             '__JS__' => '/static/js',
             '__IMG__' => '/static/imgs'
         ],
-        'taglib_pre_load'    => implode(',', include __DIR__ . '/taglib.php'),
         //'layout_on'     =>  true,
         //'layout_name'   =>  'default/layout/base',
     ]

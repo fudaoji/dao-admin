@@ -70,4 +70,18 @@ class Tenant extends Common
         empty($tenant) && $tenant = request()->session()->get(SESSION_TENANT);
         return $tenant['company_id'] == 0;
     }
+
+    /**
+     * 获取商户列表字典
+     * @param null $where
+     * @return array
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    public static function getCompanyDict($where = null)
+    {
+        if(is_null($where)){
+            $where = [['status', '=', 1]];
+        }
+        return TenantM::where($where)->column('realname', 'id');
+    }
 }

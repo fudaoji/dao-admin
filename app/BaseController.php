@@ -133,7 +133,9 @@ class BaseController
         if (is_null($url) && \request()->header('referer')) {
             $url = \request()->header('referer');
         }
-        //$msg = !empty($msg) ? dao_trans($msg) : dao_trans('操作成功!');
+        if($msg){
+            $msg = dao_trans($msg);
+        }
         $result = [
             'code'  => $code,
             'msg'   => $msg,
@@ -166,7 +168,9 @@ class BaseController
             $url = request()->isAjax() ? '' : 'javascript:history.back(-1);';
         }
 
-        $msg = !empty($msg) ? dao_trans($msg) : dao_trans('操作失败!');
+        if($msg){
+            $msg = dao_trans($msg);
+        }
         $result = [
             'code' => $code,
             'msg'  => $msg,

@@ -19,6 +19,7 @@ body {
 .hide{display: none !important;}
 .text-left{text-align: left;}
 .text-right{text-align: right;}
+.text-center{text-align: center;}
 .layui-table-cell{
     height: auto;
     white-space: normal;
