@@ -22,7 +22,7 @@ Route::fallback(function ($request) {
     if ($request->expectsJson()) {
         return json(['code' => 404, 'msg' => '404 not found']);
     }
-    echo $request->url();
+    //echo $request->url();
     return view(config('app.404_tpl'), []);
 });
 

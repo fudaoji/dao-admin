@@ -14,6 +14,7 @@ use app\common\model\TenantGroup;
 use app\TenantController;
 use app\common\service\Tenant as TenantService;
 use app\tenant\service\Auth as AuthService;
+use Webman\Http\Request;
 
 class Tenant extends TenantController
 {

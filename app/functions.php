@@ -7,6 +7,24 @@ use ky\Faconfig;
 use think\Model;
 
 require_once app_path() . DIRECTORY_SEPARATOR . 'define.php';
+if (!function_exists('plugin_config')) {
+    /**
+     * @param string|null $key
+     * @param null $default
+     * @param string $plugin
+     * @return array|mixed|null
+     */
+    function plugin_config(string $key = null, $default = null, $plugin = '')
+    {
+        $plugin = $plugin ? $plugin : request()->plugin;
+        if(is_null($key)){
+            $key = 'plugin.' . $plugin;
+        } else{
+            $key = 'plugin.' . $plugin . '.' . $key;
+        }
+        return  config($key, $default);
+    }
+}
 if (!function_exists('plugin_logo')) {
     /**
      * 应用logo地址

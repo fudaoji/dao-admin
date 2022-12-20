@@ -17,12 +17,13 @@ return [
         app\common\middleware\CheckInstall::class,
         \Webman\Cors\CORS::class,
         app\common\middleware\AppInitialize::class,
-        app\common\middleware\AppLang::class
+        app\common\middleware\AppLang::class,
+        \app\common\middleware\Paginator::class,
     ],
 
     'admin' => [
         app\common\middleware\FaconfigInitialize::class,
-        \app\admin\middleware\CheckAuth::class,
+        \app\admin\middleware\CheckAuth::class
     ],
     'tenant' => [
         app\common\middleware\FaconfigInitialize::class,

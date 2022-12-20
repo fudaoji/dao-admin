@@ -44,7 +44,7 @@ class Apps extends TenantController
             return $this->success('操作成功');
         }
 
-        $page_size = 20;
+        $page_size = 1;
         $status = input('status', -1);
         $search_key = input('search_key', '');
         $where = [

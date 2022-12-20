@@ -133,19 +133,20 @@ class Upload
 
     /**
      * ueeditor编辑器上传
+     * @param array $files 要上传的文件列表（通常是$_FILES数组）
      * @param string $action
      * @param array $extra
      * @return array
      * @Author: Doogie <461960962@qq.com>
      * @throws \Exception
      */
-    public function ueUpload($action = '', $extra = []){
+    public function ueUpload($files, $action = '', $extra = []){
         $config = self::ueConfig();
         switch($action){
             case $config['imageActionName']:
                 $upload_config = self::config();
                 break;
-            case $config['uploadvideo']:
+            case $config['videoActionName']:
                 $upload_config = self::config('video');
                 break;
             default:
@@ -153,7 +154,7 @@ class Upload
                 break;
         }
 
-        $res = $this->upload($_FILES, $upload_config, $extra);
+        $res = $this->upload($files, $upload_config, $extra);
         if($res['code'] == 1){
             $file = $res['data'][0];
             $return = [
@@ -304,7 +305,7 @@ class Upload
         return [
             /* 上传图片配置项 */
             "imageActionName" => "uploadimage", /* 执行上传图片的action名称 */
-            "imageFieldName"=> "upfile", /* 提交的图片表单名称 */
+            "imageFieldName"=> "file", /* 提交的图片表单名称 */
             "imageMaxSize"=> self::$setting['image_size'], /* 上传大小限制，单位B */
             "imageAllowFiles"=> [".png", ".jpg", ".jpeg", ".gif", ".bmp"], /* 上传图片格式显示 */
             "imageCompressEnable"=> true, /* 是否压缩图片,默认是true */
@@ -329,7 +330,7 @@ class Upload
 
             /* 涂鸦图片上传配置项 */
             "scrawlActionName"=> "uploadscrawl", /* 执行上传涂鸦的action名称 */
-            "scrawlFieldName"=> "upfile", /* 提交的图片表单名称 */
+            "scrawlFieldName"=> "file", /* 提交的图片表单名称 */
             "scrawlPathFormat"=>$path_pre."/uploads/image/{yyyy}-{mm}-{dd}/{time}{rand:6}", /* 上传保存路径,可以自定义保存路径和文件名格式 */
             "scrawlMaxSize"=> self::$setting['image_size'], /* 上传大小限制，单位B */
             "scrawlUrlPrefix"=> "", /* 图片访问路径前缀 */
@@ -352,7 +353,7 @@ class Upload
 
             /* 上传视频配置 */
             "videoActionName"=> "uploadvideo", /* 执行上传视频的action名称 */
-            "videoFieldName"=> "upfile", /* 提交的视频表单名称 */
+            "videoFieldName"=> "file", /* 提交的视频表单名称 */
             "videoPathFormat"=>$path_pre."/uploads/video/{yyyy}-{mm}-{dd}/{time}{rand:6}", /* 上传保存路径,可以自定义保存路径和文件名格式 */
             "videoUrlPrefix"=> "", /* 视频访问路径前缀 */
             "videoMaxSize"=> 102400000, /* 上传大小限制，单位B，默认100MB */
@@ -361,7 +362,7 @@ class Upload
 
             /* 上传文件配置 */
             "fileActionName"=> "uploadfile", /* controller里,执行上传视频的action名称 */
-            "fileFieldName"=> "upfile", /* 提交的文件表单名称 */
+            "fileFieldName"=> "file", /* 提交的文件表单名称 */
             "filePathFormat"=> $path_pre."/uploads/file/{yyyy}-{mm}-{dd}/{time}{rand:6}", /* 上传保存路径,可以自定义保存路径和文件名格式 */
             "fileUrlPrefix"=> "", /* 文件访问路径前缀 */
             "fileMaxSize"=> self::$setting['file_size'], /* 上传大小限制，单位B，默认50MB */
@@ -393,7 +394,6 @@ class Upload
                 ".rar", ".zip", ".tar", ".gz", ".7z", ".bz2", ".cab", ".iso",
                 ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".pdf", ".txt", ".md", ".xml"
             ] /* 列出的文件类型 */
-
         ];
     }
 }

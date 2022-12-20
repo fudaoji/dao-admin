@@ -7,13 +7,13 @@
  * Description: 上传控制器
  * Author: fudaoji<fdj@kuryun.cn>
  */
-namespace app\admin\controller;
+namespace app\tenant\controller;
 
-use app\AdminController;
 use app\common\model\Setting;
 use app\common\service\Upload;
+use app\TenantController;
 
-class Uploader extends AdminController
+class Uploader extends TenantController
 {
     /**
      * @var Upload
@@ -53,8 +53,12 @@ class Uploader extends AdminController
      */
     private function upload($config = []){
         /* 调用文件上传组件上传文件 */
-        $return = $this->uploadService->upload(request()->file(), $config, ['uid' => $this->adminInfo('id')]);
+        $return = $this->uploadService->upload(request()->file(), $config, ['uid' => $this->getPrefix()]);
         return json($return);
+    }
+
+    private function getPrefix(){
+        return 'tenant_'.$this->tenantInfo('id');
     }
 
     /**
@@ -77,14 +81,14 @@ class Uploader extends AdminController
             case 'uploadvideo':
                 /* 上传文件 */
             case 'uploadfile':
-                $return = $this->uploadService->ueUpload(request()->file(), $action, ['from' => 2, 'uid' => $this->adminInfo('id')]);
+                $return = $this->uploadService->ueUpload(request()->file(), $action, ['from' => 2, 'uid' => $this->getPrefix()]);
                 break;
 
             /* 列出图片 */
             case 'listimage':
                 /* 列出文件 */
             case 'listfile':
-                $return = $this->uploadService->ueList($action, ['uid' => $this->adminInfo('id')]);
+                $return = $this->uploadService->ueList($action, ['uid' => $this->getPrefix()]);
                 break;
             /* 抓取远程文件 */
             case 'catchimage':
