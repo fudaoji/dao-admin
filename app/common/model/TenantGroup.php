@@ -50,7 +50,7 @@ class TenantGroup extends BaseModel
      */
     public static function getAuthList($params = []){
         $refresh = $params['refresh'] ?? false;
-        $group = self::find($params['group_id']);
+        $group = self::where('company_id', $params['company_id'])->find($params['group_id']);
         $where = [
             ['status','=', 1],
             ['type', '=', TenantRule::TYPE_AUTH],

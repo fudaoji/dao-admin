@@ -14,7 +14,7 @@ class Index extends TenantController
 
     public function welcome(){
         $assign = [
-
+            'department' => \app\common\service\Tenant::getDepartment()
         ];
         return $this->show($assign);
     }

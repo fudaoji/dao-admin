@@ -10,8 +10,10 @@
 namespace app\common\service;
 use app\common\model\App as AppM;
 use app\common\model\AppInfo as AppInfoM;
+use app\common\model\AppCate as AppCateM;
 use app\admin\service\Database as DatabaseService;
 use think\facade\Db;
+use app\common\model\TenantApp as TenantAppM;
 
 class App extends Common
 {
@@ -115,8 +117,39 @@ class App extends Common
         return true;
     }
 
+    /**
+     * 获取应用基本信息
+     * @param string $name
+     * @return array|mixed|\think\db\Query|\think\Model|null
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
     static function getApp($name = ''){
         return AppM::where('name', $name)->find();
+    }
+
+    /**
+     * 获取应用完整信息
+     * @param string|int $name
+     * @return array|mixed|\think\db\Query|\think\Model|null
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    static function getAppInfo($name){
+        if(intval($name)){
+            $where = [['a.id','=', $name]];
+        }else{
+            $where = [['a.name','=', $name]];
+        }
+        return AppM::where($where)
+            ->alias('a')
+            ->join('app_info ai', 'ai.id=a.id')
+            ->field(['a.*', 'ai.detail','ai.sale_num','ai.sale_num_show','ai.price','ai.old_price','ai.snapshot','ai.config'])
+            ->find();
     }
 
     /**
@@ -171,5 +204,61 @@ class App extends Common
             $where = [['status', '=', 1]];
         }
         return AppM::where($where)->column('title', $key);
+    }
+
+    /**
+     * 获取应用分类列表字典
+     * @param null $where
+     * @param string $key
+     * @return array
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    public static function getAppCateDict($where = null)
+    {
+        if(is_null($where)){
+            $where = [['status', '=', 1]];
+        }
+        return AppCateM::where($where)->column('title');
+    }
+
+    /**
+     * 应用购买核销
+     * @param array $params
+     * Author: fudaoji<fdj@kuryun.cn>
+     * @return bool
+     */
+    static function afterBuyApp($params = []){
+        Db::startTrans();
+        try {
+            $app = $params['app'];
+            $tenant_app = TenantAppM::where('company_id', $params['company_id'])
+                ->where('app_name', $app['name'])
+                ->find();
+            if(empty($tenant_app)){
+                TenantAppM::create([
+                    'company_id' => $params['company_id'],
+                    'app_name' => $app['name'],
+                    'deadline' => strtotime("+1 year", time())
+                ]);
+            }else{
+                TenantAppM::update([
+                    'id' => $tenant_app['id'],
+                    'deadline' => strtotime("+1 year", max($tenant_app['deadline'], time()))
+                ]);
+            }
+
+            AppInfoM::update([
+                'id' => $app['id'],
+                'sale_num' => $app['sale_num'] + 1,
+                'sale_num_show' => $app['sale_num_show'] + 1
+            ]);
+            Db::commit();
+            $res = true;
+        }catch (\Exception $e){
+            dao_log()->error($e->getMessage());
+            Db::rollback();
+            $res = false;
+        }
+        return $res;
     }
 }

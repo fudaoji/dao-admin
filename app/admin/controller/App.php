@@ -253,7 +253,7 @@ class App extends AdminController
             ]);
             unset($post_data['version'], $post_data['status'], $post_data['cates']);
             $this->appInfoM->update($post_data);
-            return $this->success('保存成功', url('index'));
+            return $this->success('保存成功');
         }
         if(! $data = $this->model->find(input('id', 0, 'intval'))){
             return $this->error('数据不存在');

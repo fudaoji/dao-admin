@@ -1,0 +1,163 @@
+{extend name="default:layout:base" /}
+
+{block name="main"}
+<div class="layui-tab layui-tab-brief" lay-filter="{$controller}-tab">
+    {notempty name="tab_nav"}
+    <ul class="layui-tab-title">
+        {volist name="tab_nav.tab_list" id="tab"}
+        <li class="{if $key eq $tab_nav['current_tab']}layui-this{/if}"><a href="{$tab.href}">{$tab.title}</a></li>
+        {/volist}
+    </ul>
+    {/notempty}
+    <div class="layui-tab-content">
+        {if condition="!empty($tip)"}
+        <blockquote class="layui-elem-quote">{$tip|raw}</blockquote>
+        {/if}
+
+        <fieldset class="table-search-fieldset" style="padding: 5px;">
+            <form class="layui-form layui-form-pane search-form">
+                <div class="layui-row layui-col-space10">
+                    <div class="layui-col-xs2">
+                        <div class="layui-form-item">
+                            <select name="type" lay-filter="types">
+                                <option {if $type==''} selected {/if} value="">所有</option>
+                                {foreach $types as $k => $t}
+                                <option {if $type== $k} selected {/if} value="{$k}">{$t}</option>
+                                {/foreach}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-col-xs7">
+                        <div class="layui-col-xs5" style="margin-left: 5px; line-height: 38px;">
+                            <div class="layui-form-item">
+                                <input name="search_key"
+                                       placeholder="请输入关键词"
+                                       value="{$search_key}"
+                                       class="layui-input"
+                                       type="text">
+                            </div>
+                        </div>
+                        <div class="layui-col-xs4" style="margin-left: 5px; line-height: 38px;">
+                            <button class="layui-btn layui-btn-primary" lay-submit="" lay-filter="formDemo">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-row">
+                    <span class="layui-breadcrumb" lay-separator="|">
+                        {volist name="cates" id="c"}
+                        <a href="{:url('store', ['cate' => $key, 'type' => $type])}"
+                                {if $cate == $key}class="layui-this"{/if}
+                        >{$c}</a>
+                        {/volist}
+                    </span>
+                </div>
+            </form>
+        </fieldset>
+        <div class="layui-row">
+            <div id="app-body">
+                {if count($data_list)}
+                <div id="apps">
+                    <form class="layui-form" action="">
+                        <div class="layui-row">
+                            {volist name="data_list" id="v"}
+                            <div class="layui-col-xs4 layui-col-md3 apps-volist">
+                                <a class="js-go" href="javascript:;" data-href="{:url('appdetail', ['id' => $v.id])}" title="{$v.title}">
+                                    <div class="apps-volists">
+                                        <div class="apps-icon">
+                                            <img src="{$v.logo}">
+                                        </div>
+                                        <div class="app-desc">
+                                            <h2>{$v.title}</h2>
+                                            <div class="app-desc-body">
+                                                <div class="description">{:cut_str($v.desc,30)}</div>
+                                                <div class="layui-row text-right">
+                                                    <div class="layui-col-xs6">
+                                                        <span class="sale_num">销量 {$v.sale_num_show}</span>
+                                                    </div>
+                                                    <div class="layui-col-xs6">
+                                                        <span class="price">{$v.price > 0 ? ('¥'.$v.price) : '免费'}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            {/volist}
+                        </div>
+                    </form>
+                    <div id="page">{$page|raw}</div>
+                </div>
+                {else/}
+                <div class="empty-result">
+                    {:dao_trans("未找到数据!")}
+                </div>
+                {/if}
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name="js"}
+<script>
+    layui.use(['layer','form','jquery'], function() {
+        var layer = layui.layer
+                ,form = layui.form
+        , $ = layui.jquery;
+
+        $('.js-go').on('click', function () {
+            var index = layer.open({
+                title: $(this).attr('title'),
+                type: 2,
+                shade: 0.2,
+                area: ['95%', '95%'],
+                content: $(this).data('href'),
+            });
+            $(window).on("resize", function () {
+                layer.full(index);
+            });
+        });
+
+        form.on('select(types)', function(data){
+            $('.search-form').submit();
+        });
+    });
+</script>
+{/block}
+
+{block name="css"}
+<style>
+    .empty-result{color: #999;text-align: center;padding: 30px;}
+    #app-body{margin-top: 20px;}
+    .apps-volist {
+        cursor: pointer;
+        padding: 0;
+        border: 1px solid rgb(231, 231, 235);
+        margin: 0px 5px 5px 0px;
+        overflow: hidden;
+    }
+    .apps-icon {
+        float: left;
+        margin-right: 10px;
+    }
+    .apps-icon,.app-desc{padding: 5px;}
+    .apps-icon img {
+        width: 68px;
+        height: 68px;
+        border-radius: 8px;
+    }
+    .app-desc-body {
+        color: #707070;
+        font-size: 14px;
+    }
+    .app-desc-body .description {
+        font-size: 14px;
+    }
+    .layui-breadcrumb .layui-this{color: #1E9FFF !important;}
+    .sale_num{color: #4f99cf;}
+    .price{color: #e63a2e;font-size: 18px;margin-right: 10px;}
+</style>
+{/block}

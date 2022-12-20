@@ -72,6 +72,12 @@ class Auth
         return in_array($rule['id'], $group_rules);
     }
 
+    /**
+     * 是否创始人
+     * @param null $admin
+     * @return bool
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
     public static function isSuperAdmin($admin = null){
         empty($admin) && $admin = request()->session()->get(SESSION_TENANT);
         return $admin['company_id'] == 0;
@@ -93,7 +99,8 @@ class Auth
             ['type', '=', TenantRule::TYPE_MENU]
         ];
         if(!self::isSuperAdmin($admin)) {
-            $group = TenantGroup::find($admin['group_id']);
+            $group = TenantGroup::where('company_id', Tenant::getCompanyId($admin))
+                ->find($admin['group_id']);
             $where[] = ['id', 'in', explode(',', $group['rules'])];
         }
         $menus = TenantRule::field('id,pid,title,icon,href,target')
@@ -138,7 +145,7 @@ class Auth
      */
     public static function getAuthList($admin = null){
         empty($admin) && $admin = request()->session()->get(SESSION_TENANT);
-        return TenantGroup::getAuthList($admin);
+        return self::isSuperAdmin($admin) ? [] : TenantGroup::getAuthList($admin);
     }
 
     /**

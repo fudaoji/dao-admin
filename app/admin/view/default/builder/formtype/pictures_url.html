@@ -76,9 +76,9 @@
                     urls.push(res.data[0].url);
                     $("#{$form['name']}").val(urls.join('|'));
 
-                    $("#{$form['name']}-pictures-preview").append('<div class="layui-col-xs2 picture-item">\n' +
+                    $("#{$form['name']}-pictures-preview").append('<div class="layui-col-xs1 picture-item">\n' +
                             '                <img src="'+res.data[0].url+'" alt="" >\n' +
-                            '                <i class="fa fa-remove"></i>\n' +
+                            '<span class="icon-remove"><i class="fa fa-remove"></i></span>\n' +
                             '            </div>');
                 }
                 , allDone: function () {

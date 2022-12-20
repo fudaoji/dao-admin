@@ -124,7 +124,8 @@
                     title: $(this).data('title'),
                 });
             }else{
-                top.location.href = href
+                window.open(href)
+                //top.location.href = href
             }
         });
     });
@@ -157,7 +158,7 @@
     .app-desc-body .description {
         font-size: 14px;
     }
-    .overtime-tip{float: left;}
+    .overtime-tip{float: revert;}
     .app-opr{border: 1px solid #F2F2F2;border-left: none;border-bottom: none;padding-bottom: 8px;text-align: center;}
     .app-opr:last-child{border-right: none;}
 </style>

@@ -32,15 +32,19 @@ class Tenant extends TenantController
         if(request()->isPost()){
             $post_data = input('post.');
             $where = [
-                ['company_id', '=', TenantService::getCompanyId()]
+                ['t.company_id', '=', TenantService::getCompanyId()]
             ];
             !empty($post_data['search_key']) && $where[] = ['username|mobile|realname', 'like', '%'.$post_data['search_key'].'%'];
 
-            $query = $this->model->where($where);
+            $query = $this->model->alias('t')
+                ->join('tenant_group group', 'group.id=t.group_id')
+                ->join('tenant_department depart', 'depart.id=t.department_id')
+                ->where($where);
             $total = $query->count();
             if ($total) {
-                $list = $query->page($post_data['page'], $post_data['limit'])
-                    ->order('id', 'desc')
+                $list = $query->field(['t.*', 'group.title as group_title', 'depart.title as depart_title'])
+                    ->page($post_data['page'], $post_data['limit'])
+                    ->order('t.id', 'desc')
                     ->select();
             } else {
                 $list = [];
@@ -54,14 +58,16 @@ class Tenant extends TenantController
             ['type' => 'text', 'name' => 'search_key', 'title' => '搜索词','placeholder' => '账号、手机号、名称']
         ])
             ->addTopButton('addnew')
-            ->addTableColumn(['title' => '序号', 'type' => 'index'])
-            ->addTableColumn(['title' => '名称', 'field' => 'realname'])
-            ->addTableColumn(['title' => '账号', 'field' => 'username'])
-            ->addTableColumn(['title' => '手机号', 'field' => 'mobile'])
+            ->addTableColumn(['title' => '序号', 'type' => 'index', 'minWidth' => 70])
+            ->addTableColumn(['title' => '名称', 'field' => 'realname', 'minWidth' => 100])
+            ->addTableColumn(['title' => '账号', 'field' => 'username', 'minWidth' => 100])
+            ->addTableColumn(['title' => '手机号', 'field' => 'mobile', 'minWidth' => 100])
+            ->addTableColumn(['title' => '部门', 'field' => 'depart_title', 'minWidth' => 100])
+            ->addTableColumn(['title' => '角色', 'field' => 'group_title', 'minWidth' => 100])
             ->addTableColumn(['title' => '状态', 'field' => 'status', 'type' => 'enum', 'options' => [0 => '禁用', 1 => '启用']])
-            ->addTableColumn(['title' => '操作', 'width' => 220, 'type' => 'toolbar'])
+            ->addTableColumn(['title' => '操作', 'minWidth' => 200, 'type' => 'toolbar'])
             ->addRightButton('edit')
-            ->addRightButton('edit', ['title' => '修改密码','class' => 'layui-btn layui-btn-warm layui-btn-xs','href' => url('setpassword', ['id' => '__data_id__'])])
+            ->addRightButton('edit', ['title' => '修改密码', 'text' => '修改密码','class' => 'layui-btn layui-btn-warm layui-btn-xs','href' => url('setpassword', ['id' => '__data_id__'])])
             ->addRightButton('delete');
         return $builder->show();
     }

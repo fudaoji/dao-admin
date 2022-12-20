@@ -9,13 +9,13 @@
 
 namespace app\common\constant;
 
-
 class Platform
 {
     const MP = 'mp';
     const MINI = 'mini';
     const APP = 'app';
     const PC = 'pc';
+    const H5 = 'h5';
 
     /**
      * 类型
@@ -26,7 +26,10 @@ class Platform
     public static function types($id = null){
         $list = [
             self::MP => '微信公众号',
-            self::MINI => '微信小程序'
+            self::MINI => '微信小程序',
+            self::PC => '网站',
+            self::APP => 'APP',
+            self::H5 => 'H5',
         ];
         return isset($list[$id]) ? $list[$id] : $list;
     }

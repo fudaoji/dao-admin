@@ -71,7 +71,7 @@ class Tenantgroup extends TenantController
             ->addTableColumn(['title' => '排序', 'field' => 'sort'])
             ->addTableColumn(['title' => '操作', 'minWidth' => 150, 'type' => 'toolbar'])
             ->addRightButton('edit')
-            ->addRightButton('edit', ['title' => '授权','class' => 'layui-btn layui-btn-xs', 'href' => url('auth', ['group_id' => '__data_id__'])])
+            ->addRightButton('edit', ['text' => '授权','class' => 'layui-btn layui-btn-xs', 'href' => url('auth', ['group_id' => '__data_id__'])])
             ->addRightButton('delete');
         return $builder->show();
     }

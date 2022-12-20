@@ -61,7 +61,7 @@ class BaseController
                     break;
             }
         }
-        $template = $this->theme. DIRECTORY_SEPARATOR. $controller . DIRECTORY_SEPARATOR . $action;
+        $template = $this->theme. DIRECTORY_SEPARATOR. strtolower($controller) . DIRECTORY_SEPARATOR . strtolower($action);
         return view($template, $assign, $app);
     }
 

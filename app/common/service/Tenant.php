@@ -10,9 +10,27 @@
 namespace app\common\service;
 
 use app\common\model\Tenant as TenantM;
+use app\common\model\TenantDepartment as DepartmentM;
 
 class Tenant extends Common
 {
+    /**
+     * 获取部门
+     * @param array $tenant
+     * @return int
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    public static function getDepartment($tenant = []){
+        empty($tenant) && $tenant = request()->session()->get(SESSION_TENANT);
+        if($tenant['company_id'] == 0){
+            return '创始人';
+        }
+        if($department = DepartmentM::find($tenant['department_id'])){
+            return $department['title'];
+        }
+        return '';
+    }
+
     /**
      * 获取团队成员ids
      * @param string $field
