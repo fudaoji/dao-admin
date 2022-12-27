@@ -9,10 +9,10 @@
 
 namespace app;
 
-use app\common\service\App;
 
-class PluginController extends TenantController
+class PluginController extends BaseController
 {
+    protected $pageSize = 20;
 
     /**
      * 统一视图
@@ -51,7 +51,7 @@ class PluginController extends TenantController
         $template = $app . DIRECTORY_SEPARATOR . $this->theme. DIRECTORY_SEPARATOR. $controller . DIRECTORY_SEPARATOR . $action;
         $assign['controller'] = $controller;
         $assign['action'] = $action;
-        $assign['app'] = PLUGIN;
+        $assign['app'] = request()->plugin;
         return view($template, $assign, null);
     }
 }

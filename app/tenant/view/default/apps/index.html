@@ -52,8 +52,8 @@
                     <form class="layui-form" action="">
                         <div class="layui-row">
                             {volist name="data_list" id="v"}
-                            <div class="layui-col-xs4 layui-col-md3 apps-volist">
-                                <div class="apps-volists">
+                            <div class="layui-col-xs4 layui-col-md3">
+                                <div class="apps-volist">
                                     <div class="apps-icon">
                                         <img src="{$v.logo}">
                                     </div>
@@ -71,8 +71,8 @@
                                     <div class="layui-row">
                                         <div class="layui-col-xs6 app-opr">
                                             <a href="javascript:;"
-                                               data-href="{$v['admin_url']}"
-                                               data-jump="{$v['admin_url_type']}"
+                                               data-href="{$v['tenant_url']}"
+                                               data-jump="{$v['tenant_url_type']}"
                                                data-title="{$v.title}"
                                                style="margin-top: 8px;"
                                                class="layui-btn layui-btn-xs js-manage">&nbsp;管理&nbsp;</a>
@@ -138,7 +138,7 @@
         cursor: pointer;
         padding: 0;
         border: 1px solid rgb(231, 231, 235);
-        margin: 0px 5px 5px 0px;
+        margin: 0 10px 5px 0;
         overflow: hidden;
     }
     .apps-icon {

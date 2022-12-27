@@ -136,23 +136,4 @@ class BaseModel extends Model
         unset($data['__token__']);
         return parent::save($data, $sequence);
     }
-
-    /**
-     * @param string $field
-     * @param string $key
-     * @return array
-     * Author: fudaoji<fdj@kuryun.cn>
-     */
-    public function column($field = '', $key=''): array
-    {
-        is_string($field) && $field = explode(',', str_replace(' ', '', $field));
-        $key = '';
-        if(count($field) == 2){
-            $key = $field[0];
-            unset($field[0]);
-        }elseif(count($field) > 2){
-            $key = $field[0];
-        }
-        return parent::column($field, $key);
-    }
 }

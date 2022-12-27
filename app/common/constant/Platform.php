@@ -13,9 +13,27 @@ class Platform
 {
     const MP = 'mp';
     const MINI = 'mini';
+    const WECHAT = 'wechat';
+    const WORKWX = 'workwx';
     const APP = 'app';
     const PC = 'pc';
     const H5 = 'h5';
+
+    /**
+     * 类型
+     * @param null $id
+     * @return array|mixed
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    public static function wechatTypes($id = null){
+        $list = [
+            self::MP => '微信公众号',
+            self::MINI => '微信小程序',
+            /*self::WECHAT => '个微',
+            self::WORKWX => '企微',*/
+        ];
+        return isset($list[$id]) ? $list[$id] : $list;
+    }
 
     /**
      * 类型
@@ -27,6 +45,8 @@ class Platform
         $list = [
             self::MP => '微信公众号',
             self::MINI => '微信小程序',
+            self::WECHAT => '个微',
+            self::WORKWX => '企微',
             self::PC => '网站',
             self::APP => 'APP',
             self::H5 => 'H5',

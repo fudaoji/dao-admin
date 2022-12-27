@@ -166,7 +166,7 @@ class Apps extends TenantController
             ->join('tenant tenant', 'tenant.id=ta.company_id');
         $data_list = $query->order('ta.update_time', 'desc')
             ->field([
-                'ta.*','app.logo','app.desc','app.name','app.title','app.admin_url','app.admin_url_type',
+                'ta.*','app.logo','app.desc','app.name','app.title','app.tenant_url','app.tenant_url_type',
                 'tenant.realname', 'tenant.mobile','tenant.username'
             ])
             ->paginate($page_size);

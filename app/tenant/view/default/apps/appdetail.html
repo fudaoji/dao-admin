@@ -19,13 +19,17 @@
                 <div class="logo" style="background-image: url({$data.logo});"></div>
             </div>
             <div class="layui-col-xs10">
-                <p class="title">{$data.name}</p>
-                <p class="version">版本号：{$data.version}</p>
+                <p class="title">{$data.title}</p>
+                <p class="version">{$data.desc}</p>
             </div>
         </div>
         <div class="price-div">
             <p>价格：<span class="price">{$data.price > 0 ? '¥'.$data.price : '免费'}</span></p>
             <p>服务时长： 1年</p>
+        </div>
+        <div class="layui-row layui-col-space20">
+            <div class="layui-col-xs2 tr">版本：</div>
+            <div class="layui-col-xs10">{$data.version}</div>
         </div>
         <div class="layui-row layui-col-space20">
             <div class="layui-col-xs2 tr">销量：</div>

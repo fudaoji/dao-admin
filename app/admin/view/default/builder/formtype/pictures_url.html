@@ -61,8 +61,8 @@
                 ,url: '{:url("uploader/picturePost")}'
                 ,multiple: true
                 ,accept: 'image' //允许上传的文件类型
-                ,size: "{$config.image_size ? $config.image_size/1000 : 2048}" //最大允许上传的文件大小
-                ,exts: "{$config.image_ext ? $config.image_ext : 'jpg,png,jpeg'}".split(',').join('|')
+                ,size: "{$form['options']['size'] ? $form['options']['size'] : (dao_config('system.upload.image_size') ? dao_config('system.upload.image_size')/1000 : 2048)}" //最大允许上传的文件大小
+                ,exts: "{$form['options']['ext'] ? $form['options']['ext'] : (dao_config('system.upload.image_ext') ? dao_config('system.upload.image_ext') : 'jpg,png,jpeg')}".split(',').join('|')
                 ,before: function () {
                     upload_index = layer.load(1);
                 }

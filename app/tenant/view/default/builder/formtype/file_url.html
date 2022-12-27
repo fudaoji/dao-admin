@@ -32,8 +32,8 @@
                 ,url: '{:url("uploader/filePost")}'
                 ,multiple: false
                 ,accept: 'file' //允许上传的文件类型
-                ,size: "{$form['options']['size'] ? $form['options']['size'] : (config('system.upload.file_size') ? config('system.upload.file_size')/1000 : 10240)}" //最大允许上传的文件大小
-                ,exts: "{$form['options']['ext'] ? $form['options']['ext'] : (config('system.upload.file_ext') ? config('system.upload.file_ext') : 'jpg,gif,png,jpeg,zip,rar,tar,gz,7z,doc,docx,txt,xml,mp3,mp4,xls,xlsx,pdf,tar.gz')}".split(',').join('|')
+                ,size: "{$form['options']['size'] ? $form['options']['size'] : (dao_config('system.upload.file_size') ? dao_config('system.upload.file_size')/1000 : 10240)}" //最大允许上传的文件大小
+                ,exts: "{$form['options']['ext'] ? $form['options']['ext'] : (dao_config('system.upload.file_ext') ? dao_config('system.upload.file_ext') : 'jpg,gif,png,jpeg,zip,rar,tar,gz,7z,doc,docx,txt,xml,mp3,mp4,xls,xlsx,pdf,tar.gz')}".split(',').join('|')
                 ,before: function () {
                     upload_index = layer.load(1);
                 }

@@ -25,7 +25,6 @@ class FaconfigInitialize implements MiddlewareInterface
          * 修改了think-orm源码： https://github.com/top-think/think-orm/issues/372
          */
         Db::setCache(Cache::store());
-
         Setting::instance()->settings();
         return $handler($request);
     }

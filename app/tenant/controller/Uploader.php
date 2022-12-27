@@ -12,6 +12,7 @@ namespace app\tenant\controller;
 use app\common\model\Setting;
 use app\common\service\Upload;
 use app\TenantController;
+use plugin\wechat\app\service\Setting as SettingService;
 
 class Uploader extends TenantController
 {
@@ -100,5 +101,27 @@ class Uploader extends TenantController
         }
 
         return json($return);
+    }
+
+    /**
+     * 上传文件到根目录
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    public function fileToRootPost(){
+        if(request()->isPost()){
+            try {
+                // 获取表单上传文件 例如上传了001.jpg
+                $file = request()->file('file');
+                if(! $file->isValid()){
+                    return $this->error("文件非法!: " . $file->getUploadErrorCode());
+                }
+                $file_path = '/'.$file->getUploadName();
+                // 移动到服务器的上传目录 并且使用原文件名
+                $file->move(public_path().$file_path);
+                return $this->success('上传成功', '', ['src' => $file_path]);
+            }catch (\Exception $e){
+                return $this->error('文件上传错误!:' . $e->getMessage());
+            }
+        }
     }
 }
