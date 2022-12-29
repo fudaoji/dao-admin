@@ -1,7 +1,7 @@
 {extend name="default:layout:base" /}
 
 {block name="main"}
-<div class="layui-row layui-col-space30">
+<div class="layui-row layui-col-space30" style="margin-top: -5px;">
     <div class="layui-col-xs5">
         <!--应用快照-->
         <div class="layui-carousel" id="snapshot">
@@ -15,10 +15,10 @@
     <div class="layui-col-xs7 info">
         <!--应用信息参数-->
         <div class="layui-row layui-col-space20">
-            <div class="layui-col-xs2 tr">
+            <div class="layui-col-xs3">
                 <div class="logo" style="background-image: url({$data.logo});"></div>
             </div>
-            <div class="layui-col-xs10">
+            <div class="layui-col-xs9">
                 <p class="title">{$data.title}</p>
                 <p class="version">{$data.desc}</p>
             </div>

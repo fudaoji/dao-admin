@@ -125,6 +125,26 @@ class BaseModel extends Model
     }
 
     /**
+     * 模型新增数据
+     * @param array $data
+     * @param array $allowField
+     * @param bool $replace
+     * @param string $suffix
+     * Author: fudaoji<fdj@kuryun.cn>
+     * @return array
+     */
+    public function createOne(array $data)
+    {
+        unset($data['__token__']);
+        if($this->autoWriteTimestamp){
+            $this->createTime && empty($data[$this->createTime]) && $data[$this->createTime] = time();
+            $this->updateTime && empty($data[$this->updateTime]) && $data[$this->updateTime] = time();
+        }
+        $data[$this->pk] = $this->insertGetId($data);
+        return $data;
+    }
+
+    /**
      * 数据库的更新，保存当前数据对象
      * @access public
      * @param array  $data     数据

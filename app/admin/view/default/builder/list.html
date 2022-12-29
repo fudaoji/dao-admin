@@ -145,17 +145,51 @@
 
         {notempty name="right_button_list"}
         <script type="text/html" id="right-btns">
-            <div class="layui-btn-group">
-            {foreach $right_button_list as $button}
-            <button type="button" {$button['attribute']|raw} >{$button['text']??$button['title']}</button>&nbsp;
-            {/foreach}
+            {if count($right_button_list) > 3}
+            <div class="layui-row table-ops">
+                <div class="layui-col-xs8 text-right">
+                    <div class="layui-btn-group">
+                        {foreach $right_button_list as $k => $button}
+                        {if $k < 2}
+                        <button type="button" {$button['attribute']|raw} >{$button['text']??$button['title']}</button>&nbsp;
+                        {/if}
+                        {/foreach}
+                    </div>
+                </div>
+                <div class="layui-col-xs4 text-left">
+                    <ul class="layui-menu">
+                        <li class="layui-menu-item-group layui-menu-item-up">
+                            <div class="layui-menu-body-title layui-btn layui-btn-xs layui-btn-primary">
+                                更多<i class="layui-icon layui-icon-down"></i>
+                            </div>
+                            <ul>
+                                {foreach $right_button_list as $k => $button}
+                                {if $k > 1}
+                                <li><button type="button" {$button['attribute']|raw} >{$button['text']??$button['title']}</button></li>
+                                {/if}
+                                {/foreach}
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
             </div>
+            {else/}
+            <div class="layui-btn-group">
+                {foreach $right_button_list as $button}
+                <button type="button" {$button['attribute']|raw} >{$button['text']??$button['title']}</button>&nbsp;
+                {/foreach}
+            </div>
+            {/if}
         </script>
         {/notempty}
     </div>
 </div>
 
 <style>
+    .table-ops .layui-menu{margin: 0;background: none;}
+    .table-ops .layui-menu li{padding: 0;line-height: 20px;}
+    .table-ops .layui-menu .layui-menu-item-group > ul{margin: 0;}
+    .table-ops .layui-menu-item-group .layui-menu-body-title{padding-right: 15px;color: #666;}
     .layui-table-total{padding: 8px;}
 </style>
 {notempty name="css"}
@@ -486,6 +520,20 @@
             }
 
             switch (layEvent) {
+                case 'appConsole':
+                    if(! data.admin_url){
+                        layer.msg("无需配置");
+                        return false;
+                    }
+                    if(data.admin_url_type === 1){
+                        miniTab.openNewTabByIframe({
+                            href: data.admin_url,
+                            title: '应用配置',
+                        });
+                    }else{
+                        window.open(data.admin_url);
+                    }
+                    return false;
                 case 'edit':
                     var index = layer.open({
                         title: title,

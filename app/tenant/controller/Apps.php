@@ -180,4 +180,34 @@ class Apps extends TenantController
         ];
         return $this->show($assign);
     }
+    public function overtime(){
+        $company_id = TenantService::getCompanyId();
+        $page_size = 12;
+        $status = input('status', -1);
+        $search_key = input('search_key', '');
+        $where = [
+            ['ta.deadline', '<=', time()],
+            ['ta.company_id', '=', $company_id],
+        ];
+
+        $search_key && $where[] = ['app.title|app.desc', 'like', '%'.$search_key.'%'];
+        $query = $this->tenantAppM->alias('ta')
+            ->where($where)
+            ->join('app app', 'app.name=ta.app_name')
+            ->join('tenant tenant', 'tenant.id=ta.company_id');
+        $data_list = $query->order('ta.update_time', 'desc')
+            ->field([
+                'ta.*','app.logo','app.desc','app.name','app.title','app.tenant_url','app.tenant_url_type',
+                'tenant.realname', 'tenant.mobile','tenant.username'
+            ])
+            ->paginate($page_size);
+        $page = $data_list->appends(['status' => $status, 'search_key' => $search_key])->render();
+
+        $assign = [
+            'data_list' => $data_list,
+            'search_key' => $search_key,
+            'page' => $page
+        ];
+        return $this->show($assign);
+    }
 }

@@ -129,8 +129,9 @@ if (!function_exists('plugin_path')) {
      * @return string
      * Author: fudaoji<fdj@kuryun.cn>
      */
-    function plugin_path($plugin = '', $file = '')
+    function plugin_path($plugin = null, $file = '')
     {
+        is_null($plugin) && $plugin = request()->plugin;
         return base_path() . DIRECTORY_SEPARATOR . 'plugin/' . $plugin . ($file ? DIRECTORY_SEPARATOR . $file : '');
     }
 }
@@ -143,8 +144,9 @@ if (!function_exists('dao_log')) {
      * @return \Monolog\Logger
      * Author: fudaoji<fdj@kuryun.cn>
      */
-    function dao_log($plugin = '', $handler = 'default')
+    function dao_log($plugin = null, $handler = 'default')
     {
+        is_null($plugin) && $plugin = request()->plugin;
         return Log::channel($plugin ? "plugin.{$plugin}.{$handler}" : $handler);
     }
 }
@@ -349,10 +351,10 @@ if (!function_exists('url')) {
      * @param string $plugin
      * @return string
      */
-    function url(string $url, array $vars = [], string $app = '', $plugin = ''): string
+    function url(string $url, array $vars = [], string $app = '', $plugin = null): string
     {
         $app = $app ?: request()->app;
-        $plugin = $plugin ?: request()->plugin;
+        is_null($plugin) && $plugin = request()->plugin;
         $url = trim($url, '/');
         $path_arr = explode('/', $url);
         switch (count($path_arr)){

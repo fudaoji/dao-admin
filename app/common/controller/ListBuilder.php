@@ -113,12 +113,13 @@ class ListBuilder extends BaseController
      */
     public function addTopButton($type, $attribute = null) {
         $set_status_url = 'setstatus';
+        $my_attribute = ['class' => ''] ;
         switch ($type) {
             case 'addnew':  // 添加新增按钮
                 // 预定义按钮属性以简化使用
                 $my_attribute['text'] = '新增';
                 $my_attribute['title'] = '新增';
-                $my_attribute['class'] = 'layui-btn layui-btn-normal layui-btn-sm';
+                $my_attribute['class'] = 'layui-btn-normal';
                 $my_attribute['lay-event']  = 'add';
                 $my_attribute['href']  = url('add');
 
@@ -134,7 +135,7 @@ class ListBuilder extends BaseController
             case 'delete': // 添加删除按钮(我没有反操作，删除了就没有了，就真的找不回来了)
                 // 预定义按钮属性以简化使用
                 $my_attribute['title'] = '删除';
-                $my_attribute['class'] = 'layui-btn layui-btn-danger layui-btn-sm';
+                $my_attribute['class'] = 'layui-btn-danger ';
                 $my_attribute['lay-event']  = 'delete';
                 $my_attribute['href']  = url($set_status_url, ['status' => 'delete']);
 
@@ -148,7 +149,7 @@ class ListBuilder extends BaseController
                 $my_attribute['title'] = '批量启用';
                 $my_attribute['lay-event']  = 'resume';
                 $my_attribute['target-form'] = 'ids';
-                $my_attribute['class'] = 'layui-btn layui-btn-sm data-ajax data-confirm';
+                $my_attribute['class'] = ' data-ajax data-confirm';
                 $my_attribute['href']  = url($set_status_url, ['status' => 'resume']);
 
                 // 如果定义了属性数组则与默认的进行合并，详细使用方法参考上面的新增按钮
@@ -161,7 +162,7 @@ class ListBuilder extends BaseController
                 $my_attribute['lay-event']  = 'forbid';
                 $my_attribute['title'] = '批量禁用';
                 $my_attribute['target-form'] = 'ids';
-                $my_attribute['class'] = 'layui-btn layui-btn-warm layui-btn-sm data-ajax data-confirm';
+                $my_attribute['class'] = 'layui-btn-warm data-ajax data-confirm';
                 $my_attribute['href']  = url($set_status_url, ['status' => 'forbid']);
 
                 // 如果定义了属性数组则与默认的进行合并，详细使用方法参考上面的新增按钮
@@ -172,7 +173,6 @@ class ListBuilder extends BaseController
             case 'self': //添加自定义按钮(第一原则使用上面预设的按钮，如果有特殊需求不能满足则使用此自定义按钮方法)
                 // 预定义按钮属性以简化使用
                 $my_attribute['lay-event'] = 'self';
-                $my_attribute['class'] = 'layui-btn layui-btn-sm';
 
                 // 如果定义了属性数组则与默认的进行合并
                 if ($attribute && is_array($attribute)) {
@@ -182,6 +182,7 @@ class ListBuilder extends BaseController
                 }
                 break;
         }
+        $my_attribute['class'] .= ' layui-btn layui-btn-sm ';
         $node = explode('?', $my_attribute['href'])[0];
         ($this->_auth['super'] || in_array($node, $this->_auth['auth_list'])) && $this->_top_button_list[] = $my_attribute;
         return $this;
@@ -263,12 +264,13 @@ class ListBuilder extends BaseController
      */
     public function addRightButton($type, $attribute = null) {
         $set_status_url = 'setstatus';
+        $my_attribute = ['class' => ''] ;
         switch ($type) {
             case 'edit':  // 编辑按钮
                 // 预定义按钮属性以简化使用
                 $my_attribute['text'] = '编辑';
                 $my_attribute['title'] = '编辑';
-                $my_attribute['class'] = 'layui-btn layui-btn-normal layui-btn-xs';
+                $my_attribute['class'] = 'layui-btn-normal';
                 $my_attribute['lay-event']  = 'edit';
                 $my_attribute['href']  = url('edit', ['id' => '__data_id__'], '');
 
@@ -285,7 +287,7 @@ class ListBuilder extends BaseController
             case 'delete':
                 // 预定义按钮属性以简化使用
                 $my_attribute['title'] = '删除';
-                $my_attribute['class'] = 'layui-btn layui-btn-danger layui-btn-xs';
+                $my_attribute['class'] = 'layui-btn-danger';
                 $my_attribute['lay-event']  = 'delete';
                 $my_attribute['href']  = url($set_status_url, ['status' => 'delete']);
 
@@ -297,7 +299,7 @@ class ListBuilder extends BaseController
             case 'forbid':  // 改变记录状态按钮，会更具数据当前的状态自动选择应该显示启用/禁用
                 //预定义按钮属
                 $my_attribute['title'] = '启用/禁用';
-                $my_attribute['class'] = 'layui-btn layui-btn-warm layui-btn-xs';
+                $my_attribute['class'] = 'layui-btn-warm';
                 $my_attribute['lay-event']  = 'forbid';
                 $my_attribute['href']  = url($set_status_url, ['status' => 'forbid']);
 
@@ -308,7 +310,6 @@ class ListBuilder extends BaseController
                 break;
             case 'self':
                 // 预定义按钮属性以简化使用
-                $my_attribute['class'] = 'layui-btn layui-btn-xs';
                 $my_attribute['lay-event'] = 'self';
 
                 // 如果定义了属性数组则与默认的进行合并
@@ -319,6 +320,7 @@ class ListBuilder extends BaseController
                 }
                 break;
         }
+        $my_attribute['class'] .= ' layui-btn layui-btn-xs ';
         // 这个按钮定义好了把它丢进按钮池里
         $node = explode('?', $my_attribute['href'])[0];
         ($this->_auth['super'] || in_array($node, $this->_auth['auth_list'])) && $this->_right_button_list[] = $my_attribute;

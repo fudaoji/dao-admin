@@ -11,6 +11,7 @@ namespace app\admin\controller;
 
 use app\AdminController;
 use app\admin\service\Auth;
+use Webman\Http\Request;
 
 class Admin extends AdminController
 {
@@ -158,7 +159,7 @@ class Admin extends AdminController
         if(!empty($post_data['password'])){
             $post_data['password'] = fa_generate_pwd($post_data['password']);
         }
-        return parent::savePost($url, $post_data);
+        return parent::savePost($request, $url, $post_data);
     }
 
     /**

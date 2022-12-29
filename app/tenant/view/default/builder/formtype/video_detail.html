@@ -13,7 +13,7 @@
                class="layui-input"
                name="url"
                required
-               ／>
+               >
         <div class="layui-btn-group" style="margin-left: -5px;margin-top: -3px;">
             <a href="javascript:;" class="layui-btn layui-btn-primary" id="picker">选择视频</a>
             <a href="{$form['options']['url'] ?? ''}" class="layui-btn <?=empty($form['options']['url']) ? 'hide' : '';?>" id="preview" style="border-left: none;">预览</a>
@@ -48,8 +48,8 @@
             ,url: '{:url("uploader/filePost")}'
             ,multiple: false
             ,accept: 'file' //允许上传的文件类型
-            ,size: "{:config('system.upload.video_size')/1000}" //最大允许上传的文件大小
-            ,exts: "{:config('system.upload.video_ext')}".split(',').join('|')
+            ,size: "{$form['options']['size'] ? $form['options']['size'] : (dao_config('system.upload.video_size') ? dao_config('system.upload.video_size')/1000 : 2048)}" //最大允许上传的文件大小
+            ,exts: "{$form['options']['ext'] ? $form['options']['ext'] : (dao_config('system.upload.video_ext') ? dao_config('system.upload.video_ext') : 'mp4')}".split(',').join('|')
             ,before: function () {
                 upload_index = layer.load(1);
             }
