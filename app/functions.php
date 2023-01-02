@@ -1,12 +1,75 @@
 <?php
 
 use support\Log;
+use support\Response;
 use think\facade\Cache;
 use think\helper\Str;
 use ky\Faconfig;
 use think\Model;
 
 require_once app_path() . DIRECTORY_SEPARATOR . 'define.php';
+
+if(!function_exists('success')){
+    function success($msg = '', string $url = '', $data = '', int $code = 1, int $wait = 3, array $header = []): Response
+    {
+        if (is_null($url) && \request()->header('referer')) {
+            $url = \request()->header('referer');
+        }
+        if($msg){
+            $msg = dao_trans($msg);
+        }
+        $result = [
+            'code'  => $code,
+            'msg'   => $msg,
+            'data'  => $data,
+            'url'   => (string)$url,
+            'wait'  => $wait,
+        ];
+        $type = request()->isAjax() || request()->acceptJson() ? 'json' : 'html';
+        if ($type == 'html') {
+            return view(config('app.dispatch_success'), $result);
+        }
+
+        return json($result);
+    }
+}
+
+if (!function_exists('error')) {
+    /**
+     * @param string $msg
+     * @param null $url
+     * @param string $data
+     * @param int $code
+     * @param int $wait
+     * @param array $header
+     * @return Response
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    function error($msg = '', $url = null, $data = '', int $code = 0, int $wait = 3, array $header = []): Response
+    {
+        if (is_null($url)) {
+            $url = request()->isAjax() ? '' : 'javascript:history.back(-1);';
+        }
+
+        if ($msg) {
+            $msg = dao_trans($msg);
+        }
+        $result = [
+            'code' => $code,
+            'msg' => $msg,
+            'data' => $data,
+            'url' => (string)$url,
+            'wait' => $wait,
+        ];
+
+        $type = request()->isAjax() || request()->acceptJson() ? 'json' : 'html';
+        if ($type == 'html') {
+            return view(config('app.dispatch_error'), $result);
+        }
+
+        return json($result);
+    }
+}
 
 if (!function_exists('get_server_ip')) {
     /**

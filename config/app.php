@@ -27,7 +27,7 @@ return [
     'controller_reuse' => true,
 
     // 默认应用
-    'default_app' => 'admin',
+    'default_app' => 'tenant',
     // 禁止URL访问的应用列表（自动多应用模式有效）
     'deny_app_list' => ['common'],
 
