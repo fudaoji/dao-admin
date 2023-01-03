@@ -49,10 +49,11 @@
         <div class="layui-row">
             <div id="app-body">
                 <div id="apps">
+                    {if count($data_list)}
                     <form class="layui-form" action="">
                         <div class="layui-row">
                             {volist name="data_list" id="v"}
-                            <div class="layui-col-xs4 layui-col-md3">
+                            <div class="layui-col-xs4 layui-col-md3 layui-col-lg2">
                                 <div class="apps-volist">
                                     <div class="apps-icon">
                                         <img src="{$v.logo}">
@@ -93,9 +94,13 @@
                             {/volist}
                         </div>
                     </form>
+                    <div id="page">{$page|raw}</div>
+                    {else/}
+                    <div class="text-center">暂无数据！</div>
+                    {/if}
                 </div>
             </div>
-            <div id="page">{$page|raw}</div>
+
         </div>
     </div>
 </div>

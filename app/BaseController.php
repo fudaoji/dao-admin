@@ -19,18 +19,13 @@ class BaseController
      */
     protected $app;
 
-    /**
-     * 获取访问来源
-     * @var null
-     */
-    public $referer = null;
     protected $theme = 'default';
 
     protected $captchaKey = 'captcha';
 
     public function __construct()
     {
-        $this->referer = \request()->header('referer');
+
     }
 
     /**

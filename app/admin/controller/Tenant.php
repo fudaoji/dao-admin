@@ -36,7 +36,9 @@ class Tenant extends AdminController
     public function index(){
         if(request()->isPost()){
             $post_data = input('post.');
-            $where = [];
+            $where = [
+                ['company_id', '=', 0]
+            ];
             !empty($post_data['search_key']) && $where[] = ['username|mobile|realname', 'like', '%'.$post_data['search_key'].'%'];
 
             //非超管
@@ -69,7 +71,7 @@ class Tenant extends AdminController
             ->addTableColumn(['title' => '状态', 'field' => 'status', 'type' => 'switch', 'minWidth' => 80])
             ->addTableColumn(['title' => '操作', 'minWidth' => 200, 'type' => 'toolbar'])
             ->addRightButton('edit')
-            ->addRightButton('edit', ['title' => '修改密码','class' => 'layui-btn layui-btn-warm layui-btn-xs','href' => url('setPassword', ['id' => '__data_id__'])])
+            ->addRightButton('edit', ['text' => '修改密码', 'title' => '修改密码','class' => 'layui-btn layui-btn-warm layui-btn-xs','href' => url('setPassword', ['id' => '__data_id__'])])
             ->addRightButton('delete');
         return $builder->show();
     }
@@ -99,7 +101,7 @@ class Tenant extends AdminController
         if(! $data){
             return $this->error('id参数错误');
         }
-        $groups = $this->groupM->getGroups();
+
         //使用FormBuilder快速建立表单页面。
         $builder = new FormBuilder();
         $builder->setMetaTitle('编辑')  //设置页面标题
@@ -150,14 +152,16 @@ class Tenant extends AdminController
         if(!empty($post_data['password'])){
             $post_data['password'] = fa_generate_pwd($post_data['password']);
         }
-        $exits_where = [['username', '=',$post_data['username']]];
-        if(! empty($post_data[$this->pk])){
-            $exits_where[] = ['id', '<>', $post_data[$this->pk]];
-        }
-        if($this->model->where($exits_where)->count()){
-            return $this->error(dao_trans('该账号已存在'));
+        if(!empty($post_data['username'])){
+            $exits_where = [['username', '=',$post_data['username']]];
+            if(! empty($post_data[$this->pk])){
+                $exits_where[] = ['id', '<>', $post_data[$this->pk]];
+            }
+            if($this->model->where($exits_where)->count()){
+                return $this->error(dao_trans('该账号已存在'));
+            }
         }
 
-        return parent::savePost($url, $post_data);
+        return parent::savePost($request, $url, $post_data);
     }
 }
