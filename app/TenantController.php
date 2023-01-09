@@ -15,12 +15,6 @@ class TenantController extends BaseController
     protected $model = null;
 
     /**
-     * 控制器/类名
-     * @var string
-     */
-    public $controller = null;
-
-    /**
      * 控制器方法
      * @var string
      */
@@ -53,7 +47,7 @@ class TenantController extends BaseController
     }
 
     /**
-     * 二招条件
+     * 商户id条件
      * @param string $alias
      * @param array $tenant_info
      * @return array
@@ -65,12 +59,7 @@ class TenantController extends BaseController
     public function tenantWhere($alias = '', $tenant_info = []){
         $alias = $alias ? $alias.'.' : '';
         $tenant_info = empty($tenant_info) ? $this->tenantInfo() : $tenant_info;
-        if(TenantService::getLevel($tenant_info) == 3){
-            $where = [$alias . 'tenant_id', '=', $tenant_info['id']];
-        }else{
-            $where = [$alias . 'tenant_id', 'in', TenantService::getTeamIds('id','', $tenant_info)];
-        }
-        return $where;
+        return [$alias . 'company_id', '=', TenantService::getCompanyId($tenant_info)];
     }
 
     /**
@@ -98,7 +87,9 @@ class TenantController extends BaseController
 
         $ids = (array) $ids;
         if($status == 'delete'){
-            if($this->model->where([[$this->pk, 'in', $ids]])->delete()){
+            $where = [[$this->pk, 'in', $ids]];
+            $this->insertCompanyId && $where[] = $this->tenantWhere();
+            if($this->model->where($where)->delete()){
                 return $this->success('删除成功');
             }else{
                 return $this->error('删除失败');
@@ -110,6 +101,7 @@ class TenantController extends BaseController
                 'error'   => '操作失败！',
             ];
             $data['status'] = abs(input('val', 0) - 1);
+            $this->insertCompanyId && $data['company_id'] = TenantService::getCompanyId();
             foreach($ids as $id){
                 $data[$this->pk] = $id;
                 $arr[] = $data;
@@ -124,12 +116,13 @@ class TenantController extends BaseController
 
     /**
      * 保存数据
+     * @param Request $request
      * @param string $jump
      * @param array $data
      * @return mixed
      */
     public function savePost(Request $request, $jump = '', $data = []){
-        $post_data = $data ? $data : request()->post();
+        $post_data = $data ? $data : $request->post();
         try {
             if(empty($post_data[$this->pk])){
                 $this->insertCompanyId && $post_data['company_id'] = TenantService::getCompanyId();

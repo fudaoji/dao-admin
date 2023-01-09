@@ -81,7 +81,7 @@ class Index extends Base
 				session(['db_config' => $db]);
 			}
 			if(empty($post_data['cache_type'])){
-                $this->error('请选择缓存类型');
+                return $this->error('请选择缓存类型');
             }
 			session(['cache_type' => $post_data['cache_type']]);
             session(['cache_prefix' => $post_data['cache_prefix']]);
@@ -157,6 +157,15 @@ class Index extends Base
         }
     }
 
+    /**
+     * 轮询安装信息
+     * @return \support\Response
+     * @throws \Psr\SimpleCache\InvalidArgumentException
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
 	public function getMsg(){
         if(request()->isPost()){
             $msg_list = (array)cache('install_msg');

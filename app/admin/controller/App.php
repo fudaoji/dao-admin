@@ -153,6 +153,10 @@ class App extends AdminController
                 }
                 $this->appInfoM->insert($insert);
                 $extra_msg = ',请先进行应用相关配置后再上架。';
+                //reload system while in product development
+                if(! config('app.debug')){
+                    system_reload();
+                }
                 return $this->success('安装应用成功' . $extra_msg);
             }else{
                 return $this->error('安装应用失败');

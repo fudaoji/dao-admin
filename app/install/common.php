@@ -2,6 +2,14 @@
 
 define('IS_WRITE', false);
 
+/**
+ *
+ * @throws \Psr\SimpleCache\InvalidArgumentException
+ * @throws \think\db\exception\DataNotFoundException
+ * @throws \think\db\exception\DbException
+ * @throws \think\db\exception\ModelNotFoundException
+ * Author: fudaoji<fdj@kuryun.cn>
+ */
 function lockFile(){
     show_msg("安装完成");
 }
@@ -171,6 +179,11 @@ function write_config()
  * @param $db
  * @param string $prefix
  * Author: fudaoji<fdj@kuryun.cn>
+ * @return bool
+ * @throws \Psr\SimpleCache\InvalidArgumentException
+ * @throws \think\db\exception\DataNotFoundException
+ * @throws \think\db\exception\DbException
+ * @throws \think\db\exception\ModelNotFoundException
  */
 function create_tables($db, $prefix = '')
 {
@@ -180,7 +193,7 @@ function create_tables($db, $prefix = '')
     //读取SQL文件
     if(!is_file($sql_file)){
         show_msg($sql_file . ' 数据库文件不存在');
-        exit;
+        return false;
     }
     $sql = file_get_contents($sql_file);
     $sql = str_replace("\r", "\n", $sql);
@@ -226,6 +239,10 @@ function create_tables($db, $prefix = '')
  * @param $prefix
  * @param $admin
  * Author: fudaoji<fdj@kuryun.cn>
+ * @throws \Psr\SimpleCache\InvalidArgumentException
+ * @throws \think\db\exception\DataNotFoundException
+ * @throws \think\db\exception\DbException
+ * @throws \think\db\exception\ModelNotFoundException
  */
 function register_administrator($db, $prefix, $admin)
 {
@@ -240,6 +257,10 @@ function register_administrator($db, $prefix, $admin)
  * @param $msg
  * @param string $class
  * Author: fudaoji<fdj@kuryun.cn>
+ * @throws \Psr\SimpleCache\InvalidArgumentException
+ * @throws \think\db\exception\DataNotFoundException
+ * @throws \think\db\exception\DbException
+ * @throws \think\db\exception\ModelNotFoundException
  */
 function show_msg($msg, $class = 'primary')
 {

@@ -173,6 +173,7 @@ class ListBuilder extends BaseController
             case 'self': //添加自定义按钮(第一原则使用上面预设的按钮，如果有特殊需求不能满足则使用此自定义按钮方法)
                 // 预定义按钮属性以简化使用
                 $my_attribute['lay-event'] = 'self';
+                $my_attribute['text'] = $my_attribute['title'] = '自定义';
 
                 // 如果定义了属性数组则与默认的进行合并
                 if ($attribute && is_array($attribute)) {
@@ -183,7 +184,7 @@ class ListBuilder extends BaseController
                 break;
         }
         $my_attribute['class'] .= ' layui-btn layui-btn-sm ';
-        $node = explode('?', $my_attribute['href'])[0];
+        $node = empty($my_attribute['href']) ? '' : explode('?', $my_attribute['href'])[0];
         ($this->_auth['super'] || in_array($node, $this->_auth['auth_list'])) && $this->_top_button_list[] = $my_attribute;
         return $this;
     }

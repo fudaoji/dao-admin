@@ -15,7 +15,7 @@
 use support\Request;
 
 return [
-    'debug' => getenv('APP_DEBUG') ? true : true,
+    'debug' => getenv('APP_DEBUG') ? true : false,
     'app_key' => getenv('APP_KEY') ?? '123456',
     'version' => '0.1',
     'error_reporting' => E_ALL,

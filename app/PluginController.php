@@ -48,7 +48,8 @@ class PluginController extends BaseController
                     break;
             }
         }
-        $template = $app . DIRECTORY_SEPARATOR . $this->theme. DIRECTORY_SEPARATOR. $controller . DIRECTORY_SEPARATOR . $action;
+
+        $template = strtolower($app . DIRECTORY_SEPARATOR . $this->theme. DIRECTORY_SEPARATOR. $controller . DIRECTORY_SEPARATOR . $action);
         $assign['controller'] = $controller;
         $assign['action'] = $action;
         $assign['app'] = request()->plugin;

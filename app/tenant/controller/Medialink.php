@@ -1,15 +1,16 @@
 <?php
 
 namespace app\tenant\controller;
-use app\common\model\MediaVideo as VideoM;
+
+use app\common\model\MediaLink as LinkM;
 use app\common\service\Media as MediaService;
 use app\common\service\Tenant as TenantService;
 use app\TenantController;
 
-class Mediavideo extends TenantController
+class Medialink extends TenantController
 {
     /**
-     * @var VideoM
+     * @var LinkM
      */
     protected $model;
 
@@ -19,7 +20,7 @@ class Mediavideo extends TenantController
     public function __construct()
     {
         parent::__construct();
-        $this->model = new VideoM();
+        $this->model = new LinkM();
     }
 
     public function index()
@@ -45,15 +46,17 @@ class Mediavideo extends TenantController
         }
 
         $builder = new ListBuilder();
-        $builder->setTabNav(MediaService::mediaTabs(), MediaService::VIDEO)
+        $builder->setTabNav(MediaService::mediaTabs(), MediaService::LINK)
             ->setSearch([
-            ['type' => 'text', 'name' => 'search_key', 'title' => '关键词', "placeholder" => '名称']
+            ['type' => 'text', 'name' => 'search_key', 'title' => '关键词', "tip" => '标题、描述']
         ])
             ->addTopButton('addnew')
-            ->addTableColumn(['title' => '名称', 'field' => 'title', 'minWidth' => 100])
-            ->addTableColumn(['title' => '视频', 'field' => 'url', 'minWidth' => 120, "type" => 'video'])
-            ->addTableColumn(['title' => '创建时间', 'field' => 'create_time',  'minWidth' => 200])
-            ->addTableColumn(['title' => '修改时间', 'field' => 'update_time',  'minWidth' => 200])
+            ->addTableColumn(['title' => '标题', 'field' => 'title', 'minWidth' => 100])
+            ->addTableColumn(['title' => '描述', 'field' => 'desc', 'minWidth' => 200])
+            ->addTableColumn(['title' => '封面', 'field' => 'image_url', 'minWidth' => 100, "type" => 'picture'])
+            ->addTableColumn(['title' => '跳转链接', 'field' => 'url', 'minWidth' => 200])
+            ->addTableColumn(['title' => '创建时间', 'field' => 'create_time', 'minWidth' => 180])
+            ->addTableColumn(['title' => '修改时间', 'field' => 'update_time',  'minWidth' => 180])
             ->addTableColumn(['title' => '操作', 'minWidth' => 120, 'type' => 'toolbar'])
             ->addRightButton('edit')
             ->addRightButton('delete');
@@ -69,9 +72,12 @@ class Mediavideo extends TenantController
     {
         // 使用FormBuilder快速建立表单页面
         $builder = new FormBuilder();
-        $builder->setMetaTitle('新增视频')
+        $builder->setMetaTitle('新增分享链接')
             ->setPostUrl(url('savePost'))
-            ->addFormItem('video', 'video_detail', '上传视频', '上传视频');
+            ->addFormItem('title', 'text', '标题', '100字内', [], 'required maxlength=150')
+            ->addFormItem('desc', 'textarea', '描述', '200字内', [], 'required maxlength=200')
+            ->addFormItem('image_url', 'choose_picture', '图片', '图片比例1:1', [], 'required')
+            ->addFormItem('url', 'text', '跳转链接', '跳转链接', [], 'required');
 
         return $builder->show();
     }
@@ -88,10 +94,13 @@ class Mediavideo extends TenantController
 
         // 使用FormBuilder快速建立表单页面
         $builder = new FormBuilder();
-        $builder->setMetaTitle('编辑')
+        $builder->setMetaTitle('编辑分享链接')
             ->setPostUrl(url('savePost'))
             ->addFormItem('id', 'hidden', 'ID', 'ID')
-            ->addFormItem('video', 'video_detail', '上传视频', '上传视频', $data)
+            ->addFormItem('title', 'text', '标题', '100字内', [], 'required maxlength=100')
+            ->addFormItem('desc', 'textarea', '描述', '200字内', [], 'required maxlength=150')
+            ->addFormItem('image_url', 'choose_picture', '图片', '图片比例1:1', [], 'required')
+            ->addFormItem('url', 'text', '跳转链接', '跳转链接', [], 'required')
             ->setFormData($data);
 
         return $builder->show();

@@ -9,6 +9,21 @@ use think\Model;
 
 require_once app_path() . DIRECTORY_SEPARATOR . 'define.php';
 
+if(!function_exists('camel_case')){
+    /**
+     * 将下划线命名转换为驼峰式命名
+     * @param string $str
+     * @param boolean $ucfirst
+     * @return string
+     * @author fudaoji<fdj@kuryun.cn>
+     */
+    function camel_case($str , $ucfirst = false) {
+        $str = ucwords(str_replace('_', ' ', $str));
+        $str = str_replace(' ', '', lcfirst($str));
+        return $ucfirst ? ucfirst($str) : $str;
+    }
+}
+
 if(!function_exists('success')){
     function success($msg = '', string $url = '', $data = '', int $code = 1, int $wait = 3, array $header = []): Response
     {

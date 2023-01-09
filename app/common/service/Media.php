@@ -9,14 +9,17 @@
 
 namespace app\common\service;
 
-
 class Media
 {
     const TEXT = "text";
     const IMAGE = "image";
     const FILE = "file";
     const VIDEO = "video";
+    const VOICE = 'voice';
+    const MUSIC = 'music';
     const LINK = "link";
+    const NEWS = 'news';
+    const APP = 'app';
 
     public static function types($id = null){
         $list = [
@@ -35,7 +38,7 @@ class Media
             self::TEXT => ['title' => '文本', 'href' => url('mediatext/index')],
             self::FILE => ['title' => '文件', 'href' => url('mediafile/index')],
             self::VIDEO => ['title' => '视频', 'href' => url('mediavideo/index')],
-            //self::LINK => ['title' => '分享链接', 'href' => url('medialink/index')]
+            self::LINK => ['title' => '分享链接', 'href' => url('medialink/index')]
         ];
     }
 }

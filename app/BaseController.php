@@ -3,6 +3,7 @@ declare (strict_types = 1);
 
 namespace app;
 
+use app\common\model\Setting;
 use Gregwar\Captcha\PhraseBuilder;
 use support\Response;
 use think\helper\Str;
@@ -25,7 +26,7 @@ class BaseController
 
     public function __construct()
     {
-
+        Setting::instance()->settings();
     }
 
     /**
