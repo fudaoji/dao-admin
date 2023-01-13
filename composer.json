@@ -64,7 +64,8 @@
       "app\\": "./app"
     },
     "files": [
-      "./support/helpers.php"
+      "./support/helpers.php",
+      "./support/functions.php"
     ],
     "psr-0" : {
       "": "extend/"

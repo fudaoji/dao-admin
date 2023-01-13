@@ -32,13 +32,6 @@ define('WEBMAN_VERSION', '1.4');
 // Project base path
 define('BASE_PATH', dirname(__DIR__));
 
-if (!function_exists('get_plugin_name')) {
-    function get_plugin_name($path, $level = 3){
-        $path_layer = explode('/', $path);
-        return $path_layer[count($path_layer) - 3];
-    }
-}
-
 /**
  * Generate paths based on given information
  * @param string $front
