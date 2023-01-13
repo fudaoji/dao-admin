@@ -9,10 +9,14 @@
 
 namespace app;
 
-
 class PluginController extends BaseController
 {
     protected $pageSize = 20;
+
+    public function __construct()
+    {
+        parent::__construct();
+    }
 
     /**
      * 统一视图

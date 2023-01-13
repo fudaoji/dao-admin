@@ -11,6 +11,7 @@ define('IS_WRITE', false);
  * Author: fudaoji<fdj@kuryun.cn>
  */
 function lockFile(){
+    file_put_contents(base_path() . '/install.lock', 'ok!');
     show_msg("安装完成");
 }
 

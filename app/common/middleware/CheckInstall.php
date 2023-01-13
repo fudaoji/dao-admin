@@ -24,7 +24,7 @@ class CheckInstall implements MiddlewareInterface
                 return redirect(url('admin/index/index'));
             }
         }else{
-            if (! file_exists(base_path() . '/.env')) {
+            if (! file_exists(base_path() . '/install.lock')) {
                 return redirect(url('install/index/index'));
             }
         }

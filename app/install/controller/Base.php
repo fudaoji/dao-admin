@@ -18,7 +18,7 @@ class Base extends BaseController
 
     public function __construct()
     {
-        parent::__construct();
+        //parent::__construct();
     }
 
     /**
@@ -34,7 +34,7 @@ class Base extends BaseController
         $assign['controller'] = strtolower(request()->getController());
         $assign['action'] = strtolower(request()->getAction());
         $assign['company'] = '厦门酷云网络科技有限公司';
-        $assign['official_web'] = 'https://kyphp.kuryun.com/';
+        $assign['official_web'] = 'http://daoadmin.kuryun.com/';
         $assign['app_name'] = 'DaoAdmin';
         $assign['install_url'] = request()->domain();
 

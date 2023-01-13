@@ -51,7 +51,6 @@ class File extends Common
         try {
             $root_path = empty($root_path) ? $path : $root_path;
             self::fileSystem($root_path)->deleteDirectory($path);
-            var_dump($path, $root_path);
             $res = true;
         } catch (FilesystemException | UnableToDeleteDirectory $e) {
             $res = $e->getMessage();

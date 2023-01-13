@@ -5,4 +5,6 @@
 /tests/tmp
 .phpunit.result.cache
 /vendor
+/plugin
+install.lock
 public/*.txt
