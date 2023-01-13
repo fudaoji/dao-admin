@@ -9,7 +9,9 @@
 
 namespace app\common\service;
 
+use Dao\Upload\Driver\Qiniu;
 use Dao\Upload\Upload as Uploader;
+use support\Request;
 
 class Upload
 {
@@ -22,9 +24,9 @@ class Upload
         self::$setting = array_merge(self::$setting, $settings);
     }
 
-    public static function instance(){
+    public static function instance($settings = []){
         if(self::$instance == null){
-            self::$instance = new self();
+            self::$instance = new self($settings);
         }
         return self::$instance;
     }
@@ -395,5 +397,24 @@ class Upload
                 ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".pdf", ".txt", ".md", ".xml"
             ] /* 列出的文件类型 */
         ];
+    }
+
+    /**
+     * 将远程文件上传到云存储
+     * @param string $url
+     * @param string $key
+     * @return bool|string
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    public static function fetchToOss($url = '', $key = ''){
+        switch (self::$setting['driver']){
+            case 'qiniu':
+                $qiniu = new Qiniu(self::driverConfig(self::$setting['driver']));
+                $key = $key ?: md5($url);
+                if($qiniu->fetch($url, $key)){
+                    return $qiniu->downLink($key);
+                }
+        }
+        return false;
     }
 }

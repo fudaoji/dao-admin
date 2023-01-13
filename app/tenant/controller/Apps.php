@@ -44,7 +44,7 @@ class Apps extends TenantController
             $post_data = input('post.');
             $app = AppService::getAppInfo($post_data['id']);
             if(!$app){
-                $this->error('参数错误');
+                return $this->error('参数错误');
             }
 
             $return = ['app' => $app];
@@ -64,6 +64,7 @@ class Apps extends TenantController
                     ]);
                 }else{
                     //todo 下单，前台走支付
+                    return $this->error('请联系客服开通！');
                 }
                 Db::commit();
                 return $this->success($msg, $url, $return);

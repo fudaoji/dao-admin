@@ -224,7 +224,7 @@ if (!function_exists('dao_log')) {
      */
     function dao_log($plugin = null, $handler = 'default')
     {
-        is_null($plugin) && $plugin = request()->plugin;
+        is_null($plugin) && request() && $plugin = request()->plugin;
         return Log::channel($plugin ? "plugin.{$plugin}.{$handler}" : $handler);
     }
 }

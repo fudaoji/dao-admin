@@ -8,7 +8,7 @@
     "high performance",
     "http service"
   ],
-  "homepage": "http://kyphp.kuryun.com",
+  "homepage": "http://daoadmin.kuryun.com",
   "license": "Apache-2.0",
   "description": "High performance HTTP Service Framework.",
   "authors": [
@@ -22,8 +22,8 @@
   "support": {
     "email": "461960962@qq.com",
     "issues": "https://gitee.com/fudaoji/dao-admin/issues",
-    "forum": "http://kyphp.kuryun.com/",
-    "wiki": "http://kyphp.kuryun.com/",
+    "forum": "http://daoadmin.kuryun.com/home/forum/index",
+    "wiki": "http://daoadmin.kuryun.com/home/guide/index",
     "source": "https://gitee.com/fudaoji/dao-admin"
   },
   "require": {
@@ -51,7 +51,9 @@
     "fudaoji/php-sms": "^1.0",
     "league/flysystem": "^2.5",
     "overtrue/wechat": "^5.30",
-    "predis/predis": "^2.0"
+    "predis/predis": "^2.0",
+    "yansongda/pay": "~3.1.0",
+    "webman/redis-queue": "^1.2"
   },
   "suggest": {
     "ext-event": "For better performance. "

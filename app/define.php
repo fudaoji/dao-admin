@@ -9,3 +9,5 @@
 
 define('SESSION_ADMIN', 'adminInfo');
 define('SESSION_TENANT', 'tenantInfo');
+
+define('QUEUE_NAME', 'daoadmin_queue');
