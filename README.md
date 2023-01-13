@@ -69,8 +69,7 @@ php start.php start -d
 
 微信交流群：
 
-添加好友再拉入群
-![输入图片说明](group.png)
+![输入图片说明](wx_group.png)
 
 #### 版权信息
 [DaoAdmin] 遵循Apache2开源协议发布，并提供免费使用。
