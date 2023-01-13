@@ -42,6 +42,10 @@ DaoAdmin是一款基于webman的高性能中后台框架。
 ~~~shell script
 composer create-project fudaoji/dao-admin  daoadmin
 ~~~
+- 开通端口
+
+开启8790端口
+
 - 运行服务
 
 进入daoadmin目录
@@ -51,7 +55,7 @@ php start.php start -d
 
 - 安装数据
 
-浏览器访问 http://ip地址:8787，进入安装步骤，按界面要求操作即可。
+浏览器访问 http://ip地址:8790，进入安装步骤，按界面要求操作即可。
 
 - 进入后台
 
