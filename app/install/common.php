@@ -193,6 +193,7 @@ function create_tables($db, $prefix = '')
     $sql_file = $install_path . 'data/install.sql';
     //读取SQL文件
     if(!is_file($sql_file)){
+        session(['error' => true]);
         show_msg($sql_file . ' 数据库文件不存在');
         return false;
     }

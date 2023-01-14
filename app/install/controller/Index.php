@@ -102,6 +102,7 @@ class Index extends Base
 
             //创建配置文件
             $conf = write_config();
+            system_reload();
             session(['config_file' => $conf]);
             return $this->success('success', url('sql'));
 		}
@@ -123,7 +124,22 @@ class Index extends Base
             try {
                 //连接数据库
                 $dbconfig = session('db_config');
-                $db       = Db::connect();
+                $db_config = [
+                    'default' => $dbconfig['type'],
+                    'connections' => [
+                        'mysql' => [
+                            'type' => $dbconfig['type'],
+                            'hostname' => $dbconfig['hostname'],
+                            'database' => $dbconfig['database'],
+                            'username' => $dbconfig['username'],
+                            'password' => $dbconfig['password'],
+                            'hostport' => $dbconfig['port'],
+                            'prefix' => $dbconfig['prefix']
+                        ],
+                    ],
+                ];
+                Db::setConfig($db_config);
+                $db = Db::connect();
                 //创建数据库
                 $dbname = $dbconfig['database'];
                 if(! $db->query("SHOW DATABASES LIKE '{$dbname}'")){
@@ -140,7 +156,7 @@ class Index extends Base
                 lockFile();
             }catch (\Exception $e){
                 show_msg("安装异常：" . $e->getMessage(), 'danger');
-                session("error", true);
+                session(["error" => true]);
             }
             if(session('error')){
                 return $this->error('数据库安装失败！');
