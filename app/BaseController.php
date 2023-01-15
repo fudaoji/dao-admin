@@ -6,6 +6,7 @@ namespace app;
 use app\common\model\Setting;
 use Gregwar\Captcha\PhraseBuilder;
 use support\Response;
+use support\View;
 use think\helper\Str;
 use think\Validate;
 use Webman\Http\Request;
@@ -235,5 +236,14 @@ class BaseController
     protected function redirect(string $url, int $code = 302, array $headers = []): Response
     {
         return redirect($url, $code, $headers);
+    }
+
+    /**
+     * @param $name
+     * @param $value
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    protected function assign($name, $value){
+        View::assign($name, $value);
     }
 }

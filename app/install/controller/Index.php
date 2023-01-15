@@ -102,7 +102,6 @@ class Index extends Base
 
             //创建配置文件
             $conf = write_config();
-            system_reload();
             session(['config_file' => $conf]);
             return $this->success('success', url('sql'));
 		}

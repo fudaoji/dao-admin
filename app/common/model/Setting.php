@@ -29,11 +29,14 @@ class Setting extends BaseModel
      * 全局设置
      * @param bool $refresh
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
      * @author: fudaoji<fdj@kuryun.cn>
      */
     public function settings($refresh = false){
         if (! Faconfig::isInit() || $refresh) {
-            $list = $this->cache(self::CACHE_ALL)->select();
+            $list = $this->field(['name', 'value'])->select();
             $data = [];
             foreach ($list as $v){
                 $data[$v['name']] = json_decode($v['value'], true);

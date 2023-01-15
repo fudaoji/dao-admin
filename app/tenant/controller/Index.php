@@ -4,7 +4,6 @@ namespace app\tenant\controller;
 
 use app\TenantController;
 use support\Response;
-use think\facade\Db;
 
 class Index extends TenantController
 {

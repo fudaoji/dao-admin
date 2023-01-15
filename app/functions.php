@@ -6,8 +6,46 @@ use think\facade\Cache;
 use think\helper\Str;
 use ky\Faconfig;
 use think\Model;
+use think\facade\Db;
 
 require_once app_path() . DIRECTORY_SEPARATOR . 'define.php';
+
+if(!function_exists('import_sql')){
+    function import_sql($sql_path = ''){
+        if(!file_exists($sql_path)) {
+            return "文件不存在！";
+        }
+        if (! $content = file_get_contents($sql_path)) {
+            return "打开文件错误！";
+        }
+        /** 去除注释 */
+        $content = preg_replace('/--.*/i', '', $content);
+        $content = preg_replace('/\/\*.*\*\/(\;)?/i', '', $content);
+        //替换表前缀
+        $original = '`__PREFIX__';
+        $prefix = \app\admin\service\Database::getTablePrefix();
+        $content = str_replace($original, "`{$prefix}", $content);
+
+        /** 去除空格 创建数组 */
+        $arr = explode(";\n", $content);
+        Db::startTrans();
+        try {
+            foreach ($arr as $k => $v)
+            {
+                $v = trim($v);
+                if (empty($v)) {
+                    unset($arr[$k]);
+                }
+                Db::execute($v);
+            }
+            Db::commit();
+        }catch (\Exception $e){
+            Db::rollback();
+            return $e->getMessage();
+        }
+        return true;
+    }
+}
 
 if(!function_exists('camel_case')){
     /**

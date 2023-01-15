@@ -260,7 +260,7 @@ class App extends AdminController
             $this->appInfoM->update($post_data);
             return $this->success('保存成功');
         }
-        if(! $data = $this->model->find(input('id', 0, 'intval'))){
+        if(! $data = $this->model->find(input('id', 0))){
             return $this->error('数据不存在');
         }
 
