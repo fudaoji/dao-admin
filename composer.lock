@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cd084c619e6e328e0d45b912831cab8b",
+    "content-hash": "f807603476cfbbd7e40ef38aa6b75632",
     "packages": [
         {
             "name": "doctrine/inflector",
@@ -5133,6 +5133,43 @@
                 "source": "https://github.com/webman-php/cors/tree/v1.0.1"
             },
             "time": "2022-11-05T11:16:20+00:00"
+        },
+        {
+            "name": "webman/event",
+            "version": "v1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/webman-php/event.git",
+                "reference": "db17d2fd6a5a8799f97f587b17a26b814901e01a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/webman-php/event/zipball/db17d2fd6a5a8799f97f587b17a26b814901e01a",
+                "reference": "db17d2fd6a5a8799f97f587b17a26b814901e01a",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Webman\\Event\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Webman event plugin",
+            "support": {
+                "issues": "https://github.com/webman-php/event/issues",
+                "source": "https://github.com/webman-php/event/tree/v1.0.2"
+            },
+            "time": "2022-06-16T06:25:20+00:00"
         },
         {
             "name": "webman/redis-queue",

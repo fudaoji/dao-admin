@@ -52,7 +52,8 @@
     "overtrue/wechat": "^5.30",
     "predis/predis": "^2.0",
     "yansongda/pay": "~3.1.0",
-    "webman/redis-queue": "^1.2"
+    "webman/redis-queue": "^1.2",
+    "webman/event": "^1.0"
   },
   "suggest": {
     "ext-event": "For better performance. "
