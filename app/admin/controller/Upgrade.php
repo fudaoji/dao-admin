@@ -4,6 +4,7 @@ namespace app\admin\controller;
 
 use app\AdminController;
 use GuzzleHttp\Client;
+use support\Request;
 
 class Upgrade extends AdminController
 {
@@ -137,6 +138,7 @@ class Upgrade extends AdminController
         if($this->user){
             return $this->redirect(url('index'));
         }
+
         if (request()->isPost()) {
             $data = input('post.');
             $params = [
@@ -148,12 +150,15 @@ class Upgrade extends AdminController
                 session([$this->uKey => $res['data']['token']]);
                 return $this->success($res['msg']);
             }else{
-                return $this->error($res['msg'] ?? '登录失败！', '', ['token' => token()]);
+                $jump = \request()->header('referer');
+                return $this->error($res['msg'] ?? '登录失败！', $jump, ['token' => token()]);
             }
         }
+
         $builder = new FormBuilder();
         $builder->setMetaTitle('开发者登录')
             ->setPostUrl(url('login'))
+            ->setTip('未注册？<a href="'.self::$baseUrl.'/user/auth/register" target="_blank">点击去注册</a>')
             ->addFormItem('username', 'text', '账号', '在DaoAdmin社区注册的手机账号', [], 'required')
             ->addFormItem('password', 'password', '密码', '密码', [], 'required')
             ->setBtnSubmit(['text' => '登录'])

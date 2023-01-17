@@ -37,7 +37,7 @@ class CheckAuth implements MiddlewareInterface
                 return error('暂无权限!');
             }
         }
-
+        
         View::assign('app', $app);
         View::assign('controller', $controller);
         View::assign('action', $action);

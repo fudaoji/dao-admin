@@ -240,12 +240,42 @@ window.requestPost = function(url, params, callback, sync = false){
     });
 };
 
-//数组扩展方法
-/*
-Array.prototype.remove = function(val) {
-    console.log(this)
-    var index = this.indexOf(val);
-    if (index > -1) {
-        this.splice(index, 1);
-    }
-};*/
+var $ = layui.jquery, layer = layui.layer;
+$(document).ready(function () {
+    $("[layer-open]").on('click', function () {
+        var type = parseInt($(this).prop('layer-open')),
+            title = $(this).data('title'),
+            that = this;
+        if(!type) type = 2;
+        switch (type) {
+            case 4:
+                var follow = $(this).data('follow'),
+                position = $(this).data('position');
+                if(!follow){
+                    follow = that
+                }
+                if(!position){
+                    position = 1
+                }
+                layer.tips(title, follow, {
+                    tips: position
+                });
+                break;
+            default:
+                var area = $(this).data('area');
+                if(area){
+                    area = area.split(',');
+                }else{
+                    area = ['95%', '95%'];
+                }
+                layer.open({
+                    title: title,
+                    type: type,
+                    shade: 0.2,
+                    area: area,
+                    content: $(this).data('content'),
+                });
+                break;
+        }
+    })
+});

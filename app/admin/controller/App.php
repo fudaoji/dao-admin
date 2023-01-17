@@ -90,6 +90,7 @@ class App extends AdminController
             }
 
             if(AppService::clearAppData(['name' => $name])){
+                AppService::runUninstall();
                 return $this->success('应用卸载成功，数据已删除');
             }else{
                 return $this->error('删除应用目录失败');
@@ -141,6 +142,10 @@ class App extends AdminController
                     return $this->error($res);
                 }
             }
+            //执行应用中的Install::install
+            AppService::runInstall($name);
+
+            //入库
             if ($id = $this->model->insertGetId($data)) {
                 $insert = ['id' => $id];
                 $remote_info = AppstoreService::fetchApp($name);

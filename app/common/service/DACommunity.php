@@ -1,0 +1,90 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * Script Name: DACommunity.php
+ * Create: 2023/1/17 13:50
+ * Description:
+ * Author: fudaoji<fdj@kuryun.cn>
+ */
+
+namespace app\common\service;
+use \DACommunity\Client as DaoCommunity;
+
+class DACommunity
+{
+    const SESSION_KEY = 'DaoAdminToken';
+
+    /**
+     * 应用下载
+     * @param array $params
+     * @return mixed
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    public static function appDownload(array $params)
+    {
+        $params['token'] = self::checkLogin();
+        $res = DaoCommunity::instance()->appDownload($params);
+        if($res['code']){
+            return $res['data'];
+        }
+        return $res['msg'];
+    }
+
+    /**
+     * 获取登录信息
+     * @return mixed|string
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    static function getUserInfo(){
+        if ($token = self::checkLogin()) {
+            $res = DaoCommunity::instance()->userGet(['token' => $token]);
+            if($res['code'] == 1){
+                session(self::SESSION_KEY, $token);
+                return $res['data']['user'];
+            }else{
+                return $res['msg'];
+            }
+        }
+        return [];
+    }
+
+    static function getApps($params = []){
+        $res = DaoCommunity::instance()->appList($params);
+        if($res['code']){
+            return $res['data'];
+        }
+        return $res['msg'];
+    }
+
+    static function getAppCates(){
+        $res = DaoCommunity::instance()->appCateList();
+        if($res['code']){
+            return $res['data'];
+        }
+        return $res['msg'];
+    }
+
+    /**
+     * 是否登录
+     * @return bool
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    static function checkLogin(){
+        return session(self::SESSION_KEY) ? session(self::SESSION_KEY) : false;
+    }
+
+    /**
+     * 获取应用详情
+     * @param array $params
+     * @return mixed
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    public static function getAppInfo(array $params)
+    {
+        $res = DaoCommunity::instance()->appGet($params);
+        if($res['code']){
+            return $res['data'];
+        }
+        return $res['msg'];
+    }
+}

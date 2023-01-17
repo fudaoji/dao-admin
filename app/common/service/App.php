@@ -18,10 +18,58 @@ use app\common\model\TenantApp as TenantAppM;
 class App extends Common
 {
     /**
+     * 执行应用中的Install::update
+     * @param string $name
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    static function runUpdate($name = ''){
+        if(is_file(plugin_path($name, 'Install.php'))){
+            $class = "\plugin\{$name}\update";
+            $install_handler = new $class();
+            if(method_exists($install_handler, 'update')){
+                $install_handler->update();
+            }
+        }
+    }
+
+    /**
+     * 执行应用中的Install::install
+     * @param string $name
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    static function runInstall($name = ''){
+        if(is_file(plugin_path($name, 'Install.php'))){
+            $class = "\plugin\{$name}\Install";
+            $install_handler = new $class();
+            if(method_exists($install_handler, 'install')){
+                $install_handler->install();
+            }
+        }
+    }
+
+    /**
+     * 执行应用中的Install::uninstall
+     * @param string $name
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    static function runUninstall($name = ''){
+        if(is_file(plugin_path($name, 'Install.php'))){
+            $class = "\plugin\{$name}\uninstall";
+            $install_handler = new $class();
+            if(method_exists($install_handler, 'uninstall')){
+                $install_handler->uninstall();
+            }
+        }
+    }
+
+    /**
      * 清空应用数据
      * @param array $params
      * @return bool|mixed
      * Author: fudaoji<fdj@kuryun.cn>
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
      */
     static function clearAppData($params = []){
         $name = $params['name'];
