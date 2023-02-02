@@ -17,6 +17,7 @@ use app\common\model\App as AppM;
 use app\common\model\AppInfo;
 use app\common\service\App as AppService;
 use app\common\service\Appstore as AppstoreService;
+use app\common\service\DACommunity;
 use app\common\service\File as FileService;
 
 class App extends AdminController
@@ -121,9 +122,11 @@ class App extends AdminController
                 'desc' => isset($cf['desc']) ? $cf['desc'] : '',
                 'version' => isset($cf['version']) ? $cf['version'] : '',
                 'author' => isset($cf['author']) ? $cf['author'] : '',
-                'logo' => isset($cf['logo']) ? plugin_logo($cf['name'], $cf['logo']) : '',
-                'admin_url' => $cf['admin_url'],
+                'logo' => isset($cf['logo']) ? plugin_logo($cf['logo'], $cf['name']) : '',
+                'admin_url' => $cf['admin_url'] ?? '',
                 'admin_url_type' => $cf['admin_url_type'] ?? 1,
+                'tenant_url' => $cf['tenant_url'] ?? '',
+                'tenant_url_type' => $cf['tenant_url_type'] ?? 1,
                 'status' => 0,
                 'type' => isset($cf['type']) ? $cf['type'] : Platform::MP,
                 'create_time' => time(),
@@ -148,14 +151,16 @@ class App extends AdminController
             //入库
             if ($id = $this->model->insertGetId($data)) {
                 $insert = ['id' => $id];
-                $remote_info = AppstoreService::fetchApp($name);
-                if($remote_info !== false){
-                    $insert['detail'] = empty($remote_info['data']['info']['detail']) ? '' : $remote_info['data']['info']['detail'];
-                    if(!empty($remote_info['data']['info']['cates'])){
-                        $this->model->update(['id' =>$id, 'cates' => $remote_info['data']['info']['cates']]);
+                if(is_string($remote_info = DACommunity::getAppInfoByName($name))){
+                    return $this->error($remote_info);
+                }else{
+                    $insert['detail'] = empty($remote_info['info']['detail']) ? '' : $remote_info['info']['detail'];
+                    if(!empty($remote_info['info']['cates'])){
+                        $this->model->update(['id' =>$id, 'cates' => $remote_info['info']['cates']]);
                     }
-                    $insert['snapshot'] = empty($remote_info['data']['info']['snapshot']) ? '' : $remote_info['data']['info']['snapshot'];
+                    $insert['snapshot'] = empty($remote_info['info']['snapshot']) ? '' : $remote_info['info']['snapshot'];
                 }
+
                 $this->appInfoM->insert($insert);
                 $extra_msg = ',请先进行应用相关配置后再上架。';
                 //reload system while in product development

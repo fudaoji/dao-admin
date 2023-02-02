@@ -24,6 +24,7 @@ class Client
     const API_AUTH_LOGIN = 'auth/loginPost';
     const API_APP_LIST     = 'app/listPost';
     const API_APP_GET = 'app/getPost';
+    const API_APP_GET_BY_NAME = 'app/getByNamePost';
     const API_APP_GETCATES = 'app/getCatesPost';
     const API_APP_DOWNLOAD = 'app/downloadPost';
     const API_APP_LISTUPGRADE = 'app/listUpgradePost';
@@ -40,6 +41,26 @@ class Client
         if(!empty($options['token'])){
             $this->token = $options['token'];
         }
+    }
+
+    /**
+     * 获取应用升级包
+     * @param array $params
+     * @return array|mixed
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    function appUpgradeGet($params = []){
+        return $this->doRequest(['uri' => self::API_APP_GETUPGRADE, 'data' => $params, 'token' => $params['token']]);
+    }
+
+    /**
+     * 可升级的应用列表
+     * @param array $params
+     * @return array|mixed
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    function appUpgradeList($params = []){
+        return $this->doRequest(['uri' => self::API_APP_LISTUPGRADE, 'data' => $params, 'token' => $params['token']]);
     }
 
     /**
@@ -60,6 +81,16 @@ class Client
      */
     function appDownload($params = []){
         return $this->doRequest(['uri' => self::API_APP_DOWNLOAD, 'data' => $params, 'token' => $params['token']]);
+    }
+
+    /**
+     * 根据name获取应用详情
+     * @param array $params
+     * @return array|mixed
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    function appGetByName($params = []){
+        return $this->doRequest(['uri' => self::API_APP_GET_BY_NAME, 'data' => $params]);
     }
 
     /**

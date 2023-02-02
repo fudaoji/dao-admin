@@ -14,22 +14,22 @@ class App extends Common
     {
         parent::__construct();
         $this->rule = array_merge([
+            'type' => 'require',
             'name' => 'require',
             'title' => 'require',
             'version' => 'require',
             'logo' => 'require',
-            'author' => 'require',
-            'admin_url' => 'require',
+            'author' => 'require'
         ],
             $this->rule
         );
         $this->message = array_merge([
+            'type.require' => '应用type不能为空',
             'title.require' => '应用名称不能为空',
             'name.require' => '应用标识不能为空',
             'version.require' => '版本不能为空',
             'logo.require' => 'Logo不能为空',
-            'author.require' => '作者信息不能为空',
-            'admin_url.require' => '应用操纵后台地址不能为空',
+            'author.require' => '作者信息不能为空'
         ],
             $this->message
         );
@@ -37,6 +37,6 @@ class App extends Common
 
     public function sceneAdd()
     {
-        return $this->only(['name','title', 'version','logo','author','admin_url']);
+        return $this->only(['name','title', 'version','logo','author','type']);
     }
 }

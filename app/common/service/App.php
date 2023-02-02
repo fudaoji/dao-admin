@@ -21,13 +21,15 @@ class App extends Common
      * 执行应用中的Install::update
      * @param string $name
      * Author: fudaoji<fdj@kuryun.cn>
+     * @param string $from_version
+     * @param string $to_version
      */
-    static function runUpdate($name = ''){
+    static function runUpdate($name = '', $from_version = '', $to_version = ''){
         if(is_file(plugin_path($name, 'Install.php'))){
-            $class = "\plugin\{$name}\update";
+            $class = "\\plugin\\$name\\Install";
             $install_handler = new $class();
             if(method_exists($install_handler, 'update')){
-                $install_handler->update();
+                $install_handler->update($from_version, $to_version);
             }
         }
     }
@@ -39,7 +41,7 @@ class App extends Common
      */
     static function runInstall($name = ''){
         if(is_file(plugin_path($name, 'Install.php'))){
-            $class = "\plugin\{$name}\Install";
+            $class = "\\plugin\\$name\\Install";
             $install_handler = new $class();
             if(method_exists($install_handler, 'install')){
                 $install_handler->install();

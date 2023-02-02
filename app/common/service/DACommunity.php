@@ -15,6 +15,36 @@ class DACommunity
     const SESSION_KEY = 'DaoAdminToken';
 
     /**
+     * 获取APP升级包
+     * @param array $params
+     * @return mixed
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    static function getUpgradePackage($params = []){
+        $params['token'] = self::checkLogin();
+        $res = DaoCommunity::instance()->appUpgradeGet($params);
+        if($res['code']){
+            return $res['data'];
+        }
+        return $res['msg'];
+    }
+
+    /**
+     * 获取有权限升级的APP
+     * @param array $params
+     * @return mixed
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    static function getUpgradeApps($params = []){
+        $params['token'] = self::checkLogin();
+        $res = DaoCommunity::instance()->appUpgradeList($params);
+        if($res['code']){
+            return $res['data'];
+        }
+        return $res['msg'];
+    }
+
+    /**
      * 应用下载
      * @param array $params
      * @return mixed
@@ -39,7 +69,7 @@ class DACommunity
         if ($token = self::checkLogin()) {
             $res = DaoCommunity::instance()->userGet(['token' => $token]);
             if($res['code'] == 1){
-                session(self::SESSION_KEY, $token);
+                session([self::SESSION_KEY => $token]);
                 return $res['data']['user'];
             }else{
                 return $res['msg'];
@@ -74,6 +104,16 @@ class DACommunity
     }
 
     /**
+     * 是否登录
+     * @return bool
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    static function logout(){
+        session([self::SESSION_KEY => null]);
+        return  true;
+    }
+
+    /**
      * 获取应用详情
      * @param array $params
      * @return mixed
@@ -82,6 +122,21 @@ class DACommunity
     public static function getAppInfo(array $params)
     {
         $res = DaoCommunity::instance()->appGet($params);
+        if($res['code']){
+            return $res['data'];
+        }
+        return $res['msg'];
+    }
+
+    /**
+     * 根据app name获取应用详情
+     * @param string $name
+     * @return mixed
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    public static function getAppInfoByName($name = '')
+    {
+        $res = DaoCommunity::instance()->appGetByName(['name' => $name]);
         if($res['code']){
             return $res['data'];
         }
