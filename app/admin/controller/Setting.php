@@ -120,9 +120,15 @@ class Setting extends AdminController
             case 'site':
                 empty($data) && $data['close'] = 0;
                 $builder->addFormItem('project_title', 'text', '平台名称', '平台名称')
-                    ->addFormItem('logo', 'picture_url', 'Logo', 'Logo')
+                    ->addFormItem('logo', 'picture_url', '前台Logo', '尺寸400x400')
                     ->addFormItem('slogan', 'text', 'Slogan', '宣传标语',[], 'maxlength=200')
-                    ->addFormItem('beian', 'text', '备案码', '备案码',[], 'maxlength=200');
+                    ->addFormItem('beian', 'text', '备案码', '备案码',[], 'maxlength=200')
+                    ->addFormItem('tongji', 'textarea', '统计代码', '统计代码')
+                    ->addFormItem('kefu', 'picture_url', '客服信息', '客服信息')
+                    ->addFormItem('backend_logo', 'picture_url', '后台Logo', '尺寸400x400')
+                    ->addFormItem('tg_legend', 'legend', '推广', '推广')
+                    ->addFormItem('seo_keywords', 'text', '关键词', '关键词',[], 'maxlength=200')
+                    ->addFormItem('seo_description', 'textarea', '描述', '描述',[], 'maxlength=200');
                 break;
             case 'upload':
                 empty($data) && $data = [

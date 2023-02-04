@@ -37,7 +37,7 @@ class Index extends AdminController
             'href' => '/admin/index/index',
             'image' => '/static/imgs/admin/logo-167x167.png',
         ];
-        isset(dao_config('system.site')['logo']) && $logoInfo['image'] = dao_config('system.site.logo');
+        isset(dao_config('system.site')['backend_logo']) && $logoInfo['image'] = dao_config('system.site.backend_logo');
         $menuInfo = \App\admin\service\Auth::getMenuList($this->adminInfo());
         $systemInit = [
             'homeInfo' => $homeInfo,

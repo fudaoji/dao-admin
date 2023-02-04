@@ -52,7 +52,7 @@
                             <a href="javascript:;" data-check-screen="full"><i class="fa fa-arrows-alt"></i></a>
                         </li>
                         <li class="layui-nav-item layuimini-setting">
-                            <a href="javascript:;">{$tenant.realname}</a>
+                            <a href="javascript:;">{$tenant.realname?:$tenant.username}</a>
                             <dl class="layui-nav-child">
                                 <dd>
                                     <a href="javascript:;" layuimini-content-href="{:url('tenant/account')}" data-title="系统账号" data-icon="fa fa-user">系统账号</a>

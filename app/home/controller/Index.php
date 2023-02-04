@@ -7,11 +7,18 @@
  * Author: fudaoji<fdj@kuryun.cn>
  */
 
-namespace App\home\controller;
+namespace app\home\controller;
 
-class Index
+use app\BaseController;
+
+class Index extends BaseController
 {
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
     public function index(){
-        return response("Hello, DaoAdmin");
+        return $this->show();
     }
 }

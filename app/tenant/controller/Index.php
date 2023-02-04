@@ -36,7 +36,7 @@ class Index extends TenantController
             'title' => dao_config('system.site.project_title'),
             'href' => '/'.request()->app.'/index/index'
         ];
-        isset(dao_config('system.site')['logo']) && $logoInfo['image'] = dao_config('system.site')['logo'];
+        isset(dao_config('system.site')['backend_logo']) && $logoInfo['image'] = dao_config('system.site')['backend_logo'];
         $menuInfo = \app\tenant\service\Auth::getMenuList($this->tenantInfo());
         $systemInit = [
             'homeInfo' => $homeInfo,

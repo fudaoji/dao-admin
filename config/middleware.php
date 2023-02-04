@@ -21,7 +21,9 @@ return [
         \app\common\middleware\AppLang::class,
         \app\common\middleware\Paginator::class,
     ],
-
+    'home' => [
+        \app\home\middleware\AssignData::class
+    ],
     'admin' => [
         \app\admin\middleware\CheckAuth::class
     ],
