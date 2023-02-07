@@ -417,4 +417,27 @@ class Upload
         }
         return false;
     }
+
+    /**
+     * 将文件流写入到文件，并返回文件链接
+     * @param string $string
+     * @param string $key
+     * @return array|string
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    public static function putString($string = '', $key = ''){
+        switch (self::$setting['driver']){
+            case 'qiniu':
+                $qiniu = new Qiniu(self::driverConfig(self::$setting['driver']));
+                $key = $key ?: get_rand_char(16);
+                if(($res = $qiniu->putString([
+                    'string' => $string,
+                    'key' => $key
+                ])) === false){
+                    return $qiniu->getError();
+                }
+                return ['url' => $res];
+        }
+        return "写入文件错误!";
+    }
 }

@@ -311,4 +311,20 @@ class App extends Common
         }
         return $res;
     }
+
+    /**
+     * 修改app扩展信息
+     * @param array $update
+     * @return array
+     * @throws \think\db\exception\DbException
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    public static function updateInfo(array $update)
+    {
+        if(! empty($update['config']) && is_array($update['config'])){
+            $update['config'] = json_encode($update['config'], JSON_UNESCAPED_UNICODE);
+        }
+        AppInfoM::update($update);
+        return $update;
+    }
 }
