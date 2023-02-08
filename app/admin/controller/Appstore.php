@@ -66,6 +66,7 @@ class Appstore extends AdminController
             $zip->extractTo(plugin_path(''));
             $zip->close();
             @unlink($tem_file); //删除临时压缩包
+            system_reload(); //重启才能生效
             return $this->success('下载成功，正在跳转安装界面。。。', url('admin/app/uninstallList'));
         } else {
             return $this->error('解压失败，请检查是否有写入权限!');
