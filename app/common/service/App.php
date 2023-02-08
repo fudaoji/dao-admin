@@ -126,7 +126,7 @@ class App extends Common
      */
     static function executeAppInstallSql($sql_path = '')
     {
-        $sql = file_get_contents($sql_path);
+        $sql = trim(file_get_contents($sql_path));
         $sql = str_replace("\r", "\n", $sql);
         $sql = explode(";\n", $sql);
         $original = '`__PREFIX__';
