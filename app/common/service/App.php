@@ -162,7 +162,6 @@ class App extends Common
             if (empty($value) || strlen($value) < 2) {
                 continue;
             }
-            var_dump($value);
             Db::execute($value);
         }
         return true;

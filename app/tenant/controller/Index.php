@@ -4,6 +4,7 @@ namespace app\tenant\controller;
 
 use app\TenantController;
 use support\Response;
+use Webman\Http\Request;
 
 class Index extends TenantController
 {
@@ -48,11 +49,14 @@ class Index extends TenantController
 
     /**
      * 退出
+     * @param Request $request
+     * @return Response
      * @author: fudaoji<fdj@kuryun.cn>
      */
-    public function logout()
+    public function logout(Request $request)
     {
-        session([SESSION_TENANT => null]);
+        $request->session->flush();
+        //session([SESSION_TENANT => null]);
         return $this->redirect(url('auth/login'));
     }
 }

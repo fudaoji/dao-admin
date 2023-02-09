@@ -158,7 +158,7 @@ class App extends AdminController
                     if(!empty($remote_info['info']['cates'])){
                         $this->model->update(['id' =>$id, 'cates' => $remote_info['info']['cates']]);
                     }
-                    $insert['snapshot'] = empty($remote_info['info']['snapshot']) ? '' : $remote_info['info']['snapshot'];
+                    $insert['snapshot'] = empty($remote_info['info']['snapshot']) ? '' : implode('|', explode(',', $remote_info['info']['snapshot']));
                 }
 
                 $this->appInfoM->insert($insert);
