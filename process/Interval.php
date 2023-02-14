@@ -1,9 +1,9 @@
 <?php
 /**
  * Created by PhpStorm.
- * Script Name: TaskTest.php
+ * Script Name: Interval.php
  * Create: 2023/1/15 16:45
- * Description: 自定义进程演示
+ * Description: 自定义进程演示（定时器）
  * Author: fudaoji<fdj@kuryun.cn>
  */
 
@@ -11,7 +11,7 @@ namespace process;
 
 use Workerman\Timer;
 
-class TaskTest
+class Interval
 {
 
     public function onWorkerStart()

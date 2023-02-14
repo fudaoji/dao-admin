@@ -29,8 +29,8 @@ class Platform
         $list = [
             self::MP => '微信公众号',
             self::MINI => '微信小程序',
-            /*self::WECHAT => '个微',
-            self::WORKWX => '企微',*/
+            self::WECHAT => '个微',
+            /*self::WORKWX => '企微',*/
         ];
         return isset($list[$id]) ? $list[$id] : $list;
     }

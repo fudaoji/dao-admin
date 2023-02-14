@@ -10,6 +10,25 @@ use think\facade\Db;
 
 require_once app_path() . DIRECTORY_SEPARATOR . 'define.php';
 
+if(! function_exists('filter_emoji')){
+    function filter_emoji($str = '')
+    {
+        $str = preg_replace_callback(    //执行一个正则表达式搜索并且使用一个回调进行替换
+            '/./u',
+            function (array $match) {
+                return strlen($match[0]) >= 4 ? '' : $match[0];
+            },
+            $str
+        );
+        return $str;
+    }
+}
+if(! function_exists('base64_to_pic')){
+    function base64_to_pic($base64 = '', $content_type = 'image/jpeg'){
+        return "data:{$content_type};base64,{$base64}";
+    }
+}
+
 if(!function_exists('import_sql')){
     function import_sql($sql_path = ''){
         if(!file_exists($sql_path)) {

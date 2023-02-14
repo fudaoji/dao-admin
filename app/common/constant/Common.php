@@ -14,6 +14,8 @@ class Common
 {
     const YES = 1;
     const NO = 0;
+    const MAN = 1;
+    const FEMALE = 2;
 
     public static function status($id = null){
         $list = [
@@ -35,6 +37,14 @@ class Common
         $list = [
             self::YES => '上架',
             self::NO => '下架'
+        ];
+        return isset($list[$id]) ? $list[$id] : $list;
+    }
+
+    public static function sex($id = null){
+        $list = [
+            self::MAN => '男',
+            self::FEMALE => '女'
         ];
         return isset($list[$id]) ? $list[$id] : $list;
     }

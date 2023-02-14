@@ -451,7 +451,7 @@
                 case 'forbid':
                     layer.confirm('确认批量禁用吗?', function(index){
                         var ids = table.checkStatus('{$controller}-table').data.map((item,index) => {return item.id});
-                        var params = {ids: ids};
+                        var params = {ids: ids, val: 1};
                         requestPost(href, params, function (res) {
                             table.reload('{$controller}-table');  // 刷新(异步模式)
                         });
@@ -535,7 +535,7 @@
                 case 'forbid':
                     var tip = $(this).attr('confirm') ? $(this).attr('confirm') : "确认批量禁用吗？";
                     layer.confirm(tip, function(index){
-                        var  params = {ids: data.id};
+                        var  params = {ids: data.id, val: data.status};
                         requestPost(href, params, function (res) {
                             table.reload('{$controller}-table');  // 刷新(异步模式)
                         });
