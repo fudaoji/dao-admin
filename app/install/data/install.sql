@@ -75,7 +75,7 @@ INSERT INTO `__PREFIX__admin_rule` VALUES (107, '', '角色管理', 1, 'fa fa-al
 INSERT INTO `__PREFIX__admin_rule` VALUES (148, '', '配置管理', 1, 'fa fa-cogs', '/admin/setting/index', '_self', 1, 1624803694, 1640366685, 4, 1);
 INSERT INTO `__PREFIX__admin_rule` VALUES (151, '', '客户列表', 162, '', '/admin/tenant/index', '_self', 1, 1625725311, 1670806765, 10, 1);
 INSERT INTO `__PREFIX__admin_rule` VALUES (162, '', '客户管理', 169, 'fa fa-user', '', '_self', 1, 1626507555, 1670806741, 31, 1);
-INSERT INTO `__PREFIX__admin_rule` VALUES (168, '', '应用商店', 169, 'fa fa-window-restore', '', '_self', 1, 1640786676, 1671095148, 5, 1);
+INSERT INTO `__PREFIX__admin_rule` VALUES (168, '', '官方市场', 169, 'fa fa-window-restore', '', '_self', 1, 1640786676, 1673925185, 5, 1);
 INSERT INTO `__PREFIX__admin_rule` VALUES (169, '', '运营管理', 0, '', '', '_self', 1, 1640844673, 1650466761, 21, 1);
 INSERT INTO `__PREFIX__admin_rule` VALUES (176, '', '系统升级', 1, 'fa fa-cloud-upload', '/admin/upgrade/index', '_self', 1, 1657205545, 1671515219, 0, 1);
 INSERT INTO `__PREFIX__admin_rule` VALUES (177, '', '数据库', 1, 'fa fa-database', '', '_self', 1, 1670220905, 1670220905, 1, 1);
@@ -86,7 +86,8 @@ INSERT INTO `__PREFIX__admin_rule` VALUES (181, '', '应用管理', 169, 'fa fa-
 INSERT INTO `__PREFIX__admin_rule` VALUES (182, '', '应用分类', 181, '', '/admin/appcate/index', '_self', 1, 1670928538, 1670928538, 1, 1);
 INSERT INTO `__PREFIX__admin_rule` VALUES (183, '', '应用列表', 181, '', '/admin/app/index', '_self', 1, 1671095201, 1671148827, 20, 1);
 INSERT INTO `__PREFIX__admin_rule` VALUES (184, '', '客户应用', 162, '', '/admin/tenantapp/index', '_self', 1, 1671162684, 1671162684, 1, 1);
-
+INSERT INTO `__PREFIX__admin_rule` VALUES (185, '', '应用商店', 168, '', '/admin/appstore/index', '_self', 1, 1673925222, 1673925222, 10, 1);
+INSERT INTO `__PREFIX__admin_rule` VALUES (186, '', '应用升级', 168, '', '/admin/appstore/upgrade', '_self', 1, 1673925265, 1673925265, 5, 1);
 -- ----------------------------
 -- Table structure for dao_app
 -- ----------------------------
@@ -480,7 +481,6 @@ INSERT INTO `__PREFIX__tenant_rule` VALUES (177, '', '我的应用', 151, '', '/
 INSERT INTO `__PREFIX__tenant_rule` VALUES (178, '', '应用市场', 176, 'fa fa-cart-plus', '', '_self', 1, 1671527760, 1671527760, 5, 1);
 INSERT INTO `__PREFIX__tenant_rule` VALUES (179, '', '应用采购', 178, '', '/tenant/apps/store', '_self', 1, 1671527878, 1671527878, 10, 1);
 INSERT INTO `__PREFIX__tenant_rule` VALUES (180, '', '过期应用', 151, '', '/tenant/apps/overtime', '_self', 1, 1672295990, 1672295990, 1, 1);
-
 -- ----------------------------
 -- Table structure for dao_tenant_setting
 -- ----------------------------

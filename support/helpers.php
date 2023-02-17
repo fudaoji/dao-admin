@@ -330,6 +330,7 @@ function locale(string $locale = null)
         return Translation::getLocale();
     }
     Translation::setLocale($locale);
+    return Translation::getLocale();
 }
 
 /**

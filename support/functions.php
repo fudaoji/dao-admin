@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * Script Name: functions.php
  * Create: 2023/1/13 15:02
- * Description:
+ * Description: webman启动前就要加载的函数
  * Author: fudaoji<fdj@kuryun.cn>
  */
 
