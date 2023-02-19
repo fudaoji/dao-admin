@@ -1,6 +1,3 @@
-SET NAMES utf8mb4;
-SET FOREIGN_KEY_CHECKS = 0;
-
 -- ----------------------------
 -- Table structure for dao_admin
 -- ----------------------------
@@ -43,7 +40,7 @@ CREATE TABLE `__PREFIX__admin_group`  (
 -- ----------------------------
 -- Records of dao_admin_group
 -- ----------------------------
-INSERT INTO `__PREFIX__admin_group` VALUES (1, 'super_admin', '超管', 1, '7,160,149,151,150,152,166,153,155,69,79,156,157,158,159,1,3,105,106,107,108,109,4,6,162,148', 0, 0, 1445158837, '超管', 1672716767);
+INSERT INTO `__PREFIX__admin_group` VALUES (1, 'super_admin', '超管', 1, '', 0, 0, 1445158837, '超管', 1672716767);
 
 -- ----------------------------
 -- Table structure for dao_admin_rule
@@ -510,5 +507,3 @@ CREATE TABLE `__PREFIX__crontab`  (
   `update_time` int(10) UNSIGNED NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 )
-
-SET FOREIGN_KEY_CHECKS = 1;
