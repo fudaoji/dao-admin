@@ -10,19 +10,21 @@
 namespace process;
 
 use app\common\model\Crontab as TaskM;
-use Support\Container;
+use app\common\service\System;
 use Workerman\Crontab\Crontab;
 
 class Task
 {
     public function onWorkerStart()
     {
-        $task_list = TaskM::where('status', 1)
-            ->select();
-        foreach ($task_list as $task){
-            new Crontab($task['rule'], function () use($task) {
-                file_get_contents($task['url']);
-            });
+        if(System::isStalled()){
+            $task_list = TaskM::where('status', 1)
+                ->select();
+            foreach ($task_list as $task){
+                new Crontab($task['rule'], function () use($task) {
+                    file_get_contents($task['url']);
+                });
+            }
         }
     }
 }
