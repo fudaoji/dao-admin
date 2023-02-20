@@ -123,7 +123,7 @@ class Auth
         $rules = AdminRule::where($where)
             ->cache('authlist'.$admin['group_id'])
             ->column('href');
-        return $rules ?: [];
+        return empty($rules) ? [] : $rules;
     }
 
     /**
