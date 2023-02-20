@@ -150,7 +150,7 @@ class App extends AdminController
 
             //入库
             if ($id = $this->model->insertGetId($data)) {
-                $insert = ['id' => $id, 'price' => 0.00];
+                $insert = ['id' => $id, 'price' => 0.00, 'old_price' => 0.00];
                 if(is_string($remote_info = DACommunity::getAppInfoByName($name))){
                     return $this->error($remote_info);
                 }else{

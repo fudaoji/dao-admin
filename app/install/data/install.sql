@@ -148,7 +148,7 @@ CREATE TABLE `__PREFIX__app_info`  (
   `sale_num` int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '实际销量',
   `sale_num_show` int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '虚拟销量',
   `price` decimal(10, 2) UNSIGNED NOT NULL DEFAULT 0.00 COMMENT '售价',
-  `old_price` decimal(10, 2) UNSIGNED NOT NULL COMMENT '原价',
+  `old_price` decimal(10, 2) UNSIGNED NOT NULL DEFAULT 0.00 COMMENT '原价',
   `snapshot` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '应用快照',
   `config` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '应用配置',
   PRIMARY KEY (`id`) USING BTREE
