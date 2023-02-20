@@ -72,6 +72,7 @@ class Auth extends TenantController
             $data['ip'] = request()->ip();
             $data['last_time'] = time();
             $data['password'] = fa_generate_pwd($data['password']);
+            $data['department_id'] = 0;
 
             if($this->model->where('username', $data['username'])->count()){
                 return $this->error('账号已存在!', null, ['token' => token()]);

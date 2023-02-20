@@ -213,10 +213,7 @@ PARTITION `p5` MAX_ROWS = 0 MIN_ROWS = 0 ,
 PARTITION `p6` MAX_ROWS = 0 MIN_ROWS = 0 ,
 PARTITION `p7` MAX_ROWS = 0 MIN_ROWS = 0 ,
 PARTITION `p8` MAX_ROWS = 0 MIN_ROWS = 0 ,
-PARTITION `p9` MAX_ROWS = 0 MIN_ROWS = 0 )
-;
-
-
+PARTITION `p9` MAX_ROWS = 0 MIN_ROWS = 0 );
 -- ----------------------------
 -- Table structure for dao_media_link
 -- ----------------------------
@@ -244,10 +241,7 @@ PARTITION `p5` ENGINE = InnoDB MAX_ROWS = 0 MIN_ROWS = 0 ,
 PARTITION `p6` ENGINE = InnoDB MAX_ROWS = 0 MIN_ROWS = 0 ,
 PARTITION `p7` ENGINE = InnoDB MAX_ROWS = 0 MIN_ROWS = 0 ,
 PARTITION `p8` ENGINE = InnoDB MAX_ROWS = 0 MIN_ROWS = 0 ,
-PARTITION `p9` ENGINE = InnoDB MAX_ROWS = 0 MIN_ROWS = 0 )
-;
-
-
+PARTITION `p9` ENGINE = InnoDB MAX_ROWS = 0 MIN_ROWS = 0 );
 -- ----------------------------
 -- Table structure for dao_media_text
 -- ----------------------------
@@ -375,7 +369,7 @@ CREATE TABLE `__PREFIX__tenant`  (
   `create_time` int(10) NOT NULL DEFAULT 0 COMMENT '新增时间',
   `update_time` int(10) NOT NULL DEFAULT 0 COMMENT '最后修改时间',
   `company_id` int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '所属公司ID',
-  `department_id` int(10) NOT NULL COMMENT '部门id',
+  `department_id` int(10) NOT NULL DEFAULT 0 COMMENT '部门id',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `username`(`username`) USING BTREE
 ) ENGINE = InnoDB  CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
