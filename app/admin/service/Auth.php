@@ -120,10 +120,10 @@ class Auth
             $group = AdminGroup::find($admin['group_id']);
             $where[] = ['id', 'in', explode(',', $group['rules'])];
         }
-
-        return AdminRule::where($where)
+        $rules = AdminRule::where($where)
             ->cache('authlist'.$admin['group_id'])
             ->column('href');
+        return $rules ?: [];
     }
 
     /**
