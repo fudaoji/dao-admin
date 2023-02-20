@@ -19,6 +19,7 @@ use app\common\service\App as AppService;
 use app\common\service\Appstore as AppstoreService;
 use app\common\service\DACommunity;
 use app\common\service\File as FileService;
+use think\facade\Db;
 
 class App extends AdminController
 {
@@ -138,38 +139,43 @@ class App extends AdminController
                 return $this->error($result);
             }
 
-            $install_sql = plugin_path($name, 'install.sql');
-            if (is_file($install_sql) && is_readable($install_sql)) {
-                $res = AppService::executeAppInstallSql($install_sql);
-                if($res !== true){
-                    return $this->error($res);
-                }
-            }
-            //执行应用中的Install::install
-            AppService::runInstall($name);
-
-            //入库
-            if ($id = $this->model->insertGetId($data)) {
-                $insert = ['id' => $id, 'price' => 0.00, 'old_price' => 0.00];
-                if(is_string($remote_info = DACommunity::getAppInfoByName($name))){
-                    return $this->error($remote_info);
-                }else{
-                    $insert['detail'] = empty($remote_info['info']['detail']) ? '' : $remote_info['info']['detail'];
-                    if(!empty($remote_info['info']['cates'])){
-                        $this->model->update(['id' =>$id, 'cates' => $remote_info['info']['cates']]);
+            Db::startTrans();
+            try {
+                $install_sql = plugin_path($name, 'install.sql');
+                if (is_file($install_sql) && is_readable($install_sql)) {
+                    $res = AppService::executeAppInstallSql($install_sql);
+                    if($res !== true){
+                        return $this->error($res);
                     }
-                    $insert['snapshot'] = empty($remote_info['info']['snapshot']) ? '' : implode('|', explode(',', $remote_info['info']['snapshot']));
                 }
+                //执行应用中的Install::install
+                AppService::runInstall($name);
 
-                $this->appInfoM->insert($insert);
-                $extra_msg = ',请先进行应用相关配置后再上架。';
-                //reload system while in product development
-                if(! config('app.debug')){
-                    system_reload();
+                //入库
+                if ($id = $this->model->insertGetId($data)) {
+                    $insert = ['id' => $id, 'price' => 0.00, 'old_price' => 0.00];
+                    if(is_string($remote_info = DACommunity::getAppInfoByName($name))){
+                        return $this->error($remote_info);
+                    }else{
+                        $insert['detail'] = empty($remote_info['info']['detail']) ? '' : $remote_info['info']['detail'];
+                        if(!empty($remote_info['info']['cates'])){
+                            $this->model->update(['id' =>$id, 'cates' => $remote_info['info']['cates']]);
+                        }
+                        $insert['snapshot'] = empty($remote_info['info']['snapshot']) ? '' : implode('|', explode(',', $remote_info['info']['snapshot']));
+                    }
+
+                    $this->appInfoM->insert($insert);
+                    $extra_msg = ',请先进行应用相关配置后再上架。';
+                    //reload system while in product development
+                    if(! config('app.debug')){
+                        system_reload();
+                    }
                 }
+                Db::commit();
                 return $this->success('安装应用成功' . $extra_msg);
-            }else{
-                return $this->error('安装应用失败');
+            }catch (\Exception $e){
+                Db::rollback();
+                return $this->error('安装应用失败:' . json_encode($e->getMessage(), JSON_UNESCAPED_UNICODE));
             }
         }
     }
