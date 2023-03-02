@@ -9,6 +9,13 @@
 
 namespace app\common\service;
 
+use app\common\model\MediaFile;
+use app\common\model\MediaImage;
+use app\common\model\MediaLink;
+use app\common\model\MediaText;
+use app\common\model\MediaVideo;
+use app\common\service\Tenant as TenantService;
+
 class Media
 {
     const TEXT = "text";
@@ -40,5 +47,31 @@ class Media
             self::VIDEO => ['title' => '视频', 'href' => url('mediavideo/index')],
             self::LINK => ['title' => '分享链接', 'href' => url('medialink/index')]
         ];
+    }
+
+    static function getModel($type = 'text'){
+        $class_list = [
+            self::TEXT => new MediaText(),
+            self::IMAGE => new MediaImage(),
+            self::FILE => new MediaFile(),
+            self::VIDEO => new MediaVideo(),
+            self::LINK => new MediaLink(),
+        ];
+        return $class_list[$type];
+    }
+
+    /**
+     * 获取单个素材
+     * @param array $params
+     * @return mixed
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    static function getMedia($params = []){
+        if(empty($params['company_id'])){
+            $params['company_id'] = TenantService::getCompanyId();
+        }
+        return self::getModel($params['type'])->where([
+            ['company_id', '=', $params['company_id']]
+        ])->find($params['id']);
     }
 }

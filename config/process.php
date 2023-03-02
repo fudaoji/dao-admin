@@ -36,10 +36,13 @@ return [
             ]
         ]
     ],
-
-    'task_test' => [
+    'crontab' => [ //定时器
         // 这里指定进程类
-        'handler' => process\TaskTest::class,
+        'handler' => process\Task::class,
+    ],
+    'timer' => [ //定时器
+        // 这里指定进程类
+        'handler' => process\Interval::class,
         // 监听的协议 ip 及端口 （可选）
         //'listen'  => 'websocket://0.0.0.0:8888',
         // 进程数 （可选，默认1）

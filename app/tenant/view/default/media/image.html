@@ -4,11 +4,22 @@
 <div class="layui-tab layui-tab-brief" lay-filter="tabBrief">
     <div class="layui-tab-content">
         <form class="layui-form" action="" method="post">
+            <input type="hidden" value="{$type}" name="type">
             <div class="layui-row">
                 <div class="layui-col-xs7">
-                    <!--预留搜索-->
+                    <div class="layui-col-xs8">
+                        <div class="layui-form-item">
+                            <input name="search_key" placeholder="请输入名称搜索" value="{:input('search_key')}" class="layui-input"
+                                   type="text">
+                        </div>
+                    </div>
+                    <div class="layui-col-xs4">
+                        <button class="layui-btn layui-btn-primary" lay-submit="" lay-filter="formDemo">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
                 </div>
-                <div class="layui-col-xs5 layui-col-xs-offset7 text-right">
+                <div class="layui-col-xs5 text-right">
                     <input type="checkbox" lay-filter="ids" title="全选" id="ids">
                     <div class="layui-btn-group">
                         <a class="layui-btn  layui-btn-sm layui-btn-danger" onclick="clickDelBatch()">
@@ -53,7 +64,7 @@
 <div class="bottom">
     <div class="layui-form-item">
         <div class="layui-input-block">
-            <button class="layui-btn bg-success" onclick="clickSure();">确定</button>
+            <button class="layui-btn layui-btn-normal" onclick="clickSure();">确定</button>
             <button class="layui-btn layui-btn-primary js-cancel-btn">取消</button>
         </div>
     </div>

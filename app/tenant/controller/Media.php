@@ -8,11 +8,14 @@ use app\common\model\MediaText;
 use app\common\model\MediaVideo;
 use app\common\model\MediaLink;
 use app\common\model\Setting;
+use app\common\model\TenantApp;
 use app\common\service\Tenant as TenantService;
 use app\common\service\Upload;
 use app\common\service\Media as MediaService;
 use app\TenantController;
 use support\View;
+use think\facade\Db;
+use Webman\Http\Request;
 
 class Media extends TenantController
 {
@@ -40,7 +43,7 @@ class Media extends TenantController
     private $types = [
         'text','image', 'video', 'file', 'link'
     ];
-    private $adminId;
+
     /**
      * 控制器/类名
      * @var string
@@ -102,8 +105,41 @@ class Media extends TenantController
             MediaService::TEXT => $this->textM,
             MediaService::FILE => $this->fileM,
             MediaService::VIDEO => $this->videoM,
+            MediaService::LINK => $this->linkM,
         ];
         return isset($list[$type]) ? $list[$type] : null;
+    }
+
+    /**
+     * 弹框素材列表
+     * @param Request $request
+     * @return mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    public function choose(Request $request){
+        $type = input('type', MediaService::IMAGE);
+        $search_key = input('search_key', '');
+        $where = [
+            $this->tenantWhere()
+        ];
+        $search_key && $where[] = ['title', 'like', '%'.$search_key.'%'];
+
+        $query = $this->getModel($type)->where($where);
+        $data_list = $query->order('id', 'desc')
+            ->paginate(12);
+
+        $pager = $data_list->appends(['type' => $type, 'search_key' => $search_key])->render();
+        $assign = [
+            'data_list' => $data_list,
+            'type' => $type,
+            'pager' => $pager,
+            'config' => dao_config('system.upload'),
+            'field' => input('field', '') //目标input框
+        ];
+        return $this->show($assign, $type);
     }
 
     /**
@@ -113,171 +149,23 @@ class Media extends TenantController
     public function delPost(){
         $post_data = input();
         $ids = $post_data['ids'];
-        $model = model('media_'.$post_data['type']);
+        $model = $this->getModel($post_data['type']);
         Db::startTrans();
         try {
             foreach ($ids as $id){
-                $data = $model->getOne(['admin_id' => $this->adminInfo['id'], 'id' => $id]);
-                if($model->delOne(['admin_id' => $this->adminInfo['id'], 'id' => $id])){
+                $data = $model->where([$this->tenantWhere()])->find($id);
+                if($model->where([$this->tenantWhere(), ['id', '=', $id]])->delete()){
                     !empty($data['location']) && strtolower($data['location']) == 'local' && @unlink($data['path']); //删除本地文件
                 }
-                //refresh
-                $model->getOneByMap(['id' => $data['id'], 'admin_id' => $this->adminId], true, 1);
             }
-            $res = true;
             Db::commit();
+            return $this->success('操作成功!');
         }catch (\Exception $e){
-            Log::error($e->getMessage());
+            dao_log()->error(json_encode($e->getMessage()));
             Db::rollback();
-            $res = false;
-        }
-        if($res === false){
-            $this->error('系统错误，请刷新重试');
-        }
-        $this->success('删除成功');
-    }
-
-    /**
-     * 素材列表
-     * @author: fudaoji<fdj@kuryun.cn>
-     */
-    public function index(){
-        $types = [
-            'text' => '文本',
-            'image' => '图片',
-            'file' => '文件',
-            'video' => '视频',
-            'link' => '分享链接',
-        ];
-
-        $type = input('type', 'image');
-        $search_key = input('search_key', '');
-        $where = ['admin_id' => $this->adminInfo['id']];
-
-        $search_key && $where['title'] = ['like', '%'.$search_key.'%'];
-        $type == 'news' && $where['pid'] = 0;
-        $data_list = model('media_' . $type)->page(12, $where, ['id' => 'desc'], true, 1);
-        $pager = $data_list->appends(['type' => $type, 'search_key' => $search_key])->render();
-        $assign = [
-            'data_list' => $data_list,
-            'type' => $type,
-            'types' => $types,
-            'pager' => $pager
-        ];
-        return $this->show($assign);
-    }
-
-    /**
-     * frame素材列表
-     * @return mixed
-     * @author: fudaoji<fdj@kuryun.cn>
-     */
-    public function handle(){
-        $params = input();
-        if(empty($params['type'])){
-            $type = 'image';
-        }else{
-            if(in_array($params['type'], $this->types)){
-                $type = $params['type'];
-            }else{
-                return "type参数错误";
-            }
-        }
-        if(method_exists($this, $type)){
-            return call_user_func([$this, $type]);
-        }else{
-            return $type . "方法不存在";
+            return $this->error('系统错误，请刷新重试!');
         }
     }
 
-    /**
-     * 链接
-     * @return mixed
-     * @throws \think\Exception
-     * @author: fudaoji<fdj@kuryun.cn>
-     */
-    public function link(){
-        $field = input('field', ''); //目标input框
-        $where = ['admin_id' => $this->adminId];
-        $data_list = $this->linkM->page(10, $where, ['id' => 'desc'], 'id,title,desc,image_url,url', 1);
-        $pager = $data_list->appends(['type' => __FUNCTION__])->render();
-        $assign = ['data_list' => $data_list, 'pager' => $pager, 'field' => $field];
-        return $this->show($assign, $this->controller . DIRECTORY_SEPARATOR . __FUNCTION__);
-    }
 
-    /**
-     * 视频
-     * @return mixed
-     * @throws \think\db\exception\DbException
-     * @author: fudaoji<fdj@kuryun.cn>
-     */
-    public function video(){
-        $field = input('field', ''); //目标input框
-        $where = ['admin_id' => $this->adminId];
-
-        $data_list = $this->videoM->page(12, $where, ['id' => 'desc'], 'id,url,title', 1);
-        $pager = $data_list->appends(['type' => __FUNCTION__])->render();
-        $assign = ['data_list' => $data_list, 'pager' => $pager, 'field' => $field];
-        return $this->show($assign, $this->controller . DIRECTORY_SEPARATOR . __FUNCTION__);
-    }
-
-    /**
-     * 文件
-     * @return mixed
-     * @throws \think\db\exception\DbException
-     * @author: fudaoji<fdj@kuryun.cn>
-     */
-    public function file(){
-        $field = input('field', ''); //目标input框
-        $where = ['admin_id' => $this->adminId];
-
-        $data_list = $this->fileM->page(10, $where, ['id' => 'desc'], 'id,title,url', 1);
-        $pager = $data_list->appends(['type' => __FUNCTION__])->render();
-        $assign = ['data_list' => $data_list, 'pager' => $pager, 'field' => $field];
-        return $this->show($assign, $this->controller . DIRECTORY_SEPARATOR . __FUNCTION__);
-    }
-
-    /**
-     * 文本
-     * @return mixed
-     * @throws \think\Exception
-     * @author: fudaoji<fdj@kuryun.cn>
-     */
-    public function text(){
-        if(request()->isPost()){
-            $post_data = input('post.');
-            $post_data['admin_id'] = $this->adminId;
-            if($res = $this->textM->addOne($post_data)){
-                $this->success('保存成功');
-            }
-            $this->error('保存失败，请刷新重试');
-        }
-        $field = input('field', ''); //目标input框
-        $where = ['admin_id' => $this->adminId];
-        $data_list = $this->textM->page(10, $where, ['id' => 'desc'], 'id,content', 1);
-        $pager = $data_list->appends(['type' => __FUNCTION__])->render();
-        $assign = ['data_list' => $data_list, 'pager' => $pager, 'field' => $field];
-        return $this->show($assign, $this->controller . DIRECTORY_SEPARATOR . __FUNCTION__);
-    }
-
-    /**
-     * 图片
-     * @return mixed
-     * @throws \think\db\exception\DbException
-     * @author: fudaoji<fdj@kuryun.cn>
-     */
-    public function image(){
-        $field = input('field', ''); //目标input框
-        $where = [
-            $this->tenantWhere()
-        ];
-        var_dump(dao_config('system.upload'));
-        $data_list = $this->imageM->where($where)
-            ->order('id', 'desc')
-            ->field(['id','url','title'])
-            ->paginate(12);
-        $pager = $data_list->appends(['type' => __FUNCTION__])->render();
-        $assign = ['data_list' => $data_list, 'pager' => $pager, 'field' => $field];
-        return $this->show($assign, request()->getController() . DIRECTORY_SEPARATOR . __FUNCTION__);
-    }
 }
