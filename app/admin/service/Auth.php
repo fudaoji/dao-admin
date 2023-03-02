@@ -114,16 +114,15 @@ class Auth
      */
     public static function getAuthList($admin = null){
         empty($admin) && $admin = request()->session()->get(SESSION_ADMIN);
-        $where = [['status','=', 1], ['type', '=', AdminRule::TYPE_AUTH]];
-
         if(!self::isSuperAdmin($admin)){
+            $where = [['status','=', 1], ['type', '=', AdminRule::TYPE_AUTH]];
             $group = AdminGroup::find($admin['group_id']);
             $where[] = ['id', 'in', explode(',', $group['rules'])];
+            return  AdminRule::where($where)
+                //->cache('authlist'.$admin['group_id'])
+                ->column('href');
         }
-
-        return AdminRule::where($where)
-            ->cache('authlist'.$admin['group_id'])
-            ->column('href');
+        return [];
     }
 
     /**

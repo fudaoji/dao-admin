@@ -14,8 +14,8 @@ class CrossDomain implements MiddlewareInterface
         $response = $request->method() == 'OPTIONS' ? response('') : $handler($request);
         $response->withHeaders([
             'Access-Control-Allow-Origin' => '*',
-            //'Access-Control-Allow-Methods' => 'GET,POST,PUT,DELETE,OPTIONS',
-            //'Access-Control-Allow-Headers' => 'Content-Type,Authorization,X-Requested-With,Accept,Origin'
+            'Access-Control-Allow-Methods' => 'GET,POST,PUT,DELETE,OPTIONS',
+            'Access-Control-Allow-Headers' => 'Content-Type,Authorization,X-Requested-With,Accept,Origin'
         ]);
         return $response;
     }

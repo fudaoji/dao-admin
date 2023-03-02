@@ -255,6 +255,10 @@ class Appstore extends AdminController
         AppService::runUpdate($app_name, $app['version'], $upgrade['version']);
 
         $this->appM->update(['id' => $app['id'], 'version' => $upgrade['version']]);
+        //reload system while in product development
+        if(! config('app.debug')){
+            system_reload();
+        }
         return $this->success('恭喜您，升级成功!');
     }
 

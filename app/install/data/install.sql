@@ -1,6 +1,3 @@
-SET NAMES utf8mb4;
-SET FOREIGN_KEY_CHECKS = 0;
-
 -- ----------------------------
 -- Table structure for dao_admin
 -- ----------------------------
@@ -43,7 +40,7 @@ CREATE TABLE `__PREFIX__admin_group`  (
 -- ----------------------------
 -- Records of dao_admin_group
 -- ----------------------------
-INSERT INTO `__PREFIX__admin_group` VALUES (1, 'super_admin', '超管', 1, '7,160,149,151,150,152,166,153,155,69,79,156,157,158,159,1,3,105,106,107,108,109,4,6,162,148', 0, 0, 1445158837, '超管', 1672716767);
+INSERT INTO `__PREFIX__admin_group` VALUES (1, 'super_admin', '超管', 1, '', 0, 0, 1445158837, '超管', 1672716767);
 
 -- ----------------------------
 -- Table structure for dao_admin_rule
@@ -75,7 +72,7 @@ INSERT INTO `__PREFIX__admin_rule` VALUES (107, '', '角色管理', 1, 'fa fa-al
 INSERT INTO `__PREFIX__admin_rule` VALUES (148, '', '配置管理', 1, 'fa fa-cogs', '/admin/setting/index', '_self', 1, 1624803694, 1640366685, 4, 1);
 INSERT INTO `__PREFIX__admin_rule` VALUES (151, '', '客户列表', 162, '', '/admin/tenant/index', '_self', 1, 1625725311, 1670806765, 10, 1);
 INSERT INTO `__PREFIX__admin_rule` VALUES (162, '', '客户管理', 169, 'fa fa-user', '', '_self', 1, 1626507555, 1670806741, 31, 1);
-INSERT INTO `__PREFIX__admin_rule` VALUES (168, '', '应用商店', 169, 'fa fa-window-restore', '', '_self', 1, 1640786676, 1671095148, 5, 1);
+INSERT INTO `__PREFIX__admin_rule` VALUES (168, '', '官方市场', 169, 'fa fa-window-restore', '', '_self', 1, 1640786676, 1673925185, 5, 1);
 INSERT INTO `__PREFIX__admin_rule` VALUES (169, '', '运营管理', 0, '', '', '_self', 1, 1640844673, 1650466761, 21, 1);
 INSERT INTO `__PREFIX__admin_rule` VALUES (176, '', '系统升级', 1, 'fa fa-cloud-upload', '/admin/upgrade/index', '_self', 1, 1657205545, 1671515219, 0, 1);
 INSERT INTO `__PREFIX__admin_rule` VALUES (177, '', '数据库', 1, 'fa fa-database', '', '_self', 1, 1670220905, 1670220905, 1, 1);
@@ -86,7 +83,8 @@ INSERT INTO `__PREFIX__admin_rule` VALUES (181, '', '应用管理', 169, 'fa fa-
 INSERT INTO `__PREFIX__admin_rule` VALUES (182, '', '应用分类', 181, '', '/admin/appcate/index', '_self', 1, 1670928538, 1670928538, 1, 1);
 INSERT INTO `__PREFIX__admin_rule` VALUES (183, '', '应用列表', 181, '', '/admin/app/index', '_self', 1, 1671095201, 1671148827, 20, 1);
 INSERT INTO `__PREFIX__admin_rule` VALUES (184, '', '客户应用', 162, '', '/admin/tenantapp/index', '_self', 1, 1671162684, 1671162684, 1, 1);
-
+INSERT INTO `__PREFIX__admin_rule` VALUES (185, '', '应用商店', 168, '', '/admin/appstore/index', '_self', 1, 1673925222, 1673925222, 10, 1);
+INSERT INTO `__PREFIX__admin_rule` VALUES (186, '', '应用升级', 168, '', '/admin/appstore/upgrade', '_self', 1, 1673925265, 1673925265, 5, 1);
 -- ----------------------------
 -- Table structure for dao_app
 -- ----------------------------
@@ -149,8 +147,8 @@ CREATE TABLE `__PREFIX__app_info`  (
   `detail` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '应用介绍',
   `sale_num` int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '实际销量',
   `sale_num_show` int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '虚拟销量',
-  `price` decimal(10, 2) UNSIGNED NOT NULL COMMENT '售价',
-  `old_price` decimal(10, 2) UNSIGNED NOT NULL COMMENT '原价',
+  `price` decimal(10, 2) UNSIGNED NOT NULL DEFAULT 0.00 COMMENT '售价',
+  `old_price` decimal(10, 2) UNSIGNED NOT NULL DEFAULT 0.00 COMMENT '原价',
   `snapshot` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '应用快照',
   `config` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '应用配置',
   PRIMARY KEY (`id`) USING BTREE
@@ -215,10 +213,7 @@ PARTITION `p5` MAX_ROWS = 0 MIN_ROWS = 0 ,
 PARTITION `p6` MAX_ROWS = 0 MIN_ROWS = 0 ,
 PARTITION `p7` MAX_ROWS = 0 MIN_ROWS = 0 ,
 PARTITION `p8` MAX_ROWS = 0 MIN_ROWS = 0 ,
-PARTITION `p9` MAX_ROWS = 0 MIN_ROWS = 0 )
-;
-
-
+PARTITION `p9` MAX_ROWS = 0 MIN_ROWS = 0 );
 -- ----------------------------
 -- Table structure for dao_media_link
 -- ----------------------------
@@ -246,10 +241,7 @@ PARTITION `p5` ENGINE = InnoDB MAX_ROWS = 0 MIN_ROWS = 0 ,
 PARTITION `p6` ENGINE = InnoDB MAX_ROWS = 0 MIN_ROWS = 0 ,
 PARTITION `p7` ENGINE = InnoDB MAX_ROWS = 0 MIN_ROWS = 0 ,
 PARTITION `p8` ENGINE = InnoDB MAX_ROWS = 0 MIN_ROWS = 0 ,
-PARTITION `p9` ENGINE = InnoDB MAX_ROWS = 0 MIN_ROWS = 0 )
-;
-
-
+PARTITION `p9` ENGINE = InnoDB MAX_ROWS = 0 MIN_ROWS = 0 );
 -- ----------------------------
 -- Table structure for dao_media_text
 -- ----------------------------
@@ -355,7 +347,7 @@ CREATE TABLE `__PREFIX__setting`  (
 -- ----------------------------
 -- Records of dao_setting
 -- ----------------------------
-INSERT INTO `__PREFIX__setting` VALUES (1, 'site', '站点信息', '{\"project_title\":\"DaoAdmin\",\"logo\":\"https:\\/\\/devhhb.images.huihuiba.net\\/1-6379c2a74cd60.png\",\"slogan\":\"您成功路上的好伙伴\",\"beian\":\"闽ICP备19014014号-4\"}', 1590290640, 1671013534);
+INSERT INTO `__PREFIX__setting` VALUES (1, 'site', '站点信息', '{\"project_title\":\"DaoAdmin\",\"logo\":\"https:\\/\\/devhhb.images.huihuiba.net\\/image%2F1-63ddbd099009b.png\",\"slogan\":\"成功路上的好伙伴\",\"beian\":\"闽ICP备19014014号-4\",\"tongji\":\"\",\"kefu\":\"https:\\/\\/devhhb.images.huihuiba.net\\/1-5f336a7d80daf.jpg\",\"backend_logo\":\"https:\\/\\/devhhb.images.huihuiba.net\\/1-6379c2a74cd60.png\",\"seo_keywords\":\"微信关系管理、微信公众号、社交数据管理、小程序、微信公众平台、公众号应用商店，公众号插件商店、公众号开发、微信CRM、餐饮、新零售、在线教育、智能硬件、微信机器人、微信多客服系统、分销系统\",\"seo_description\":\"酷在云端是领先的微信全行业营销平台。不仅帮助品牌解决微信公众号、小程序的开发问题，管理粉丝CRM及数据，根据行为及属性将粉丝自动打上标签，借助微信CRM实现精细化营销。也为中小企业提供微商城、智慧零售、餐饮o2o、小程序等一体化解决方案，以更开放的服务生态为用户提供产品和服务，构建线上线下融合、 多渠道营销、开放互通的智能商业服务生态体系，帮助更多中小企业向智能商业转型升级。\"}', 1590290640, 1675492176);
 INSERT INTO `__PREFIX__setting` VALUES (2, 'upload', '附件设置', '{\"driver\":\"local\",\"upload_path\":\"uploads\",\"qiniu_ak\":\"zn9rSy52CirWb9vljGwT\",\"qiniu_sk\":\"GW-pleiv9TmFIhaFNKKEIzYeNYGt_1P\",\"qiniu_bucket\":\"dev\",\"qiniu_domain\":\"https:\\/\\/devhhb.images.net\",\"image_size\":\"3148000\",\"image_ext\":\"jpg,gif,png,jpeg\",\"file_size\":\"53000000\",\"file_ext\":\"jpg,gif,png,jpeg,zip,rar,tar,gz,7z,doc,docx,txt,xml,mp3,mp4,xls,xlsx,pdf,csv\",\"voice_size\":\"2048000\",\"voice_ext\":\"mp3,wma,wav,amr\",\"video_size\":\"50240000\",\"video_ext\":\"mp4,flv,mov\"}', 1590292316, 1671515096);
 INSERT INTO `__PREFIX__setting` VALUES (7, 'sms', '短信设置', '{\"sms_account\":\"111111\",\"sms_pwd\":\"22222\",\"sms_type\":\"3333\"}', 0, 1640491477);
 
@@ -377,7 +369,7 @@ CREATE TABLE `__PREFIX__tenant`  (
   `create_time` int(10) NOT NULL DEFAULT 0 COMMENT '新增时间',
   `update_time` int(10) NOT NULL DEFAULT 0 COMMENT '最后修改时间',
   `company_id` int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '所属公司ID',
-  `department_id` int(10) NOT NULL COMMENT '部门id',
+  `department_id` int(10) NOT NULL DEFAULT 0 COMMENT '部门id',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `username`(`username`) USING BTREE
 ) ENGINE = InnoDB  CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
@@ -480,7 +472,6 @@ INSERT INTO `__PREFIX__tenant_rule` VALUES (177, '', '我的应用', 151, '', '/
 INSERT INTO `__PREFIX__tenant_rule` VALUES (178, '', '应用市场', 176, 'fa fa-cart-plus', '', '_self', 1, 1671527760, 1671527760, 5, 1);
 INSERT INTO `__PREFIX__tenant_rule` VALUES (179, '', '应用采购', 178, '', '/tenant/apps/store', '_self', 1, 1671527878, 1671527878, 10, 1);
 INSERT INTO `__PREFIX__tenant_rule` VALUES (180, '', '过期应用', 151, '', '/tenant/apps/overtime', '_self', 1, 1672295990, 1672295990, 1, 1);
-
 -- ----------------------------
 -- Table structure for dao_tenant_setting
 -- ----------------------------
@@ -511,4 +502,17 @@ CREATE TABLE `__PREFIX__crontab`  (
   PRIMARY KEY (`id`)
 )
 
-SET FOREIGN_KEY_CHECKS = 1;
+-- ----------------------------
+-- Table structure for dao_timer
+-- ----------------------------
+CREATE TABLE `__PREFIX__timer` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `company_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '为0表示系统',
+  `module` varchar(50) NOT NULL DEFAULT 'admin' COMMENT '模块或应用',
+  `url` varchar(200) NOT NULL DEFAULT '' COMMENT '处理器的命名空间',
+  `status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '状态',
+  `create_time` int(10) unsigned NOT NULL DEFAULT '0',
+  `update_time` int(10) unsigned NOT NULL DEFAULT '0',
+  `seconds` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '间隔秒数',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

@@ -353,7 +353,11 @@ function locale(string $locale = null): string
         return Translation::getLocale();
     }
     Translation::setLocale($locale);
+<<<<<<< HEAD
     return $locale;
+=======
+    return Translation::getLocale();
+>>>>>>> e5ae73a6c47879afa9bdfbb894c1f40d2abd8d4f
 }
 
 /**
