@@ -9,6 +9,8 @@
 
 namespace process;
 
+use app\common\model\Timer as TimerM;
+use app\common\service\System;
 use Workerman\Timer;
 
 class Interval
@@ -16,9 +18,15 @@ class Interval
 
     public function onWorkerStart()
     {
-        // 每隔10秒任务
-        Timer::add(10, function(){
-            //var_dump("hello");
-        });
+        if(System::isStalled()) {
+            $task_list = TimerM::where('status', 1)
+                ->select();
+            foreach ($task_list as $task){
+                // 每隔10秒任务
+                Timer::add($task['seconds'], function ()use($task) {
+                    file_get_contents($task['url']);
+                });
+            }
+        }
     }
 }
