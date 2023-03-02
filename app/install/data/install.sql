@@ -500,4 +500,18 @@ CREATE TABLE `__PREFIX__crontab`  (
   `create_time` int(10) UNSIGNED NOT NULL DEFAULT 0,
   `update_time` int(10) UNSIGNED NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
-)
+);
+-- ----------------------------
+-- Table structure for dao_timer
+-- ----------------------------
+CREATE TABLE `__PREFIX__timer` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `company_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '为0表示系统',
+  `module` varchar(50) NOT NULL DEFAULT 'admin' COMMENT '模块或应用',
+  `url` varchar(200) NOT NULL DEFAULT '' COMMENT '处理器的命名空间',
+  `status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '状态',
+  `create_time` int(10) unsigned NOT NULL DEFAULT '0',
+  `update_time` int(10) unsigned NOT NULL DEFAULT '0',
+  `seconds` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '间隔秒数',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
