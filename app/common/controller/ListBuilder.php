@@ -270,7 +270,6 @@ class ListBuilder extends BaseController
             case 'edit':  // 编辑按钮
                 // 预定义按钮属性以简化使用
                 $my_attribute['text'] = '编辑';
-                $my_attribute['title'] = '编辑';
                 $my_attribute['class'] = 'layui-btn-normal';
                 $my_attribute['lay-event']  = 'edit';
                 $my_attribute['href']  = url('edit', ['id' => '__data_id__'], '');
@@ -284,6 +283,7 @@ class ListBuilder extends BaseController
                 if ($attribute && is_array($attribute)) {
                     $my_attribute = array_merge($my_attribute, $attribute);
                 }
+                empty($my_attribute['title']) && $my_attribute['title'] = $my_attribute['text'];
                 break;
             case 'delete':
                 // 预定义按钮属性以简化使用
@@ -317,8 +317,9 @@ class ListBuilder extends BaseController
                 if ($attribute && is_array($attribute)) {
                     $my_attribute = array_merge($my_attribute, $attribute);
                 } else {
-                    $my_attribute['title'] = '该自定义按钮未配置属性';
+                    $my_attribute['text'] = '该自定义按钮未配置属性';
                 }
+                empty($my_attribute['title']) && $my_attribute['title'] = $my_attribute['text'];
                 break;
         }
         $my_attribute['class'] .= ' layui-btn layui-btn-xs ';
