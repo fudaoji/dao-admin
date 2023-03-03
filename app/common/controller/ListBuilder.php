@@ -287,7 +287,7 @@ class ListBuilder extends BaseController
                 break;
             case 'delete':
                 // 预定义按钮属性以简化使用
-                $my_attribute['title'] = '删除';
+                $my_attribute['text'] = '删除';
                 $my_attribute['class'] = 'layui-btn-danger';
                 $my_attribute['lay-event']  = 'delete';
                 $my_attribute['href']  = url($set_status_url, ['status' => 'delete']);
@@ -296,6 +296,7 @@ class ListBuilder extends BaseController
                 if ($attribute && is_array($attribute)) {
                     $my_attribute = array_merge($my_attribute, $attribute);
                 }
+                empty($my_attribute['title']) && $my_attribute['title'] = $my_attribute['text'];
                 break;
             case 'forbid':  // 改变记录状态按钮，会更具数据当前的状态自动选择应该显示启用/禁用
                 //预定义按钮属
