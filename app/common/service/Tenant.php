@@ -102,4 +102,40 @@ class Tenant extends Common
         }
         return TenantM::where($where)->column('realname', 'id');
     }
+
+    /**
+     * 通用tenant_id条件
+     * @param string $alias
+     * @param array $tenant_info
+     * @return array
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    static function tenantIdWhere($alias = '', $tenant_info = []){
+        $alias = $alias ? $alias.'.' : '';
+        $tenant_info = empty($tenant_info) ? self::sessionTenantInfo() : $tenant_info;
+        if(self::isLeader($tenant_info)){
+            return [$alias . 'company_id', '=', self::getCompanyId($tenant_info)];
+        }
+        return [$alias . 'tenant_id', '=', $tenant_info['id']];
+    }
+
+    /**
+     * 通用company_id条件
+     * @param string $alias
+     * @param array $tenant_info
+     * @return array
+     * Author: fudaoji<fdj@kuryun.cn>
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
+    static function companyIdWhere($alias = '', $tenant_info = []){
+        $alias = $alias ? $alias.'.' : '';
+        $tenant_info = empty($tenant_info) ? self::sessionTenantInfo() : $tenant_info;
+        return [$alias . 'company_id', '=', self::getCompanyId($tenant_info)];
+    }
+
+    static function sessionTenantInfo(){
+        return \request()->session()->get(SESSION_TENANT);
+    }
 }
