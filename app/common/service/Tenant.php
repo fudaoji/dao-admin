@@ -100,7 +100,7 @@ class Tenant extends Common
         if(is_null($where)){
             $where = [['status', '=', 1]];
         }
-        return TenantM::where($where)->column('realname', 'id');
+        return TenantM::where($where)->column('username', 'id');
     }
 
     /**
