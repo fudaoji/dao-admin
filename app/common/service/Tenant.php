@@ -11,9 +11,36 @@ namespace app\common\service;
 
 use app\common\model\Tenant as TenantM;
 use app\common\model\TenantDepartment as DepartmentM;
+use app\common\model\TenantApp as TenantAppM;
 
 class Tenant extends Common
 {
+    /**
+     * 获取商户apps
+     * @param array $tenant_info
+     * @param array $where //额外条件
+     * @return array|\think\Collection|\think\db\Query[]
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException Author: fudaoji<fdj@kuryun.cn>
+     */
+    static function getCompanyActiveApps($tenant_info = [], $where = []){
+        $map = [
+            'app.status' => 1,
+            'ta.company_id' => self::getCompanyId($tenant_info)
+        ];
+        $query = TenantAppM::alias('ta')
+            ->where($map)
+            ->where('ta.deadline','>', time())
+            ->join('app app', 'app.name=ta.app_name')
+            ->order('ta.update_time', 'desc')
+            ->field([
+                'ta.*','app.logo','app.desc','app.name','app.title','app.tenant_url','app.tenant_url_type'
+            ]);
+        $where && $query = $query->where($where);
+        return $query->select();
+    }
+
     /**
      * 获取部门
      * @param array $tenant
