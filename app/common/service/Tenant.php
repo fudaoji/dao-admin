@@ -35,7 +35,7 @@ class Tenant extends Common
             ->join('app app', 'app.name=ta.app_name')
             ->order('ta.update_time', 'desc')
             ->field([
-                'ta.*','app.logo','app.desc','app.name','app.title','app.tenant_url','app.tenant_url_type'
+                'ta.*','app.logo','app.desc','app.name','app.title','app.tenant_url','app.tenant_url_type','app.type'
             ]);
         $where && $query = $query->where($where);
         return $query->select();
