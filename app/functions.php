@@ -325,7 +325,7 @@ if (!function_exists('cut_str')) {
      */
     function cut_str($str, $len = 30, $suffix = '...')
     {
-        if (strlen($str) > $len) {
+        if (mb_strlen($str) > $len) {
             $str = mb_substr($str, 0, $len) . $suffix;
         }
         return $str;
