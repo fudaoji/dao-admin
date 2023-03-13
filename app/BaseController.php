@@ -27,7 +27,7 @@ class BaseController
 
     public function __construct()
     {
-        Setting::instance()->settings();
+        Setting::instance()->settings(true);
     }
 
     /**
