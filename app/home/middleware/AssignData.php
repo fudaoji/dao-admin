@@ -24,7 +24,7 @@ class AssignData implements MiddlewareInterface
         $app        = request()->getApp();
         $controller = request()->getController();
         $action     = request()->getAction();
-        $admin_info = request()->session()->get(SESSION_ADMIN);
+        $admin_info = request()->session()->get(SESSION_TENANT);
 
         View::assign('app', $app);
         View::assign('controller', $controller);

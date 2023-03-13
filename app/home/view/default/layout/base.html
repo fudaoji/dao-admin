@@ -45,7 +45,9 @@
                 <a href="javascript:;">会员中心<i class="layui-hide-xs"> </i><span class="layui-nav-more"></span></a>
                 <dl class="layui-nav-child">
                     <dd><a href="<?=url('tenant/auth/login');?>">登录</a></dd>
-                    <dd><a href="<?=url('tenant/auth/register');?>">注册</a></dd>
+                    {if !empty(dao_config('system.site.switch_reg'))}
+                    <dd><a href="<?=url('tenant/auth/reg');?>">注册</a></dd>
+                    {/if}
                 </dl>
             </li>
             {/if}
