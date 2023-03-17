@@ -177,7 +177,12 @@ class App extends Common
      * Author: fudaoji<fdj@kuryun.cn>
      */
     static function getApp($name = ''){
-        return AppM::where('name', $name)->find();
+        if(intval($name)){
+            $where = [['id','=', $name]];
+        }else{
+            $where = [['name','=', $name]];
+        }
+        return AppM::where($where)->find();
     }
 
     /**
@@ -272,44 +277,42 @@ class App extends Common
     }
 
     /**
-     * 应用购买核销
+     * 应用采购核销
      * @param array $params
-     * Author: fudaoji<fdj@kuryun.cn>
      * @return bool
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     * Author: fudaoji<fdj@kuryun.cn>
      */
     static function afterBuyApp($params = []){
-        Db::startTrans();
-        try {
-            $app = $params['app'];
-            $tenant_app = TenantAppM::where('company_id', $params['company_id'])
-                ->where('app_name', $app['name'])
-                ->find();
-            if(empty($tenant_app)){
-                TenantAppM::create([
-                    'company_id' => $params['company_id'],
-                    'app_name' => $app['name'],
-                    'deadline' => strtotime("+1 year", time())
-                ]);
-            }else{
-                TenantAppM::update([
-                    'id' => $tenant_app['id'],
-                    'deadline' => strtotime("+1 year", max($tenant_app['deadline'], time()))
-                ]);
-            }
-
-            AppInfoM::update([
-                'id' => $app['id'],
-                'sale_num' => $app['sale_num'] + 1,
-                'sale_num_show' => $app['sale_num_show'] + 1
-            ]);
-            Db::commit();
-            $res = true;
-        }catch (\Exception $e){
-            dao_log()->error($e->getMessage());
-            Db::rollback();
-            $res = false;
+        $app = $params['app'];
+        if(is_int($app) || is_string($app)){
+            $app = self::getApp($app);
         }
-        return $res;
+        $order = $params['order'];
+        $tenant_app = TenantAppM::where('company_id', $params['company_id'])
+            ->where('app_name', $app['name'])
+            ->find();
+        if(empty($tenant_app)){
+            TenantAppM::create([
+                'company_id' => $params['company_id'],
+                'app_name' => $app['name'],
+                'deadline' => strtotime("+{$order['month']} month", time())
+            ]);
+        }else{
+            TenantAppM::update([
+                'id' => $tenant_app['id'],
+                'deadline' => strtotime("+{$order['month']} month", max($tenant_app['deadline'], time()))
+            ]);
+        }
+
+        AppInfoM::update([
+            'id' => $app['id'],
+            'sale_num' => $app['sale_num'] + 1,
+            'sale_num_show' => $app['sale_num_show'] + 1
+        ]);
+        return true;
     }
 
     /**
@@ -326,5 +329,37 @@ class App extends Common
         }
         AppInfoM::update($update);
         return $update;
+    }
+
+    /**
+     * 应用退单
+     * @param array $params
+     * @return bool
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    static function afterRefundApp($params = []){
+        $app = $params['app'];
+        if(is_int($app) || is_string($app)){
+            $app = self::getApp($app);
+        }
+        $order = $params['order'];
+        $tenant_app = TenantAppM::where('company_id', $params['company_id'])
+            ->where('app_name', $app['name'])
+            ->find();
+        if($tenant_app){
+            TenantAppM::update([
+                'id' => $tenant_app['id'],
+                'deadline' => max(0, strtotime("-{$order['month']} month", $tenant_app['deadline']))
+            ]);
+        }
+
+        AppInfoM::update([
+            'id' => $app['id'],
+            'sale_num' => $app['sale_num'] - 1
+        ]);
+        return true;
     }
 }

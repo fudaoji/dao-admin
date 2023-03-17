@@ -15,7 +15,7 @@ use app\common\service\Media as MediaService;
 use app\TenantController;
 use support\View;
 use think\facade\Db;
-use Webman\Http\Request;
+use Support\Request;;
 
 class Media extends TenantController
 {

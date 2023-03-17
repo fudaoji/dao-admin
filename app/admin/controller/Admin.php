@@ -11,7 +11,7 @@ namespace app\admin\controller;
 
 use app\AdminController;
 use app\admin\service\Auth;
-use Webman\Http\Request;
+use Support\Request;
 
 class Admin extends AdminController
 {

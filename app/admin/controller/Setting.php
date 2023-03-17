@@ -12,6 +12,7 @@ namespace app\admin\controller;
 use app\AdminController;
 use app\common\constant\Common;
 use app\common\model\Setting as SettingM;
+use app\common\service\Payment;
 use app\common\service\Upload;
 use app\common\service\Sms;
 
@@ -67,6 +68,7 @@ class Setting extends AdminController
         $current_name = input('name', 'site');
         $setting = $this->model->where([['name','=', $current_name]])
             ->find();
+
         if(request()->isPost()){
             $post_data = input('post.');
             unset($post_data['__token__']);
@@ -103,7 +105,8 @@ class Setting extends AdminController
                     ->addFormItem('map_qq_key', 'text', '腾讯地图key', '获取方法详见：https://lbs.qq.com/', [], 'required maxlength=150');
                 break;
             case 'pay':
-                $builder->addFormItem('wx_title', 'legend', '微信支付', '微信支付')
+                $builder->addFormItem('channel', 'select', '支付通道', '支付通道', Payment::channels(), 'required maxlength=150')
+                    ->addFormItem('wx_title', 'legend', '微信支付(V3)', '微信支付(V3)')
                     ->addFormItem('wx_appid', 'text', 'AppId', 'AppId', [], 'required maxlength=150')
                     ->addFormItem('wx_mchid', 'text', '商户ID', '商户ID', [], 'required maxlength=100')
                     ->addFormItem('wx_p_appid', 'text', '服务商AppId', '如果是服务商模式，需要填写此项', [], ' maxlength=150')

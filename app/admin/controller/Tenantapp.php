@@ -15,7 +15,7 @@ use app\common\model\TenantApp as TenantAppM;
 use think\facade\Db;
 use app\common\model\Tenant;
 use app\common\service\App as AppService;
-use Webman\Http\Request;
+use Support\Request;
 
 class Tenantapp extends AdminController
 {

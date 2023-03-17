@@ -2,7 +2,7 @@
 
 namespace app;
 
-use Webman\Http\Request;
+use Support\Request;
 
 class AdminController extends BaseController
 {

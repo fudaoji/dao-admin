@@ -22,7 +22,7 @@ class AssignData implements MiddlewareInterface
     public function process(Request $request, callable $handler): Response
     {
         $app        = request()->getApp();
-        $controller = request()->getController();
+        $controller = strtolower(request()->getController());
         $action     = request()->getAction();
         $admin_info = request()->session()->get(SESSION_TENANT);
 

@@ -1,0 +1,107 @@
+{extend name="default:layout:base" /}
+
+{block name="main"}
+<div class="layui-tab layui-tab-brief order-detail" lay-filter="docDemoTabBrief">
+    <ul class="layui-tab-title">
+        <li class="layui-this">确认订单</li>
+    </ul>
+    <div class="layui-tab-content">
+        <div class="layui-tab-item layui-show">
+            <div class="layui-card">
+                <div class="layui-card-header">商品</div>
+                <div class="layui-card-body">
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th>应用</th>
+                            <th>单价</th>
+                            <th>购买时长</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td><img src="{$app.logo}" alt="" style="width: 100px;">{$app.title}</td>
+                            <td>￥{$app.price}</td>
+                            <td>{$month}个月</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="layui-card">
+                <div class="layui-card-header">费用小计</div>
+                <div class="layui-card-body">
+                    <table class="layui-table" lay-skin="nob">
+                        <tbody>
+                        <tr>
+                            <td>应用小计: </td>
+                            <td>￥{$fee}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="layui-card">
+                <div class="layui-card-header">抵扣</div>
+                <div class="layui-card-body">
+                    <form class="layui-form">
+                        <p>
+                            <input type="checkbox" lay-filter="wallet"  lay-skin="primary" checked> 钱包余额(可用 <span style="color: red;">￥{$wallet.money}</span>)
+                        </p>
+                    </form>
+                </div>
+            </div>
+
+            <div class="bottom">
+                <div class="layui-col-xs7">需支付总额: <span class="price">￥<span id="amount">{$amount}</span></span></div>
+                <div class="layui-col-xs5">
+                    <a href="javascript: history.go(-1);" class="layui-btn layui-btn-primary">上一步</a>
+                    <button type="button" class="layui-btn layui-btn-normal buy-btn">提交订单</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name="js"}
+<script>
+    layui.use(['element', 'jquery', 'form'], function(){
+        var $ = layui.jquery
+                ,form = layui.form;
+
+        var isWallet = true;
+        form.on('checkbox(wallet)', function(data){
+            isWallet = data.elem.checked;
+            $("#amount").text(isWallet ? "{$amount}" : "{$fee}");
+        });
+
+        $('.buy-btn').on('click', function () {
+            layer.confirm('你确定' + $(this).text() + '吗？', {
+                btn: ['确定','不的'],
+                title:'确认提醒'
+            }, function () {
+                requestPost('{:url("addOrderPost")}', {id: "{$app.id}",month:"{$month}",is_wallet: isWallet? 1 : 0}, function (res) {
+                    if(res.url){
+                        location.href = res.url;
+                    }else{
+                        parent.layer.close(parent.layer.getFrameIndex(window.name));
+                        parent.location.reload();
+                    }
+                });
+            });
+        });
+    });
+</script>
+{/block}
+
+{block name="css"}
+<style>
+    .order-detail .layui-card-header{font-weight: bold;}
+    .order-detail .price{color: red; font-size: 2em;}
+    .order-detail .bottom{
+        position: fixed;bottom: 5px;background-color: #fff;line-height: 30px;width: 95%;display: inline-block;margin: auto;
+        padding: 20px;
+    }
+</style>
+{/block}

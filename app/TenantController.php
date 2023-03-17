@@ -4,7 +4,7 @@ namespace app;
 
 use app\common\service\Tenant as TenantService;
 use app\tenant\service\Auth;
-use Webman\Http\Request;
+use Support\Request;
 
 class TenantController extends BaseController
 {
