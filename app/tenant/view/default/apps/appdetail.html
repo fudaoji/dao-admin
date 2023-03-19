@@ -1,66 +1,78 @@
 {extend name="default:layout:base" /}
 
 {block name="main"}
-<div class="layui-row layui-col-space30" style="margin-top: -5px;">
-    <div class="layui-col-xs5">
-        <!--应用快照-->
-        <div class="layui-carousel" id="snapshot">
-            <div carousel-item>
-                {volist name="data.snapshot" id="ss"}
-                <div style="background-image: url('{$ss}')" class="snapshot-item"></div>
-                {/volist}
+<form class="layui-form">
+    <div class="layui-row layui-col-space30" style="margin-top: -5px;">
+        <div class="layui-col-xs5">
+            <!--应用快照-->
+            <div class="layui-carousel" id="snapshot">
+                <div carousel-item>
+                    {volist name="data.snapshot" id="ss"}
+                    <div style="background-image: url('{$ss}')" class="snapshot-item"></div>
+                    {/volist}
+                </div>
             </div>
         </div>
-    </div>
-    <div class="layui-col-xs7 info">
-        <!--应用信息参数-->
-        <div class="layui-row layui-col-space20">
-            <div class="layui-col-xs3">
-                <div class="logo" style="background-image: url({$data.logo});"></div>
+        <div class="layui-col-xs7 info">
+            <!--应用信息参数-->
+            <div class="layui-row layui-col-space20">
+                <div class="layui-col-xs3">
+                    <div class="logo" style="background-image: url({$data.logo});"></div>
+                </div>
+                <div class="layui-col-xs9">
+                    <p class="title">{$data.title}</p>
+                    <p class="version">{$data.desc}</p>
+                </div>
             </div>
-            <div class="layui-col-xs9">
-                <p class="title">{$data.title}</p>
-                <p class="version">{$data.desc}</p>
+            <div class="price-div">
+                <p>价格/月：<span class="price">{$data.price > 0 ? '¥'.$data.price : '免费'}</span></p>
             </div>
-        </div>
-        <div class="price-div">
-            <p>价格：<span class="price">{$data.price > 0 ? '¥'.$data.price : '免费'}</span></p>
-            <p>服务时长： 1年</p>
-        </div>
-        <div class="layui-row layui-col-space20">
-            <div class="layui-col-xs2 tr">版本：</div>
-            <div class="layui-col-xs10">{$data.version}</div>
-        </div>
-        <div class="layui-row layui-col-space20">
-            <div class="layui-col-xs2 tr">销量：</div>
-            <div class="layui-col-xs10">{$data.sale_num_show}</div>
-        </div>
-        <div class="layui-row layui-col-space20">
-            <div class="layui-col-xs2 tr">标签：</div>
-            <div class="layui-col-xs10">{$data.cates}</div>
-        </div>
-        <div class="layui-row layui-col-space20">
-            <div class="layui-col-xs2 tr">适用：</div>
-            <div class="layui-col-xs10">{$data.type == 'mp' ? '微信公众号' : '微信小程序'}</div>
-        </div>
-        {if $tenant_app}
-        <div class="layui-row layui-col-space20">
-            {if $tenant_app.deadline > time()}
-            <div class="layui-col-xs2 tr">到期时间：</div>
-            <div class="layui-col-xs10"><span style="color: #cf1010;">{:date('Y-m-d H:i:s', $tenant_app.deadline)}</span></div>
-            {else/}
-            <div class="layui-col-xs2 tr">已过期：</div>
-            <div class="layui-col-xs6 tr"><span class="layui-badge">截止{:date('Y-m-d H:i:s', $tenant_app.deadline)}</span></div>
+            <div class="layui-row layui-col-space20">
+                <div class="layui-col-xs2 tr">版本：</div>
+                <div class="layui-col-xs10">{$data.version}</div>
+            </div>
+            <div class="layui-row layui-col-space20">
+                <div class="layui-col-xs2 tr">销量：</div>
+                <div class="layui-col-xs10">{$data.sale_num_show}</div>
+            </div>
+            <div class="layui-row layui-col-space20">
+                <div class="layui-col-xs2 tr">标签：</div>
+                <div class="layui-col-xs10">{$data.cates}</div>
+            </div>
+            <div class="layui-row layui-col-space20">
+                <div class="layui-col-xs2 tr">适用：</div>
+                <div class="layui-col-xs10">{$data.type == 'mp' ? '微信公众号' : '微信小程序'}</div>
+            </div>
+            {if $tenant_app}
+            <div class="layui-row layui-col-space20">
+                {if $tenant_app.deadline > time()}
+                <div class="layui-col-xs2 tr">到期时间：</div>
+                <div class="layui-col-xs10"><span style="color: #cf1010;">{:date('Y-m-d H:i:s', $tenant_app.deadline)}</span></div>
+                {else/}
+                <div class="layui-col-xs2 tr">已过期：</div>
+                <div class="layui-col-xs6 tr"><span class="layui-badge">截止{:date('Y-m-d H:i:s', $tenant_app.deadline)}</span></div>
+                {/if}
+            </div>
             {/if}
-        </div>
-        {/if}
-        <div class="layui-row layui-col-space20">
-            <div class="layui-col-xs3 tr">
-                <button class="layui-btn buy-btn">{$tenant_app ? '续费' : '立即开通'}</button>
+            <div class="layui-row layui-col-space20">
+                <div class="layui-col-xs2 tr">选择时长：</div>
+                <div class="layui-col-xs5">
+                    <select name="month" id="month">
+                        <?php $month_list = range(1, 36);?>
+                        {foreach $month_list as $month}
+                        <option value="{$month}">{$month}个月</option>
+                        {/foreach}
+                    </select>
+                </div>
+            </div>
+            <div class="layui-row layui-col-space20">
+                <div class="layui-col-xs3 tr">
+                    <button type="submit" class="layui-btn buy-btn" lay-submit lay-filter="submit">{$tenant_app ? '续费' : '立即开通'}</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
+</form>
 
 <div class="layui-tab layui-tab-brief addon-detail" lay-filter="docDemoTabBrief">
     <ul class="layui-tab-title">
@@ -74,10 +86,10 @@
 
 {block name="js"}
 <script>
-    layui.use(['carousel', 'element', 'jquery', 'miniTab'], function(){
+    layui.use(['carousel', 'element', 'jquery', 'form'], function(){
         var carousel = layui.carousel,
                 $ = layui.jquery
-                ,miniTab = layui.miniTab;
+                ,form = layui.form;
         //建造实例
         carousel.render({
             elem: '#snapshot'
@@ -87,17 +99,26 @@
             //,anim: 'updown' //切换动画方式
         });
 
-        $('.buy-btn').on('click', function () {
+        form.on('submit(submit)', function (data) {
+            var params = data.field;
+            params.app_id = "{$data.id}";
+            location.href = "{:url('order')}?params=" + JSON.stringify(params);
+            return false;
+        });
+
+        /*$('.buy-btn').on('click', function () {
             layer.confirm('你确定' + $(this).text() + '吗？', {
                 btn: ['确定','不的'],
                 title:'确认提醒'
             }, function () {
+                console.log($(form).serialize());
+                return;
                 requestPost('{:url("addOrderPost")}', {id: "{$data.id}", type:"{:empty($tenant_app) ? 'new' : 'renew'}"}, function (res) {
                     parent.layer.close(parent.layer.getFrameIndex(window.name));
                     parent.location.reload();
                 });
             });
-        });
+        });*/
     });
 </script>
 {/block}

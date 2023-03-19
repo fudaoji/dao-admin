@@ -13,7 +13,7 @@ use app\admin\service\Auth;
 use app\AdminController;
 use app\common\model\TenantGroup;
 use app\common\model\Tenant as TenantM;
-use Webman\Http\Request;
+use Support\Request;
 
 class Tenant extends AdminController
 {
@@ -45,12 +45,14 @@ class Tenant extends AdminController
             if(! Auth::isSuperAdmin()) {
                 $where[] = ['id', '>', 1];
             }
-            $total = $this->model->where($where)
-                ->count();
+            $query = $this->model->alias('tenant')
+                ->join('tenant_wallet wallet', 'wallet.id=tenant.id', 'left')
+                ->where($where);
+            $total = $query->count();
             if ($total) {
-                $list = $this->model->where($where)
-                    ->page($post_data['page'], $post_data['limit'])
-                    ->order('id', 'desc')
+                $list = $query->page($post_data['page'], $post_data['limit'])
+                    ->field(['tenant.*', 'wallet.money'])
+                    ->order('tenant.id', 'desc')
                     ->select();
             } else {
                 $list = [];
@@ -68,10 +70,12 @@ class Tenant extends AdminController
             ->addTableColumn(['title' => '账号', 'field' => 'username', 'minWidth' => 80])
             ->addTableColumn(['title' => '手机号', 'field' => 'mobile', 'minWidth' => 120])
             ->addTableColumn(['title' => '名称', 'field' => 'realname', 'minWidth' => 90])
+            ->addTableColumn(['title' => '钱包余额', 'field' => 'money', 'minWidth' => 90])
             ->addTableColumn(['title' => '状态', 'field' => 'status', 'type' => 'switch', 'minWidth' => 80])
-            ->addTableColumn(['title' => '操作', 'minWidth' => 200, 'type' => 'toolbar'])
+            ->addTableColumn(['title' => '操作', 'minWidth' => 180, 'type' => 'toolbar'])
             ->addRightButton('edit')
-            ->addRightButton('edit', ['text' => '修改密码', 'title' => '修改密码','class' => 'layui-btn layui-btn-warm layui-btn-xs','href' => url('setPassword', ['id' => '__data_id__'])])
+            ->addRightButton('edit', ['text' => '充值', 'title' => '充值','class' => 'layui-btn-warm','href' => url('tenantwallet/recharge', ['id' => '__data_id__'])])
+            ->addRightButton('edit', ['text' => '修改密码', 'title' => '修改密码','href' => url('setPassword', ['id' => '__data_id__'])])
             ->addRightButton('delete');
         return $builder->show();
     }

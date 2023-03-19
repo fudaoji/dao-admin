@@ -230,7 +230,7 @@ window.requestPost = function(url, params, callback, sync = false){
                     callback && typeof callback !== 'undefined' && callback(res);
                 }
             }else{
-                layer.alert(res.msg);
+                res.msg && layer.alert(res.msg);
             }
         }, 'json').complete(function () {
             layer.close(loadingIndex);

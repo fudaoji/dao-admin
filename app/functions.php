@@ -10,6 +10,18 @@ use think\facade\Db;
 
 require_once app_path() . DIRECTORY_SEPARATOR . 'define.php';
 
+if(!function_exists('build_order_no')){
+    /**
+     * 生成唯一订单号
+     * @param string $prefix
+     * @return string
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    function build_order_no($prefix = 'dao'){
+        return $prefix . time().substr(implode(NULL, array_map('ord', str_split(substr(uniqid(), 7, 13), 1))), 0, 8);
+    }
+}
+
 if(! function_exists('filter_emoji')){
     function filter_emoji($str = '')
     {
@@ -140,6 +152,20 @@ if (!function_exists('error')) {
         }
 
         return json($result);
+    }
+}
+
+if (!function_exists('get_client_ip')) {
+    /**
+     * 获取客户端IP
+     * @param string $plugin
+     * @param string $file
+     * @return string
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    function get_client_ip()
+    {
+        return \request() ? request()->getRemoteIp() : '127.0.0.1';
     }
 }
 

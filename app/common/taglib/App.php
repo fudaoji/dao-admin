@@ -40,7 +40,7 @@ class App extends TagLib
 
         $html = '';
         foreach ($types as $v){
-            isset($haystack[$v]) && $html .= '<span class="layui-badge layui-bg-orange">'.$haystack[$v].'</span>';
+            isset($haystack[$v]) && $html .= '<span style="margin-right: 2px;" class="layui-badge layui-bg-orange">'.$haystack[$v].'</span>';
         }
         return $html;
     }

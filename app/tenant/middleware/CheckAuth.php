@@ -27,6 +27,10 @@ class CheckAuth implements MiddlewareInterface
         $action     = request()->getAction();
         $admin_info = request()->session()->get(SESSION_TENANT);
 
+        if($this->whiteRoute($controller)){
+            return $handler($request);
+        }
+
         if (empty($admin_info)) {
             if($controller !== 'auth'){
                 return redirect(url('auth/login'));
@@ -42,5 +46,21 @@ class CheckAuth implements MiddlewareInterface
         View::assign('action', $action);
         View::assign('tenant', $admin_info);
         return $handler($request);
+    }
+
+    /**
+     * 免验控制器
+     * @param string $controller
+     * @return bool
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    private function whiteRoute($controller = ''){
+        $white = [
+            'onmessage'
+        ];
+        if(in_array($controller, $white)){
+            return true;
+        }
+        return false;
     }
 }

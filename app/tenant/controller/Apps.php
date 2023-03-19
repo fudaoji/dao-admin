@@ -13,10 +13,12 @@ use app\common\constant\Platform;
 use app\common\model\App;
 use app\common\model\AppCate;
 use app\common\model\TenantApp;
+use app\common\service\OrderApp as OrderService;
 use app\common\service\Tenant as TenantService;
 use app\common\service\App as AppService;
 use app\TenantController;
 use think\facade\Db;
+use app\common\service\TenantWallet as WalletService;
 
 class Apps extends TenantController
 {
@@ -36,6 +38,30 @@ class Apps extends TenantController
     }
 
     /**
+     * 下单页
+     * @return mixed
+     * Author: fudaoji<fdj@kuryun.cn>
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
+    public function order(){
+        if(! $params = input('params', '')){
+            return $this->error('非法请求');
+        }
+        $params = json_decode($params, true);
+        $data = AppService::getAppInfo($params['app_id']);
+        if(! $data){
+            return $this->error('数据不存在');
+        }
+        $wallet = WalletService::getWallet(TenantService::getCompanyId());
+        $fee = dao_money_format($data['price'] * $params['month']);
+        $amount = $wallet['money'] > $fee ? 0.00 : $fee - $wallet['money'];
+        $assign = array_merge($params, ['app' => $data, 'wallet' => $wallet, 'fee' => $fee, 'amount' => $amount]);
+        return $this->show($assign);
+    }
+
+    /**
      * 应用采购下单
      * Author: fudaoji<fdj@kuryun.cn>
      */
@@ -47,27 +73,27 @@ class Apps extends TenantController
                 return $this->error('参数错误');
             }
 
-            $return = ['app' => $app];
-            if($post_data['type'] == 'new'){
-                $msg = '应用开通成功';
-            }else{
-                $msg = '续费成功';
-            }
-
-            $url = '';
             Db::startTrans();
             try {
-                if($app['price'] <= 0){
+                $post_data['app'] = $app;
+                $post_data['tenant'] = $this->tenantInfo();
+                //add order
+                $order = OrderService::addOrder($post_data);
+                //pay params
+                if($order['amount'] <= 0){
                     AppService::afterBuyApp([
                         'app' => $app,
-                        'company_id' => TenantService::getCompanyId()
+                        'company_id' => TenantService::getCompanyId(),
+                        'order' => $order
                     ]);
+                    $msg = '支付成功';
+                    $url = url('orderapp/index');
                 }else{
-                    //todo 下单，前台走支付
-                    return $this->error('请联系客服开通！');
+                    $msg = '下单成功，前往支付';
+                    $url = url('pay/payapp', ['order_id' => $order['id']]);
                 }
                 Db::commit();
-                return $this->success($msg, $url, $return);
+                return $this->success($msg, $url);
             }catch (\Exception $e){
                 dao_log()->error($e->getMessage());
                 Db::rollback();

@@ -8,3 +8,5 @@
 /plugin
 install.lock
 public/*.txt
+.well-known
+/data

@@ -20,6 +20,9 @@
                     <p>
                         {App:types haystack='types' types="info.type" /}
                     </p>
+                    <p>
+                        依赖应用：{$info.dependency}
+                    </p>
                     <div class="install-btn">
                         <button onclick="downloadApp('{$info.id}')" class="layui-btn layui-btn-sm">
                             <i class="layui-icon">&#xe601;</i>立即下载
@@ -129,6 +132,7 @@
 {/block}
 {block name="css"}
 <style>
+    #apps-info p{line-height: 20px;}
     #apps-info .pd{padding: 10px 0px 0px 10px;}
     .apps-info-title{font-size: 22px;}
     .apps-info-title span{ margin-left:5px;font-size: 12px;bottom: 3px;}
@@ -136,7 +140,7 @@
     .apps-info-desc{font-size: 12px;color: #787878;}
     .preview-qrcode{text-align: center;}
     .apps-info-preview_text {text-align: center; top: -5px;position: relative;}
-    .install-btn{margin-top: 5px;}
+    .install-btn{margin-top: 35px;}
     .layui-tab-content img{max-width: 100% !important;}
 </style>
 {/block}

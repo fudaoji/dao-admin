@@ -12,4 +12,4 @@ define('SESSION_TENANT', 'tenantInfo');
 define('DS', DIRECTORY_SEPARATOR);
 
 define('QUEUE_NAME', 'daoadmin_queue');
-define('COMMUNITY_URL', 'http://daoadmin.kuryun.com');
+define('COMMUNITY_URL', 'https://daoadmin.kuryun.com');

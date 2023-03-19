@@ -51,9 +51,10 @@
     "league/flysystem": "^2.5",
     "overtrue/wechat": "^5.30",
     "predis/predis": "^2.0",
-    "yansongda/pay": "~3.1.0",
+    "yansongda/pay": "~3.2.0",
     "webman/redis-queue": "^1.2",
-    "webman/event": "^1.0"
+    "webman/event": "^1.0",
+    "chillerlan/php-qrcode": "^4.3"
   },
   "suggest": {
     "ext-event": "For better performance. "
