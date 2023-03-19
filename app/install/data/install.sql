@@ -65,26 +65,10 @@ CREATE TABLE `__PREFIX__admin_rule`  (
 -- ----------------------------
 -- Records of dao_admin_rule
 -- ----------------------------
-INSERT INTO `__PREFIX__admin_rule` VALUES (1, '', '系统管理', 0, '', '', '_self', 1, 0, 1626845872, 0, 1);
-INSERT INTO `__PREFIX__admin_rule` VALUES (3, '', ' 管理员管理', 1, 'fa fa-users', '/admin/admin/index', '_self', 1, 0, 1671515233, 10, 1);
-INSERT INTO `__PREFIX__admin_rule` VALUES (4, '', '菜单管理', 1, 'fa fa-align-justify', '', '_self', 1, 0, 1670806437, 3, 1);
-INSERT INTO `__PREFIX__admin_rule` VALUES (107, '', '角色管理', 1, 'fa fa-align-center', '/admin/admingroup/index', '_self', 1, 1604904540, 1671515255, 9, 1);
-INSERT INTO `__PREFIX__admin_rule` VALUES (148, '', '配置管理', 1, 'fa fa-cogs', '/admin/setting/index', '_self', 1, 1624803694, 1640366685, 4, 1);
-INSERT INTO `__PREFIX__admin_rule` VALUES (151, '', '客户列表', 162, '', '/admin/tenant/index', '_self', 1, 1625725311, 1670806765, 10, 1);
-INSERT INTO `__PREFIX__admin_rule` VALUES (162, '', '客户管理', 169, 'fa fa-user', '', '_self', 1, 1626507555, 1670806741, 31, 1);
-INSERT INTO `__PREFIX__admin_rule` VALUES (168, '', '官方市场', 169, 'fa fa-window-restore', '', '_self', 1, 1640786676, 1673925185, 5, 1);
-INSERT INTO `__PREFIX__admin_rule` VALUES (169, '', '运营管理', 0, '', '', '_self', 1, 1640844673, 1650466761, 21, 1);
-INSERT INTO `__PREFIX__admin_rule` VALUES (176, '', '系统升级', 1, 'fa fa-cloud-upload', '/admin/upgrade/index', '_self', 1, 1657205545, 1671515219, 0, 1);
-INSERT INTO `__PREFIX__admin_rule` VALUES (177, '', '数据库', 1, 'fa fa-database', '', '_self', 1, 1670220905, 1670220905, 1, 1);
-INSERT INTO `__PREFIX__admin_rule` VALUES (178, '', '数据表', 177, '', '/admin/database/tables', '_self', 1, 1670220940, 1670220940, 1, 1);
-INSERT INTO `__PREFIX__admin_rule` VALUES (179, '', '运营后台', 4, '', '/admin/adminrule/index', '_self', 1, 1670806427, 1670806427, 5, 1);
-INSERT INTO `__PREFIX__admin_rule` VALUES (180, '', '商家后台', 4, '', '/admin/tenantrule/index', '_self', 1, 1670806468, 1670806598, 1, 1);
-INSERT INTO `__PREFIX__admin_rule` VALUES (181, '', '应用管理', 169, 'fa fa-cubes', '', '_self', 1, 1670928509, 1670928509, 30, 1);
-INSERT INTO `__PREFIX__admin_rule` VALUES (182, '', '应用分类', 181, '', '/admin/appcate/index', '_self', 1, 1670928538, 1670928538, 1, 1);
-INSERT INTO `__PREFIX__admin_rule` VALUES (183, '', '应用列表', 181, '', '/admin/app/index', '_self', 1, 1671095201, 1671148827, 20, 1);
-INSERT INTO `__PREFIX__admin_rule` VALUES (184, '', '客户应用', 162, '', '/admin/tenantapp/index', '_self', 1, 1671162684, 1671162684, 1, 1);
-INSERT INTO `__PREFIX__admin_rule` VALUES (185, '', '应用商店', 168, '', '/admin/appstore/index', '_self', 1, 1673925222, 1673925222, 10, 1);
-INSERT INTO `__PREFIX__admin_rule` VALUES (186, '', '应用升级', 168, '', '/admin/appstore/upgrade', '_self', 1, 1673925265, 1673925265, 5, 1);
+BEGIN;
+INSERT INTO `__PREFIX__admin_rule` VALUES ('1', '', '系统管理', '0', '', '', '_self', '1', '0', '1626845872', '0', '1'), ('3', '', ' 管理员管理', '1', 'fa fa-users', '/admin/admin/index', '_self', '1', '0', '1671515233', '10', '1'), ('4', '', '菜单管理', '1', 'fa fa-align-justify', '', '_self', '1', '0', '1670806437', '3', '1'), ('107', '', '角色管理', '1', 'fa fa-align-center', '/admin/admingroup/index', '_self', '1', '1604904540', '1671515255', '9', '1'), ('148', '', '配置管理', '1', 'fa fa-cogs', '/admin/setting/index', '_self', '1', '1624803694', '1640366685', '4', '1'), ('151', '', '客户列表', '162', '', '/admin/tenant/index', '_self', '1', '1625725311', '1670806765', '10', '1'), ('162', '', '客户管理', '169', 'fa fa-user', '', '_self', '1', '1626507555', '1670806741', '31', '1'), ('168', '', '官方市场', '169', 'fa fa-window-restore', '', '_self', '1', '1640786676', '1673925185', '5', '1'), ('169', '', '运营管理', '0', '', '', '_self', '1', '1640844673', '1650466761', '21', '1'), ('176', '', '系统升级', '1', 'fa fa-cloud-upload', '/admin/upgrade/index', '_self', '1', '1657205545', '1671515219', '0', '1'), ('177', '', '数据库', '1', 'fa fa-database', '', '_self', '1', '1670220905', '1670220905', '1', '1'), ('178', '', '数据表', '177', '', '/admin/database/tables', '_self', '1', '1670220940', '1670220940', '1', '1'), ('179', '', '运营后台', '4', '', '/admin/adminrule/index', '_self', '1', '1670806427', '1670806427', '5', '1'), ('180', '', '商家后台', '4', '', '/admin/tenantrule/index', '_self', '1', '1670806468', '1670806598', '1', '1'), ('181', '', '应用管理', '169', 'fa fa-cubes', '', '_self', '1', '1670928509', '1670928509', '30', '1'), ('182', '', '应用分类', '181', '', '/admin/appcate/index', '_self', '1', '1670928538', '1670928538', '1', '1'), ('183', '', '应用列表', '181', '', '/admin/app/index', '_self', '1', '1671095201', '1671148827', '20', '1'), ('184', '', '客户应用', '162', '', '/admin/tenantapp/index', '_self', '1', '1671162684', '1671162684', '1', '1'), ('185', '', '应用商店', '168', '', '/admin/appstore/index', '_self', '1', '1673925222', '1673925222', '10', '1'), ('186', '', '应用升级', '168', '', '/admin/appstore/upgrade', '_self', '1', '1673925265', '1673925265', '5', '1'), ('187', '', '客户钱包', '162', '', '/admin/tenantwallet/index', '_self', '1', '1678842427', '1678842427', '1', '1'), ('188', '', '财务管理', '0', '', '', '_self', '1', '1679036468', '1679036468', '10', '1'), ('189', '', '订单管理', '188', 'fa fa-money', '', '_self', '1', '1679036491', '1679036491', '10', '1'), ('190', '', '应用订单', '189', '', '/admin/orderapp/index', '_self', '1', '1679036524', '1679036524', '10', '1');
+COMMIT;
+
 -- ----------------------------
 -- Table structure for dao_app
 -- ----------------------------
@@ -147,8 +131,8 @@ CREATE TABLE `__PREFIX__app_info`  (
   `detail` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '应用介绍',
   `sale_num` int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '实际销量',
   `sale_num_show` int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '虚拟销量',
-  `price` decimal(10, 2) UNSIGNED NOT NULL DEFAULT 0.00 COMMENT '售价',
-  `old_price` decimal(10, 2) UNSIGNED NOT NULL DEFAULT 0.00 COMMENT '原价',
+  `price` decimal(10, 2) UNSIGNED NOT NULL COMMENT '售价',
+  `old_price` decimal(10, 2) UNSIGNED NOT NULL COMMENT '原价',
   `snapshot` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '应用快照',
   `config` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '应用配置',
   PRIMARY KEY (`id`) USING BTREE
@@ -213,7 +197,10 @@ PARTITION `p5` MAX_ROWS = 0 MIN_ROWS = 0 ,
 PARTITION `p6` MAX_ROWS = 0 MIN_ROWS = 0 ,
 PARTITION `p7` MAX_ROWS = 0 MIN_ROWS = 0 ,
 PARTITION `p8` MAX_ROWS = 0 MIN_ROWS = 0 ,
-PARTITION `p9` MAX_ROWS = 0 MIN_ROWS = 0 );
+PARTITION `p9` MAX_ROWS = 0 MIN_ROWS = 0 )
+;
+
+
 -- ----------------------------
 -- Table structure for dao_media_link
 -- ----------------------------
@@ -241,7 +228,10 @@ PARTITION `p5` ENGINE = InnoDB MAX_ROWS = 0 MIN_ROWS = 0 ,
 PARTITION `p6` ENGINE = InnoDB MAX_ROWS = 0 MIN_ROWS = 0 ,
 PARTITION `p7` ENGINE = InnoDB MAX_ROWS = 0 MIN_ROWS = 0 ,
 PARTITION `p8` ENGINE = InnoDB MAX_ROWS = 0 MIN_ROWS = 0 ,
-PARTITION `p9` ENGINE = InnoDB MAX_ROWS = 0 MIN_ROWS = 0 );
+PARTITION `p9` ENGINE = InnoDB MAX_ROWS = 0 MIN_ROWS = 0 )
+;
+
+
 -- ----------------------------
 -- Table structure for dao_media_text
 -- ----------------------------
@@ -347,7 +337,7 @@ CREATE TABLE `__PREFIX__setting`  (
 -- ----------------------------
 -- Records of dao_setting
 -- ----------------------------
-INSERT INTO `__PREFIX__setting` VALUES (1, 'site', '站点信息', '{\"project_title\":\"DaoAdmin\",\"logo\":\"https:\\/\\/devhhb.images.huihuiba.net\\/image%2F1-63ddbd099009b.png\",\"slogan\":\"成功路上的好伙伴\",\"beian\":\"闽ICP备19014014号-4\",\"tongji\":\"\",\"kefu\":\"https:\\/\\/devhhb.images.huihuiba.net\\/1-5f336a7d80daf.jpg\",\"backend_logo\":\"https:\\/\\/devhhb.images.huihuiba.net\\/1-6379c2a74cd60.png\",\"seo_keywords\":\"微信关系管理、微信公众号、社交数据管理、小程序、微信公众平台、公众号应用商店，公众号插件商店、公众号开发、微信CRM、餐饮、新零售、在线教育、智能硬件、微信机器人、微信多客服系统、分销系统\",\"seo_description\":\"酷在云端是领先的微信全行业营销平台。不仅帮助品牌解决微信公众号、小程序的开发问题，管理粉丝CRM及数据，根据行为及属性将粉丝自动打上标签，借助微信CRM实现精细化营销。也为中小企业提供微商城、智慧零售、餐饮o2o、小程序等一体化解决方案，以更开放的服务生态为用户提供产品和服务，构建线上线下融合、 多渠道营销、开放互通的智能商业服务生态体系，帮助更多中小企业向智能商业转型升级。\"}', 1590290640, 1675492176);
+INSERT INTO `__PREFIX__setting` VALUES (1, 'site', '站点信息', '{\"project_title\":\"DaoAdmin\",\"logo\":\"https:\\/\\/devhhb.images.huihuiba.net\\/1-6379c2a74cd60.png\",\"slogan\":\"您成功路上的好伙伴\",\"beian\":\"闽ICP备19014014号-4\"}', 1590290640, 1671013534);
 INSERT INTO `__PREFIX__setting` VALUES (2, 'upload', '附件设置', '{\"driver\":\"local\",\"upload_path\":\"uploads\",\"qiniu_ak\":\"zn9rSy52CirWb9vljGwT\",\"qiniu_sk\":\"GW-pleiv9TmFIhaFNKKEIzYeNYGt_1P\",\"qiniu_bucket\":\"dev\",\"qiniu_domain\":\"https:\\/\\/devhhb.images.net\",\"image_size\":\"3148000\",\"image_ext\":\"jpg,gif,png,jpeg\",\"file_size\":\"53000000\",\"file_ext\":\"jpg,gif,png,jpeg,zip,rar,tar,gz,7z,doc,docx,txt,xml,mp3,mp4,xls,xlsx,pdf,csv\",\"voice_size\":\"2048000\",\"voice_ext\":\"mp3,wma,wav,amr\",\"video_size\":\"50240000\",\"video_ext\":\"mp4,flv,mov\"}', 1590292316, 1671515096);
 INSERT INTO `__PREFIX__setting` VALUES (7, 'sms', '短信设置', '{\"sms_account\":\"111111\",\"sms_pwd\":\"22222\",\"sms_type\":\"3333\"}', 0, 1640491477);
 
@@ -369,7 +359,7 @@ CREATE TABLE `__PREFIX__tenant`  (
   `create_time` int(10) NOT NULL DEFAULT 0 COMMENT '新增时间',
   `update_time` int(10) NOT NULL DEFAULT 0 COMMENT '最后修改时间',
   `company_id` int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '所属公司ID',
-  `department_id` int(10) NOT NULL DEFAULT 0 COMMENT '部门id',
+  `department_id` int(10) NOT NULL COMMENT '部门id',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `username`(`username`) USING BTREE
 ) ENGINE = InnoDB  CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
@@ -458,20 +448,10 @@ CREATE TABLE `__PREFIX__tenant_rule`  (
 -- ----------------------------
 -- Records of dao_tenant_rule
 -- ----------------------------
-INSERT INTO `__PREFIX__tenant_rule` VALUES (1, '', '系统管理', 0, '', '', '_self', 1, 0, 1626845872, 0, 1);
-INSERT INTO `__PREFIX__tenant_rule` VALUES (3, '', '员工管理', 4, '', '/tenant/tenant/index', '_self', 1, 0, 1671015946, 10, 1);
-INSERT INTO `__PREFIX__tenant_rule` VALUES (4, '', '组织架构', 1, 'fa fa-object-ungroup', '', '_self', 1, 0, 1671015931, 3, 1);
-INSERT INTO `__PREFIX__tenant_rule` VALUES (107, '', '角色管理', 4, '', '/tenant/tenantgroup/index', '_self', 1, 1604904540, 1671015979, 2, 1);
-INSERT INTO `__PREFIX__tenant_rule` VALUES (148, '', '配置管理', 1, 'fa fa-cogs', '/tenant/setting/index', '_self', 1, 1624803694, 1671339575, 4, 1);
-INSERT INTO `__PREFIX__tenant_rule` VALUES (151, '', '应用管理', 176, 'fa fa-cubes', '', '_self', 1, 1625725311, 1671063145, 10, 1);
-INSERT INTO `__PREFIX__tenant_rule` VALUES (162, '', '素材管理', 169, 'fa fa-archive', '/tenant/mediaimage/index', '_self', 1, 1626507555, 1672303131, 10, 1);
-INSERT INTO `__PREFIX__tenant_rule` VALUES (168, '', '部门管理', 4, '', '/tenant/department/index', '_self', 1, 1640786676, 1671016069, 5, 1);
-INSERT INTO `__PREFIX__tenant_rule` VALUES (169, '', '运营管理', 0, '', '', '_self', 1, 1640844673, 1650466761, 21, 1);
-INSERT INTO `__PREFIX__tenant_rule` VALUES (176, '', '应用中心', 0, 'fa fa-cloud-upload', '', '_self', 1, 1657205545, 1671063065, 10, 1);
-INSERT INTO `__PREFIX__tenant_rule` VALUES (177, '', '我的应用', 151, '', '/tenant/apps/index', '_self', 1, 1671063241, 1671063241, 10, 1);
-INSERT INTO `__PREFIX__tenant_rule` VALUES (178, '', '应用市场', 176, 'fa fa-cart-plus', '', '_self', 1, 1671527760, 1671527760, 5, 1);
-INSERT INTO `__PREFIX__tenant_rule` VALUES (179, '', '应用采购', 178, '', '/tenant/apps/store', '_self', 1, 1671527878, 1671527878, 10, 1);
-INSERT INTO `__PREFIX__tenant_rule` VALUES (180, '', '过期应用', 151, '', '/tenant/apps/overtime', '_self', 1, 1672295990, 1672295990, 1, 1);
+BEGIN;
+INSERT INTO `__PREFIX__tenant_rule` VALUES ('1', '', '系统管理', '0', '', '', '_self', '1', '0', '1626845872', '0', '1'), ('3', '', '员工管理', '4', '', '/tenant/tenant/index', '_self', '1', '0', '1671015946', '10', '1'), ('4', '', '组织架构', '1', 'fa fa-object-ungroup', '', '_self', '1', '0', '1671015931', '3', '1'), ('107', '', '角色管理', '4', '', '/tenant/tenantgroup/index', '_self', '1', '1604904540', '1671015979', '2', '1'), ('148', '', '配置管理', '1', 'fa fa-cogs', '/tenant/setting/index', '_self', '1', '1624803694', '1671339575', '4', '1'), ('151', '', '应用管理', '176', 'fa fa-cubes', '', '_self', '1', '1625725311', '1671063145', '10', '1'), ('162', '', '素材管理', '169', 'fa fa-archive', '/tenant/mediaimage/index', '_self', '1', '1626507555', '1672303131', '10', '1'), ('168', '', '部门管理', '4', '', '/tenant/department/index', '_self', '1', '1640786676', '1671016069', '5', '1'), ('169', '', '运营管理', '0', '', '', '_self', '1', '1640844673', '1650466761', '21', '1'), ('176', '', '应用中心', '0', 'fa fa-cloud-upload', '', '_self', '1', '1657205545', '1671063065', '10', '1'), ('177', '', '我的应用', '151', '', '/tenant/apps/index', '_self', '1', '1671063241', '1671063241', '10', '1'), ('178', '', '应用市场', '176', 'fa fa-cart-plus', '', '_self', '1', '1671527760', '1671527760', '5', '1'), ('179', '', '应用采购', '178', '', '/tenant/apps/store', '_self', '1', '1671527878', '1671527878', '10', '1'), ('180', '', '过期应用', '151', '', '/tenant/apps/overtime', '_self', '1', '1672295990', '1672295990', '1', '1'), ('181', '', '财务管理', '0', '', '', '_self', '1', '1678864689', '1678864704', '5', '1'), ('182', '', '账号资产', '181', 'fa fa-money', '', '_self', '1', '1678864755', '1678864755', '1', '1'), ('183', '', '钱包', '182', '', '/tenant/wallet/log', '_self', '1', '1678864816', '1678865800', '1', '1'), ('184', '', '订单管理', '181', 'fa fa-first-order', '', '_self', '1', '1678864853', '1678864853', '1', '1'), ('185', '', '应用订单', '184', '', '/tenant/orderapp/index', '_self', '1', '1678864882', '1678864882', '1', '1');
+COMMIT;
+
 -- ----------------------------
 -- Table structure for dao_tenant_setting
 -- ----------------------------
@@ -500,79 +480,4 @@ CREATE TABLE `__PREFIX__crontab`  (
   `create_time` int(10) UNSIGNED NOT NULL DEFAULT 0,
   `update_time` int(10) UNSIGNED NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
-);
--- ----------------------------
--- Table structure for dao_timer
--- ----------------------------
-CREATE TABLE `__PREFIX__timer` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `company_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '为0表示系统',
-  `module` varchar(50) NOT NULL DEFAULT 'admin' COMMENT '模块或应用',
-  `url` varchar(200) NOT NULL DEFAULT '' COMMENT '处理器的命名空间',
-  `status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '状态',
-  `create_time` int(10) unsigned NOT NULL DEFAULT '0',
-  `update_time` int(10) unsigned NOT NULL DEFAULT '0',
-  `seconds` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '间隔秒数',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- ----------------------------
--- version 1.1.0
--- ----------------------------
-CREATE TABLE `__PREFIX__timer` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `company_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '为0表示系统',
-  `module` varchar(50) NOT NULL DEFAULT 'admin' COMMENT '模块或应用',
-  `url` varchar(200) NOT NULL DEFAULT '' COMMENT '处理器的命名空间',
-  `status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '状态',
-  `create_time` int(10) unsigned NOT NULL DEFAULT '0',
-  `update_time` int(10) unsigned NOT NULL DEFAULT '0',
-  `seconds` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '间隔秒数',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-CREATE TABLE `__PREFIX__tenant_wallet` (
-  `id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '商户id',
-  `money` decimal(10,2) unsigned NOT NULL COMMENT '可用余额',
-  `total` decimal(10,2) unsigned NOT NULL COMMENT '总金额',
-  `frozen` decimal(10,2) unsigned NOT NULL COMMENT '冻结金额',
-  `status` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  `create_time` int(10) unsigned NOT NULL DEFAULT '0',
-  `update_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '最后修改时间',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='商户钱包';
-CREATE TABLE `__PREFIX__tenant_wallet_log` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `company_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '商户id',
-  `type` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '0支出  1收入',
-  `money` decimal(10,2) unsigned NOT NULL COMMENT '金额',
-  `desc` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '说明',
-  `create_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '发生时间',
-  `module` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'addon' COMMENT '所属模块',
-  PRIMARY KEY (`id`) USING BTREE,
-  KEY `user_id` (`company_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='钱包明细';
-CREATE TABLE `__PREFIX__order_app` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `order_no` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '交易单号',
-  `app_name` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '应用标识',
-  `tenant_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '员工id',
-  `company_id` int(10) NOT NULL COMMENT '商户id',
-  `body` varchar(200) CHARACTER SET utf8 NOT NULL DEFAULT '' COMMENT '购买详情',
-  `total` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '订单总额（单位：分）',
-  `amount` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '订单实付金额',
-  `wallet` decimal(10,2) unsigned NOT NULL COMMENT '钱包支付',
-  `channel` varchar(20) CHARACTER SET utf8 NOT NULL DEFAULT 'WX_NATIVE' COMMENT '支付类型,默认微信支付',
-  `client_ip` char(15) CHARACTER SET utf8 NOT NULL DEFAULT '127.0.0.1' COMMENT '客户端ip',
-  `order_status` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '1:支付成功 0：待支付  2：已退款',
-  `transaction_id` varchar(100) CHARACTER SET utf8 NOT NULL DEFAULT '' COMMENT '支付平台订单号',
-  `status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '状态',
-  `create_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
-  `update_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '修改时间',
-  `pay_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '支付时间',
-  `month` int(10) unsigned NOT NULL DEFAULT '1' COMMENT '时长',
-  `refund_id` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '退款号',
-  `refund_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '退款时间',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `order_no` (`order_no`),
-  KEY `user_id` (`tenant_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=COMPACT COMMENT='应用采购订单';
+)

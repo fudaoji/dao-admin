@@ -57,6 +57,7 @@ class PluginController extends BaseController
         $assign['controller'] = $controller;
         $assign['action'] = $action;
         $assign['app'] = request()->plugin;
+
         return view($template, $assign, null);
     }
 }

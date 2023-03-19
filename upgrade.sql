@@ -1,5 +1,5 @@
 -- ----------------------------
--- version 1.1.0
+-- version 1.0.2
 -- ----------------------------
 CREATE TABLE `__PREFIX__timer` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
