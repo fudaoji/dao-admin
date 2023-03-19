@@ -384,7 +384,6 @@ CREATE TABLE `__PREFIX__tenant_app`  (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '客户-应用关联表' ROW_FORMAT = Compact;
 
-
 -- ----------------------------
 -- Table structure for dao_tenant_department
 -- ----------------------------
@@ -402,7 +401,6 @@ CREATE TABLE `__PREFIX__tenant_department`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `title`(`title`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '租户角色' ROW_FORMAT = Dynamic;
-
 
 -- ----------------------------
 -- Table structure for dao_tenant_group
