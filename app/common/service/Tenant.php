@@ -125,7 +125,7 @@ class Tenant extends Common
     public static function getCompanyDict($where = null)
     {
         if(is_null($where)){
-            $where = [['status', '=', 1]];
+            $where = [['status', '=', 1], ['company_id', '=', 0] ];
         }
         return TenantM::where($where)->column('username', 'id');
     }

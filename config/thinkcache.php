@@ -21,6 +21,7 @@ return [
             'port' => getenv('REDIS_PORT') ?: 6379,
             'prefix' => $prefix,
             'expire' => $expire,
+            'database' => 0,
         ],
         'memcache' => [
             'type'  => 'memcached',
