@@ -74,4 +74,26 @@ class Media
             ['company_id', '=', $params['company_id']]
         ])->find($params['id']);
     }
+
+    /**
+     * 获取素材展示名称
+     * @param string $type
+     * @param int $id
+     * @param int $company_id
+     * @return mixed
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    static function getMediaTitle($id = 0, $type = self::TEXT, $company_id = 0){
+        if(empty($company_id)){
+            $company_id = TenantService::getCompanyId();
+        }
+        if($material = self::getModel($type)->where([
+            ['company_id', '=', $company_id],
+            ['id','=', $id]
+        ])->find()){
+            return $material['media_type'] == self::TEXT ? $material['content'] : $material['title'];
+        }
+
+        return '';
+    }
 }

@@ -183,6 +183,19 @@ window.viewImg = function (img) {
         });
     });
 };
+/**
+ * 跳转
+ * usage: <span onclick="jump(url)">
+ * @param href
+ * @param target
+ */
+window.jump = function (href = '', target = '_self') {
+    if(target === '_self'){
+        location.href = href;
+    }else{
+        window.open(href);
+    }
+};
 
 //全局字典
 window.kyDicts = {
@@ -199,7 +212,7 @@ window.templets = {
         return html;
     },
     picture : function (src = '') {
-        return '<img style="width: 50px;" src="'+src+'" class="js-view-img" onclick="viewImg(\''+src+'\');">';
+        return '<img style="height: 50px;" src="'+src+'" class="js-view-img" onclick="viewImg(\''+src+'\');">';
     }
     , video : function (src = '') {
         return '<a href="'+src+'" class="layui-btn layui-btn-xs" target="_blank">预览</a>';
@@ -277,5 +290,21 @@ $(document).ready(function () {
                 });
                 break;
         }
-    })
+    });
+
+    if(typeof(ClipboardJS) !== 'undefined'){
+        //复制: use: <span class='js-clipboard' data-clipboard-target='#目标容器id'>这是触发元素</span>
+        var clipboard = new ClipboardJS('.js-clipboard');
+        clipboard.on('success', function (e) {
+            layer.tips('复制成功', $(e.trigger), {
+                tips: [2, '#1e9fff'],
+                time: 2000
+            });
+            e.clearSelection();
+        });
+        clipboard.on('error', function (e) {
+            console.error('Action:', e.action);
+            console.error('Trigger:', e.trigger);
+        });
+    }
 });

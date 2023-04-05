@@ -10,6 +10,35 @@ use think\facade\Db;
 
 require_once app_path() . DIRECTORY_SEPARATOR . 'define.php';
 
+if(!function_exists('publish_time')){
+    /**
+     * 人性化时间间隔函数
+     * @param $time
+     * @param string $str
+     * @return bool|string
+     * @author: fudaoji<fdj@kuryun.cn>
+     */
+    function publish_time($time, $str = '')
+    {
+        $time = is_string($time) ? strtotime($time) : $time;
+        $str = $str ?: 'm-d';
+        $way = time() - $time;
+        if ($way < 60) {
+            $r = '刚刚';
+        } elseif ($way >= 60 && $way < 3600) {
+            $r = floor($way / 60) . '分钟前';
+        } elseif ($way >= 3600 && $way < 86400) {
+            $r = floor($way / 3600) . '小时前';
+        } elseif ($way >= 86400 && $way < 2592000) {
+            $r = floor($way / 86400) . '天前';
+        } elseif ($way >= 2592000 && $way < 15552000) {
+            $r = floor($way / 2592000) . '个月前';
+        } else {
+            $r = date("$str", $time);
+        }
+        return $r;
+    }
+}
 if(!function_exists('build_order_no')){
     /**
      * 生成唯一订单号

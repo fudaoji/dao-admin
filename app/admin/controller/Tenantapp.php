@@ -80,6 +80,7 @@ class Tenantapp extends AdminController
     /**
      * 保存数据
      * Author: fudaoji<fdj@kuryun.cn>
+     * @param Request $request
      * @param string $url
      * @param array $data
      * @return \support\Response
@@ -141,16 +142,13 @@ class Tenantapp extends AdminController
 
     /**
      * 编辑用户应用
-     * @return mixed
+     * @return mixed|\support\Response
      * Author: fudaoji<fdj@kuryun.cn>
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
      */
     public function edit(){
         $data = $this->model->find(input('id', 0));
         if(empty($data)){
-            $this->error('数据不存在');
+            return $this->error('数据不存在');
         }
         $data['deadline'] = date('Y-m-d H:i:s', $data['deadline']);
         $builder = new FormBuilder();

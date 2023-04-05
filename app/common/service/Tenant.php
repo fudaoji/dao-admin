@@ -16,6 +16,16 @@ use app\common\model\TenantApp as TenantAppM;
 class Tenant extends Common
 {
     /**
+     * 获取商户信息
+     * @param int $company_id
+     * @return \think\Model
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    static function getCompanyById($company_id = 0){
+        return TenantM::find($company_id);
+    }
+
+    /**
      * 获取商户apps
      * @param array $tenant_info
      * @param array $where //额外条件

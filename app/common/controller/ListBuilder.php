@@ -118,7 +118,6 @@ class ListBuilder extends BaseController
             case 'addnew':  // 添加新增按钮
                 // 预定义按钮属性以简化使用
                 $my_attribute['text'] = '新增';
-                $my_attribute['title'] = '新增';
                 $my_attribute['class'] = 'layui-btn-normal';
                 $my_attribute['lay-event']  = 'add';
                 $my_attribute['href']  = url('add');
@@ -134,7 +133,7 @@ class ListBuilder extends BaseController
                 break;
             case 'delete': // 添加删除按钮(我没有反操作，删除了就没有了，就真的找不回来了)
                 // 预定义按钮属性以简化使用
-                $my_attribute['title'] = '删除';
+                $my_attribute['text'] = '删除';
                 $my_attribute['class'] = 'layui-btn-danger ';
                 $my_attribute['lay-event']  = 'delete';
                 $my_attribute['href']  = url($set_status_url, ['status' => 'delete']);
@@ -146,7 +145,7 @@ class ListBuilder extends BaseController
                 break;
             case 'resume':  // 添加启用按钮(禁用的反操作)
                 //预定义按钮属性以简化使用
-                $my_attribute['title'] = '批量启用';
+                $my_attribute['text'] = '批量启用';
                 $my_attribute['lay-event']  = 'resume';
                 $my_attribute['target-form'] = 'ids';
                 $my_attribute['class'] = ' data-ajax data-confirm';
@@ -160,7 +159,7 @@ class ListBuilder extends BaseController
             case 'forbid':  // 添加禁用按钮(启用的反操作)
                 // 预定义按钮属性以简化使用
                 $my_attribute['lay-event']  = 'forbid';
-                $my_attribute['title'] = '批量禁用';
+                $my_attribute['text'] = '批量禁用';
                 $my_attribute['target-form'] = 'ids';
                 $my_attribute['class'] = 'layui-btn-warm data-ajax data-confirm';
                 $my_attribute['href']  = url($set_status_url, ['status' => 'forbid']);
@@ -173,16 +172,15 @@ class ListBuilder extends BaseController
             case 'self': //添加自定义按钮(第一原则使用上面预设的按钮，如果有特殊需求不能满足则使用此自定义按钮方法)
                 // 预定义按钮属性以简化使用
                 $my_attribute['lay-event'] = 'self';
-                $my_attribute['text'] = $my_attribute['title'] = '自定义';
+                $my_attribute['text'] = '自定义';
 
                 // 如果定义了属性数组则与默认的进行合并
                 if ($attribute && is_array($attribute)) {
                     $my_attribute = array_merge($my_attribute, $attribute);
-                } else {
-                    $my_attribute['title'] = '该自定义按钮未配置属性';
                 }
                 break;
         }
+        empty($my_attribute['title']) && $my_attribute['title'] = $my_attribute['text'];
         $my_attribute['class'] .= ' layui-btn layui-btn-sm ';
         $node = empty($my_attribute['href']) ? '' : explode('?', $my_attribute['href'])[0];
         ($this->_auth['super'] || in_array($node, $this->_auth['auth_list'])) && $this->_top_button_list[] = $my_attribute;
@@ -283,7 +281,6 @@ class ListBuilder extends BaseController
                 if ($attribute && is_array($attribute)) {
                     $my_attribute = array_merge($my_attribute, $attribute);
                 }
-                empty($my_attribute['title']) && $my_attribute['title'] = $my_attribute['text'];
                 break;
             case 'delete':
                 // 预定义按钮属性以简化使用
@@ -296,11 +293,10 @@ class ListBuilder extends BaseController
                 if ($attribute && is_array($attribute)) {
                     $my_attribute = array_merge($my_attribute, $attribute);
                 }
-                empty($my_attribute['title']) && $my_attribute['title'] = $my_attribute['text'];
                 break;
             case 'forbid':  // 改变记录状态按钮，会更具数据当前的状态自动选择应该显示启用/禁用
                 //预定义按钮属
-                $my_attribute['title'] = '启用/禁用';
+                $my_attribute['text'] = '启用/禁用';
                 $my_attribute['class'] = 'layui-btn-warm';
                 $my_attribute['lay-event']  = 'forbid';
                 $my_attribute['href']  = url($set_status_url, ['status' => 'forbid']);
@@ -313,16 +309,15 @@ class ListBuilder extends BaseController
             case 'self':
                 // 预定义按钮属性以简化使用
                 $my_attribute['lay-event'] = 'self';
+                $my_attribute['text'] = '该自定义按钮未配置属性';
 
                 // 如果定义了属性数组则与默认的进行合并
                 if ($attribute && is_array($attribute)) {
                     $my_attribute = array_merge($my_attribute, $attribute);
-                } else {
-                    $my_attribute['text'] = '该自定义按钮未配置属性';
                 }
-                empty($my_attribute['title']) && $my_attribute['title'] = $my_attribute['text'];
                 break;
         }
+        empty($my_attribute['title']) && $my_attribute['title'] = $my_attribute['text'];
         $my_attribute['class'] .= ' layui-btn layui-btn-xs ';
         // 这个按钮定义好了把它丢进按钮池里
         $node = explode('?', $my_attribute['href'])[0];
