@@ -18,6 +18,20 @@ use app\common\service\TenantWallet as WalletService;
 class OrderApp extends Common
 {
     /**
+     * 商户支付订单数量
+     * @param null $company_id
+     * @return int
+     * @throws \think\db\exception\DbException
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    static function getCompanyOrderNum($company_id = null){
+        is_null($company_id) && $company_id = TenantService::getCompanyId();
+        return OrderM::where('company_id', $company_id)
+            ->where('order_status', Payment::PAID)
+            ->count();
+    }
+
+    /**
      * 退款
      * @param array $order
      * @throws \think\db\exception\DataNotFoundException

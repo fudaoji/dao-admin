@@ -1,33 +1,97 @@
 {extend name="default:layout:base" /}
 
 {block name="main"}
-<div class="layui-row">
-    <div class="layui-col-md6">
+<div class="layui-row layui-col-space10">
+    <div class="layui-col-md8">
         <div class="layui-card">
             <div class="layui-card-header">
                 欢迎回来，{$tenant.username} &nbsp; <i class="fa fa-pencil" style="cursor: pointer;" layuimini-content-href="{:url('tenant/account')}" data-title="系统账号"></i>
             </div>
-            <div class="layui-card-body layui-text">
-                <table class="layui-table">
-                    <colgroup>
-                        <col width="150">
-                        <col>
-                    </colgroup>
-                    <tbody>
-                    <tr>
-                        <td>部门</td>
-                        <td>{$department}</td>
-                    </tr>
-                    <tr>
-                        <td>最近登录时间</td>
-                        <td>{:date('Y-m-d H:i:s', $tenant.last_time)}</td>
-                    </tr>
-                    <tr>
-                        <td>登录IP</td>
-                        <td>{$tenant.ip}</td>
-                    </tr>
-                    </tbody>
-                </table>
+            <div class="layui-card-body layui-text card-statics">
+                <div class="layui-row layui-col-space10">
+                    <div class="layui-col-xs3">
+                        <div class="panel layui-bg-number">
+                            <div class="panel-body">
+                                <div class="panel-title">
+                                    <h5>开通应用</h5>
+                                </div>
+                                <div class="panel-content">
+                                    <h1 class="no-margins">
+                                        <a class="today" href="javascript:;" layuimini-content-href="{:url('apps/index')}" data-title="我的应用" >{$app_active}</a>
+                                    </h1>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-col-xs3">
+                        <div class="panel layui-bg-number">
+                            <div class="panel-body">
+                                <div class="panel-title">
+                                    <h5>过期应用</h5>
+                                </div>
+                                <div class="panel-content">
+                                    <h1 class="no-margins">
+                                        <a class="today layui-font-red" href="javascript:;" layuimini-content-href="{:url('apps/overtime')}" data-title="过期应用" >{$app_deadline}</a>
+                                    </h1>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-col-xs3">
+                        <div class="panel layui-bg-number">
+                            <div class="panel-body">
+                                <div class="panel-title">
+                                    <h5>支付订单数</h5>
+                                </div>
+                                <div class="panel-content">
+                                    <h1 class="no-margins">
+                                        <a class="today" href="javascript:;" layuimini-content-href="{:url('orderapp/index')}" data-title="应用订单" >{$order_app_num}</a>
+                                    </h1>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-col-xs3">
+                        <div class="panel layui-bg-number">
+                            <div class="panel-body">
+                                <div class="panel-title">
+                                    <h5>员工总数</h5>
+                                </div>
+                                <div class="panel-content">
+                                    <h1 class="no-margins">
+                                        <a class="today" href="javascript:;" layuimini-content-href="{:url('tenant/index')}" data-title="员工管理" >{$staff_num}</a>
+                                    </h1>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-col-md4">
+        <div class="layui-card card-notice">
+            <div class="layui-card-header"><i class="fa fa-bullhorn icon icon-tip"></i>系统公告</div>
+            <div class="layui-card-body">
+                <div class="layui-collapse" lay-accordion>
+                    {volist name="notice_list" id="vo"}
+                    <div class="layui-colla-item">
+                        <h2 class="layui-colla-title" data-id="{$vo.id}">
+                            <div class="layui-row">
+                                <div class="layui-col-xs10">
+                                    {if !$vo.read}<span class="layui-badge-dot"></span>{/if}
+                                    {$vo.title}
+                                </div>
+                                <div class="layui-col-xs2 publish-time">{:date('Y-m-d H:i', $vo.publish_time)}</div>
+                            </div>
+                        </h2>
+                        <div class="layui-colla-content">
+                            {$vo.content|raw}
+                        </div>
+                    </div>
+                    {/volist}
+                </div>
             </div>
         </div>
     </div>
@@ -36,8 +100,29 @@
 
 {block name="js"}
 <script>
-    layui.use([''], function () {
-
+    layui.use(['element'], function(){
+        var element = layui.element;
+        $('.layui-colla-title').on('click', function () {
+            var $that = $(this);
+            $.post("{:url('notice/setReadPost')}", {id: $(this).data('id')}, function (res) {
+                if(res.code === 1){
+                    $that.find('.layui-badge-dot').remove();
+                }
+            });
+        });
     });
 </script>
+{/block}
+
+{block name="css"}
+<style>
+    .card-notice .layui-badge-dot{position: relative; top: -2px; left: -5px;}
+    .layui-card-header{background-color: #f4f6f9;}
+    .layui-card-body{font-size: 16px;color: #98999a;overflow-x: hidden;overflow-y: scroll;}
+    .layui-card-body .no-margins{font-size: 24px;}
+    .layui-card-body .today{font-size: 30px;color: #4c4c4c;}
+    .layui-card-body.card-statics{text-align: center;}
+    .panel-title{margin-bottom: 15px;}
+    img{max-width: 100%;}
+</style>
 {/block}

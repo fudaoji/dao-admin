@@ -5,6 +5,10 @@ namespace app\tenant\controller;
 use app\TenantController;
 use support\Response;
 use Support\Request;;
+use app\common\service\TenantApp as TaService;
+use app\common\service\Tenant as TenantService;
+use app\common\service\OrderApp as OrderAppService;
+use app\common\service\Notice as NoticeService;
 
 class Index extends TenantController
 {
@@ -14,8 +18,14 @@ class Index extends TenantController
     }
 
     public function welcome(){
+        $notice_list = NoticeService::listTenantNewsNotices();
         $assign = [
-            'department' => \app\common\service\Tenant::getDepartment()
+            //'department' => TenantService::getDepartment(),
+            'notice_list' => $notice_list,
+            'app_active' => TaService::getActiveAppsNum(),
+            'app_deadline' => TaService::getDeadlineAppsNum(),
+            'staff_num' => count(TenantService::getTeamIds('id')),
+            'order_app_num' => OrderAppService::getCompanyOrderNum()
         ];
         return $this->show($assign);
     }
