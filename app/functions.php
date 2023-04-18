@@ -567,7 +567,7 @@ if (!function_exists('url')) {
         $vars = !empty($vars) ? '?' . http_build_query($vars) : '';
 
         if (!Str::startsWith($url, '/')) {
-            $url = DIRECTORY_SEPARATOR . $url;
+            $url = '/' . $url;
         }
         $plugin = $plugin ? ('app/' . $plugin . '/') : '';
         return '/' . $plugin . $app . $url . $vars;
