@@ -465,6 +465,7 @@ CREATE TABLE `__PREFIX__tenant_setting`  (
 -- ----------------------------
 -- Table structure for dao_crontab
 -- ----------------------------
+DROP TABLE IF EXISTS `__PREFIX__crontab`;
 CREATE TABLE `__PREFIX__crontab`  (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `company_id` int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '为0表示系统',
@@ -479,6 +480,7 @@ CREATE TABLE `__PREFIX__crontab`  (
 -- ----------------------------
 -- version 1.0.2
 -- ----------------------------
+DROP TABLE IF EXISTS `__PREFIX__timer`;
 CREATE TABLE `__PREFIX__timer` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `company_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '为0表示系统',
@@ -490,6 +492,8 @@ CREATE TABLE `__PREFIX__timer` (
   `seconds` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '间隔秒数',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS `__PREFIX__tenant_wallet`;
 CREATE TABLE `__PREFIX__tenant_wallet` (
   `id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '商户id',
   `money` decimal(10,2) unsigned NOT NULL COMMENT '可用余额',
@@ -500,6 +504,8 @@ CREATE TABLE `__PREFIX__tenant_wallet` (
   `update_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '最后修改时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='商户钱包';
+
+DROP TABLE IF EXISTS `__PREFIX__tenant_wallet_log`;
 CREATE TABLE `__PREFIX__tenant_wallet_log` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `company_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '商户id',
@@ -511,6 +517,8 @@ CREATE TABLE `__PREFIX__tenant_wallet_log` (
   PRIMARY KEY (`id`) USING BTREE,
   KEY `user_id` (`company_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='钱包明细';
+
+DROP TABLE IF EXISTS `__PREFIX__order_app`;
 CREATE TABLE `__PREFIX__order_app` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `order_no` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '交易单号',
@@ -540,6 +548,7 @@ CREATE TABLE `__PREFIX__order_app` (
 -- ----------------------------
 -- version 1.0.3
 -- ----------------------------
+DROP TABLE IF EXISTS `__PREFIX__notice`;
 CREATE TABLE `__PREFIX__notice` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '公告标题',
@@ -552,6 +561,7 @@ CREATE TABLE `__PREFIX__notice` (
   KEY `publish_time` (`publish_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=COMPACT COMMENT='系统公告';
 
+DROP TABLE IF EXISTS `__PREFIX__notice_read`;
 CREATE TABLE `__PREFIX__notice_read` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `tenant_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '用户id',
