@@ -55,7 +55,7 @@ class Index extends Base
      * Author: fudaoji<fdj@kuryun.cn>
      */
 	public function config() {
-		if (request()->IsPost()) {
+		if (request()->isPost()) {
 		    $post_data = input('post.');
 		    $db = $post_data['db'];
 		    $admin = $post_data['admin'];
@@ -119,6 +119,7 @@ class Index extends Base
      * Author: fudaoji<fdj@kuryun.cn>
      */
     public function sql() {
+        session(["error" => false]);
         if(request()->isPost()){
             try {
                 //连接数据库
@@ -154,6 +155,7 @@ class Index extends Base
                 register_administrator($db, $dbconfig['prefix'], $admin);
                 lockFile();
             }catch (\Exception $e){
+                var_dump("安装异常：" . $e->getMessage());
                 show_msg("安装异常：" . $e->getMessage(), 'danger');
                 session(["error" => true]);
             }
