@@ -156,6 +156,7 @@ class Index extends Base
                 lockFile();
             }catch (\Exception $e){
                 var_dump("安装异常：" . $e->getMessage());
+                var_dump("安装异常：" . $e->getTraceAsString());
                 show_msg("安装异常：" . $e->getMessage(), 'danger');
                 session(["error" => true]);
             }
