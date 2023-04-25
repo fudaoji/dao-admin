@@ -242,7 +242,7 @@ class App extends AdminController
             ->setSearch([
             ['type' => 'text', 'name' => 'search_key', 'title' => '搜索词','placeholder' => '应用名称或标识']
         ])
-            ->addTopButton('addnew', ['text' => '采购应用'])
+            ->addTopButton('addnew', ['text' => '采购应用', 'href' => url('appstore/index')])
             ->addTableColumn(['title' => 'logo', 'field' => 'logo', 'type' => 'picture'])
             ->addTableColumn(['title' => '标识', 'field' => 'name'])
             ->addTableColumn(['title' => '名称', 'field' => 'title'])

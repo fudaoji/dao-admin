@@ -51,7 +51,7 @@ class Appstore extends AdminController
         if (file_exists($app_install_path))
             return $this->error($app['name'] . '目录已经存在或者您已经安装过【' . $app['title'] . '】，如果您要重新安装，请先卸载此应用');
 
-        $tem_file = runtime_path() . $app['name'].$app['version'].'-'.time(). '.tmp';
+        $tem_file = runtime_path('/') . $app['name'].$app['version'].'-'.time(). '.tmp';
         $response = (new Client())->post($app['package']);
         if($response->getStatusCode() === 200){
             $package = $response->getBody()->getContents();

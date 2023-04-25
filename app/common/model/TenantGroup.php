@@ -64,7 +64,20 @@ class TenantGroup extends BaseModel
             ->column('href');
     }
 
+    /**
+     * 写入事件钩子
+     * @param \think\Model $group
+     * @throws \Psr\SimpleCache\InvalidArgumentException
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
     public static function onAfterWrite($group){
-        $list = self::getAuthList(['group_id' => $group['id'], 'refresh' => true]);
+        self::getAuthList([
+            'company_id' => $group['company_id'],
+            'group_id' => $group['id'],
+            'refresh' => true
+        ]);
     }
 }

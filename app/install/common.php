@@ -110,17 +110,26 @@ function check_dirfile()
 }
 
 /**
- * 函数检测
+ * 函数检测 
  * @return array 检测数据
  */
 function check_func()
 {
-    $items = array(
-        array('pdo', '支持', 'success', '类'),
-        array('pdo_mysql', '支持', 'success', '模块'),
-        array('file_get_contents', '支持', 'success', '函数'),
-        array('mb_strlen', '支持', 'success', '函数'),
-    );
+    $items = [
+        ['pdo', '支持', 'success', '类'],
+        ['pdo_mysql', '支持', 'success', '模块'],
+        ['file_get_contents', '支持', 'success', '函数'],
+        ['mb_strlen', '支持', 'success', '函数'],
+        ['exec', '支持', 'success', '函数'],
+        ['shell_exec', '支持', 'success', '函数'],
+        ['pcntl_fork', '支持', 'success', '函数'],
+        ['pcntl_wait', '支持', 'success', '函数'],
+        ['pcntl_signal', '支持', 'success', '函数'],
+        ['proc_get_status', '支持', 'success', '函数'],
+        ['proc_open', '支持', 'success', '函数'],
+        ['pcntl_signal_dispatch', '支持', 'success', '函数'],
+        ['pcntl_alarm', '支持', 'success', '函数'],
+    ];
 
     foreach ($items as &$val) {
         if (('类' == $val[3] && !class_exists($val[0]))
