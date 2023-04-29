@@ -15,6 +15,28 @@ use app\common\model\TenantApp as TenantAppM;
 class TenantApp
 {
     /**
+     * 验证是否有该应用权限
+     * @param string $app_name
+     * @param null $company_id
+     * @return int
+     * @throws \think\db\exception\DbException
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    static function checkAppOpenStatus($app_name = '', $company_id = null){
+        is_null($company_id) && $company_id = Tenant::getCompanyId();
+        $map = [
+            'app.status' => 1,
+            'ta.company_id' => $company_id,
+            'app.name' => $app_name
+        ];
+        $query = TenantAppM::alias('ta')
+            ->where($map)
+            ->where('ta.deadline','>', time())
+            ->join('app app', 'app.name=ta.app_name');
+        return $query->count();
+    }
+
+    /**
      * 当前开通应用数量
      * @param null $company_id
      * @param array $where

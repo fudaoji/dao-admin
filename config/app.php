@@ -37,5 +37,6 @@ return [
     'dispatch_success' => app_path() . '/common/view/common/jump.html',
     'exception_tpl'    => app_path() . '/common/view/error/500.html',
     '404_tpl'    => app_path() . '/common/view/error/404.html',
+    'close_tpl'    => app_path() . '/common/view/common/close.html',
     'error_message'    => '页面错误！请稍后再试～',
 ];

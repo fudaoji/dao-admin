@@ -117,7 +117,7 @@ class ListBuilder extends BaseController
         switch ($type) {
             case 'addnew':  // 添加新增按钮
                 // 预定义按钮属性以简化使用
-                $my_attribute['text'] = '新增';
+                $my_attribute['text'] = dao_trans('新增');
                 $my_attribute['class'] = 'layui-btn-normal';
                 $my_attribute['lay-event']  = 'add';
                 $my_attribute['href']  = url('add');
@@ -133,7 +133,7 @@ class ListBuilder extends BaseController
                 break;
             case 'delete': // 添加删除按钮(我没有反操作，删除了就没有了，就真的找不回来了)
                 // 预定义按钮属性以简化使用
-                $my_attribute['text'] = '删除';
+                $my_attribute['text'] = dao_trans('删除');
                 $my_attribute['class'] = 'layui-btn-danger ';
                 $my_attribute['lay-event']  = 'delete';
                 $my_attribute['href']  = url($set_status_url, ['status' => 'delete']);
@@ -145,7 +145,7 @@ class ListBuilder extends BaseController
                 break;
             case 'resume':  // 添加启用按钮(禁用的反操作)
                 //预定义按钮属性以简化使用
-                $my_attribute['text'] = '批量启用';
+                $my_attribute['text'] = dao_trans('批量启用');
                 $my_attribute['lay-event']  = 'resume';
                 $my_attribute['target-form'] = 'ids';
                 $my_attribute['class'] = ' data-ajax data-confirm';
@@ -159,7 +159,7 @@ class ListBuilder extends BaseController
             case 'forbid':  // 添加禁用按钮(启用的反操作)
                 // 预定义按钮属性以简化使用
                 $my_attribute['lay-event']  = 'forbid';
-                $my_attribute['text'] = '批量禁用';
+                $my_attribute['text'] = dao_trans('批量禁用');
                 $my_attribute['target-form'] = 'ids';
                 $my_attribute['class'] = 'layui-btn-warm data-ajax data-confirm';
                 $my_attribute['href']  = url($set_status_url, ['status' => 'forbid']);
@@ -172,7 +172,7 @@ class ListBuilder extends BaseController
             case 'self': //添加自定义按钮(第一原则使用上面预设的按钮，如果有特殊需求不能满足则使用此自定义按钮方法)
                 // 预定义按钮属性以简化使用
                 $my_attribute['lay-event'] = 'self';
-                $my_attribute['text'] = '自定义';
+                $my_attribute['text'] = dao_trans('自定义按钮');
 
                 // 如果定义了属性数组则与默认的进行合并
                 if ($attribute && is_array($attribute)) {
@@ -267,7 +267,7 @@ class ListBuilder extends BaseController
         switch ($type) {
             case 'edit':  // 编辑按钮
                 // 预定义按钮属性以简化使用
-                $my_attribute['text'] = '编辑';
+                $my_attribute['text'] = dao_trans('编辑');
                 $my_attribute['class'] = 'layui-btn-normal';
                 $my_attribute['lay-event']  = 'edit';
                 $my_attribute['href']  = url('edit', ['id' => '__data_id__'], '');
@@ -284,7 +284,7 @@ class ListBuilder extends BaseController
                 break;
             case 'delete':
                 // 预定义按钮属性以简化使用
-                $my_attribute['text'] = '删除';
+                $my_attribute['text'] = dao_trans('删除');
                 $my_attribute['class'] = 'layui-btn-danger';
                 $my_attribute['lay-event']  = 'delete';
                 $my_attribute['href']  = url($set_status_url, ['status' => 'delete']);
@@ -296,7 +296,7 @@ class ListBuilder extends BaseController
                 break;
             case 'forbid':  // 改变记录状态按钮，会更具数据当前的状态自动选择应该显示启用/禁用
                 //预定义按钮属
-                $my_attribute['text'] = '启用/禁用';
+                $my_attribute['text'] = dao_trans('启用/禁用');
                 $my_attribute['class'] = 'layui-btn-warm';
                 $my_attribute['lay-event']  = 'forbid';
                 $my_attribute['href']  = url($set_status_url, ['status' => 'forbid']);
@@ -309,7 +309,7 @@ class ListBuilder extends BaseController
             case 'self':
                 // 预定义按钮属性以简化使用
                 $my_attribute['lay-event'] = 'self';
-                $my_attribute['text'] = '该自定义按钮未配置属性';
+                $my_attribute['text'] = dao_trans('自定义按钮');
 
                 // 如果定义了属性数组则与默认的进行合并
                 if ($attribute && is_array($attribute)) {

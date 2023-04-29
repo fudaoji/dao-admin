@@ -12,14 +12,17 @@
  * @license   http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
+!defined('DAO_LANG_EN') && define('DAO_LANG_EN', 'en');
+!defined('DAO_LANG_CN') && define('DAO_LANG_CN', 'zh-cn');
+
 /**
  * Multilingual configuration
  */
 return [
     // Default language
-    'locale' => getenv('LANG_DEFAULT_LANG') ?? 'zh-CN',
+    'locale' => getenv('LANG_DEFAULT_LANG') ?? DAO_LANG_CN,
     // Fallback language
-    'fallback_locale' => ['zh-CN', 'en'],
+    'fallback_locale' => [DAO_LANG_CN, DAO_LANG_EN],
     // Folder where language files are stored
     'path' => base_path() . '/resource/translations',
 ];

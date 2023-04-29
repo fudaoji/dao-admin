@@ -1,17 +1,18 @@
 <?php
 namespace app\common\middleware;
 
+use app\common\service\TenantApp;
 use Webman\MiddlewareInterface;
 use Webman\Http\Response;
 use Webman\Http\Request;
 
-class AppLang implements MiddlewareInterface
+class PluginCheck implements MiddlewareInterface
 {
     public function process(Request $request, callable $handler) : Response
     {
-        $lang = session('lang', DAO_LANG_CN);
-        locale($lang); //设置全局语言环境
-        session(['lang' => $lang]);
+        if(! TenantApp::checkAppOpenStatus($request->plugin)){
+            return \response(dao_trans('应用未开通或已到期!'));
+        }
         return $handler($request);
     }
 }

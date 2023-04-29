@@ -22,8 +22,8 @@ class FormBuilder extends BaseController
     protected $_ajax_submit = true;    // 是否ajax提交
     protected $_template;              // 模版
     protected $_tip = '';              // 提示语
-    protected $_btn_submit = array('show' => 1, 'text' => '提交');              // 提交按钮
-    protected $_btn_reset = array('show' => 1, 'text' => '重置');              // 重置按钮
+    protected $_btn_submit = [];              // 提交按钮
+    protected $_btn_reset = [];              // 重置按钮
 
     /**
      * 初始化方法
@@ -31,6 +31,8 @@ class FormBuilder extends BaseController
     public function __construct() {
         parent::__construct();
         $this->_template = 'builder/form';
+        $this->setBtnSubmit();
+        $this->setBtnReset();
     }
 
     /**
@@ -40,7 +42,7 @@ class FormBuilder extends BaseController
      * @author: fudaoji<fdj@kuryun.cn>
      */
     public function setBtnSubmit($params = []){
-        $this->_btn_submit = array_merge($this->_btn_submit, $params);
+        $this->_btn_submit = array_merge(['show' => 1, 'text' => dao_trans('提交')], $params);
         return $this;
     }
 
@@ -51,7 +53,7 @@ class FormBuilder extends BaseController
      * @author: fudaoji<fdj@kuryun.cn>
      */
     public function setBtnReset($params = []){
-        $this->_btn_reset = array_merge($this->_btn_reset, $params);
+        $this->_btn_reset = array_merge(['show' => 1, 'text' => dao_trans('重置')], $params);
         return $this;
     }
 

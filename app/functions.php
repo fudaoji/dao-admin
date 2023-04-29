@@ -653,8 +653,8 @@ if (!function_exists('dao_trans')) {
      */
     function dao_trans($str, $parameters = [], $domain = null, $locale = null)
     {
-        $lang = session('lang', 'zh-CN');
-        if (is_numeric($str) || strstr($lang, 'zh-CN')) {
+        $lang = session('lang', DAO_LANG_CN);
+        if (is_numeric($str) || strstr($lang, DAO_LANG_CN)) {
             return $str;
         }
         return trans($str, $parameters, $domain, $locale);
