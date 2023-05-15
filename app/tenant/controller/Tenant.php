@@ -166,6 +166,7 @@ class Tenant extends TenantController
 
     /**
      * 保存数据
+     * @param Request $request
      * @param string $url
      * @param array $data
      * @return mixed
@@ -173,7 +174,6 @@ class Tenant extends TenantController
      */
     public function savePost(Request $request, $url='', $data=[]){
         $post_data = input('post.');
-        $post_data['company_id'] = TenantService::getCompanyId();
         if(!empty($post_data['password'])){
             $post_data['password'] = fa_generate_pwd($post_data['password']);
         }
@@ -185,6 +185,7 @@ class Tenant extends TenantController
 
         try {
             if(empty($post_data[$this->pk])){
+                $post_data['company_id'] = TenantService::getCompanyId();
                 $res = $this->model->create($post_data);
             }else {
                 $res = $this->model->update($post_data);
