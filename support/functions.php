@@ -10,6 +10,6 @@
 if (!function_exists('get_plugin_name')) {
     function get_plugin_name($path, $level = 3){
         $path_layer = explode( DIRECTORY_SEPARATOR , $path);
-        return $path_layer[count($path_layer) - 3];
+        return $path_layer[count($path_layer) - $level];
     }
 }

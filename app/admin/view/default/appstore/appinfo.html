@@ -14,7 +14,7 @@
                     <span class="layui-badge layui-bg-blue">{$info.price>0 ? ('￥' . $info.price) : '免费'}</span>
                 </span>
                 <div class="apps-info-desc">
-                    <p>版本：{$info.version}{$user.money}</p>
+                    <p>版本：{$info.version}</p>
                     <p>作者：{$info.author}，分类：{:implode('|', explode(',', $info['cates']))}</p>
                     <p>发布时间：{$info.create_time|date="Y-m-d"}，更新时间：{$info.update_time|date="Y-m-d"}</p>
                     <p>
