@@ -43,7 +43,7 @@ class Tenant extends AdminController
 
             //非超管
             if(! Auth::isSuperAdmin()) {
-                $where[] = ['id', '>', 1];
+                $where[] = ['tenant.id', '>', 1];
             }
             $query = $this->model->alias('tenant')
                 ->join('tenant_wallet wallet', 'wallet.id=tenant.id', 'left')
