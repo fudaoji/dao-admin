@@ -2,6 +2,8 @@
 
 DaoAdmin是一款基于webman的高性能中后台框架，一样的写法，十倍的性能。
 
+[官网](https://daoadmin.kuryun.com/home/index/index.html) | [安装教程](https://daoadmin.kuryun.com/home/guide/index/id/3/v/1.x.html) | [使用手册](https://daoadmin.kuryun.com/home/guide/index/id/5/v/1.x.html) | [应用开发](https://daoadmin.kuryun.com/home/guide/index/id/34/v/1.x.html)
+
 
 #### 主要特性：
 - 高稳定性: webman基于workerman开发，workerman一直是业界bug极少的高稳定性socket框架。
@@ -33,14 +35,26 @@ DaoAdmin是一款基于webman的高性能中后台框架，一样的写法，十
 - [Layuimini](http://layuimini.99php.cn/)
 
 #### 安装及使用文档
-- 要求PHP >= 7.4
+- linux服务器，并开放8790端口
+- PHP环境：
+  - PHP >= 7.4
+  - PDO PHP Extension
+  - MBstring PHP Extension
+  - fileinfo PHP Extension
+  - redis PHP Extension
+  
+  解除禁用函数： 
+~~~shell script
+curl -Ss https://www.workerman.net/fix | php
+~~~
+
 - 创建项目：
 ~~~shell script
 composer create-project fudaoji/dao-admin  daoadmin
 ~~~
-- 开通端口
-
-开启8790端口
+有些composer代理镜像不全（如阿里云），需要使用
+`composer config -g --unset repos.packagist`
+命令删除composer代理
 
 - 运行服务
 
