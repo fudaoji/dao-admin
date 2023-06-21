@@ -37,13 +37,16 @@ DaoAdmin是一款基于webman的高性能中后台框架，一样的写法，十
 #### 安装及使用文档
 - linux服务器，并开放8790端口
 - PHP环境：
-  PHP >= 7.4
-  PDO PHP Extension
-  MBstring PHP Extension
-  fileinfo PHP Extension
-  redis PHP Extension
+  - PHP >= 7.4
+  - PDO PHP Extension
+  - MBstring PHP Extension
+  - fileinfo PHP Extension
+  - redis PHP Extension
   
-  解除禁用函数： `curl -Ss https://www.workerman.net/fix | php`
+  解除禁用函数： 
+~~~shell script
+curl -Ss https://www.workerman.net/fix | php
+~~~
 
 - 创建项目：
 ~~~shell script
