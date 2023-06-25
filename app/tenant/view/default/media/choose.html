@@ -1,0 +1,191 @@
+{extend name="default:layout:base" /}
+
+{block name="main"}
+<script>
+    var parent_index //获取窗口索引
+            ,ids = []
+            ,$checkBoxes = []
+            ,dataLen = parseInt("{:count($data_list)}")
+            , clickDelOne
+            , clickDelBatch
+            , clickSure
+    , type="{$type}";
+
+    layui.use(['jquery','form'],function(){
+        var form = layui.form
+                , $ = layui.jquery;
+
+        parent_index = parent.layer.getFrameIndex(window.name);
+
+        //刷新界面 所有元素
+        form.render();
+
+        //点击删除单个
+        clickDelOne = function (id) {
+            ids = [id];
+            delRequest()
+        };
+        //点击批量删除
+        clickDelBatch = function (id) {
+            $.each($('.id:checked'), function(i, item){
+                ids.push($(item).val());
+            });
+            delRequest()
+        };
+
+        $(function () {
+            $checkBoxes = $('.id');
+            //点击取消
+            $('.js-cancel-btn').on('click', function () {
+                parent.layer.close(parent_index);
+            });
+            $("#group-add").on('click', function () {
+                layer.open({
+                    title: "新增分组",
+                    type: 2,
+                    shift: 2,
+                    resize: false,
+                    area: ['90%', '90%'],
+                    shadeClose: false,
+                    content: "{:url('tenant/mediagroup/add')}"
+                });
+            });
+            $("#set-group").on('click', function () {
+                $.each($('.id:checked'), function(i, item){
+                    ids.push($(item).val());
+                });
+                if(ids.length < 1){
+                    layer.alert("请勾选数据！");
+                    return false;
+                }
+                layer.open({
+                    title: "素材分组",
+                    type: 1,
+                    shift: 2,
+                    resize: false,
+                    area: ['90%', '90%'],
+                    shadeClose: false,
+                    content: $('#dialog-set-group') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+                });
+            });
+        });
+
+        //监听全选
+        form.on('checkbox(ids)', function(data){
+            $checkBoxes.prop('checked', data.elem.checked);
+            form.render('checkbox');
+        });
+        //监听单个选中
+        form.on('checkbox(id)', function (data) {
+            if(type === 'image' || type === 'video'){
+                var old = $(data.elem).prop('checked');
+                $(data.elem).prop('checked', !old);
+            }
+            $("#ids").prop('checked', $('.id:checked').length < dataLen ? false : true);
+            form.render('checkbox');
+        });
+        //批量设置分组
+        form.on('submit(setGroup)', function (data) {
+            var loading_index = layer.load(1)
+            , postData = data.field;
+            postData['type'] = type;
+            postData['ids'] = ids;
+            $.post('{:url("tenant/media/setGroupPost")}', postData, function (res) {
+                if(res.code === 1){
+                    layer.msg(res.msg, {time: 1000}, function () {
+                        location.reload();
+                    });
+                }else{
+                    layer.alert(res.msg);
+                }
+                layer.close(loading_index);
+            });
+            return false;
+        });
+
+        //请求服务端进行删除操作
+        var delRequest = function () {
+            if(ids.length < 1){
+                layer.alert('请选中要删除的数据');
+            }
+            layer.confirm('删除后无法恢复，你确定吗？', {
+                title: '提示',
+                btn: ['是','不'] //按钮
+            }, function(){
+                var loading_index = layer.load(1);
+                $.post("{:url('tenant/media/delPost')}", {'ids': ids, type: type}, function (res) {
+                    if(res.code === 1){
+                        layer.msg(res.msg, {time: 1000}, function () {
+                            location.reload();
+                        });
+                    }else{
+                        layer.alert(res.msg);
+                    }
+                    layer.close(loading_index);
+                })
+            });
+        };
+    });
+</script>
+<div class="layui-row">
+    <div class="layui-col-md3">
+        <div class="text-right">
+            <button class="layui-btn layui-btn-primary layui-btn-sm" id="group-add">新增分组</button>
+        </div>
+        <ul class="layui-nav layui-nav-tree layui-bg-gray" style="width: 100%;margin-top: 20px;margin-bottom: 10px;">
+            <li class="layui-nav-item {if -1==$group_id}layui-this{/if}"><a href="{:url('tenant/media/choose', array_merge(input(), ['group_id' => -1]))}">全部</a></li>
+            {foreach $groups as $k => $title}
+            <li class="layui-nav-item {if $k==$group_id}layui-this{/if}"><a href="{:url('tenant/media/choose', array_merge(input(), ['group_id' => $k]))}">{$title}</a></li>
+            {/foreach}
+        </ul>
+    </div>
+    <div class="layui-col-md9">
+        <form class="layui-form" action="" style="margin: 10px;margin-top: 0;">
+            <input type="hidden" value="{$type}" name="type">
+            <input type="hidden" value="{$group_id}" name="group_id">
+        {switch name="type"}
+            {case value="text"}{include file="default/media/text" /}{/case}
+            {case value="image"}{include file="default/media/image" /}{/case}
+            {case value="file"}{include file="default/media/file" /}{/case}
+            {case value="video"}{include file="default/media/video" /}{/case}
+            {case value="link"}{include file="default/media/link" /}{/case}
+        {/switch}
+        </form>
+    </div>
+</div>
+
+
+<div class="bottom">
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn bg-success" onclick="clickSure();">确定</button>
+            <button class="layui-btn layui-btn-primary js-cancel-btn">取消</button>
+        </div>
+    </div>
+</div>
+
+<div id="dialog-set-group" style="display: none;padding: 10px 15px;">
+    <form class="layui-form" method="post">
+        <select name="group_id">
+            {foreach $groups as $id => $title}
+            <option value="{$id}">{$title}</option>
+            {/foreach}
+        </select>
+        <div class="layui-form-item" style="margin-top: 20px;">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="setGroup">提交</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<style>
+    body{background-color: #fff;}
+    .layui-form-checkbox[lay-skin=primary]{height: 19px !important;margin-top: -12px;margin-left: -1px;}
+    #page{margin: 20px auto;text-align: center;padding-bottom: 20px;}
+    .bottom{
+        background-color: #f8f8f8;line-height: 52px;height: 52px;position: fixed;text-align: center;
+        width: 100%; bottom: 0;
+    }
+</style>
+{/block}

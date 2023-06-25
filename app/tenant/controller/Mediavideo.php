@@ -3,6 +3,7 @@
 namespace app\tenant\controller;
 use app\common\model\MediaVideo as VideoM;
 use app\common\service\Media as MediaService;
+use app\common\service\MediaGroup as GroupService;
 use app\common\service\Tenant as TenantService;
 use app\TenantController;
 
@@ -32,6 +33,7 @@ class Mediavideo extends TenantController
             !empty($post_data['search_key']) && $where[] = [
                 'title', 'like', '%' . $post_data['search_key'] . '%'
             ];
+            !empty($post_data['group_id']) && $where[] = ['group_id', '=', $post_data['group_id']];
             $query = $this->model->where($where);
             $total = $query->count();
             if ($total) {
@@ -47,9 +49,11 @@ class Mediavideo extends TenantController
         $builder = new ListBuilder();
         $builder->setTabNav(MediaService::mediaTabs(), MediaService::VIDEO)
             ->setSearch([
+                ['type' => 'select', 'name' => 'group_id', 'title' => '分组', 'options' => [0=>'全部'] + GroupService::getIdToTitle()],
             ['type' => 'text', 'name' => 'search_key', 'title' => '关键词', "placeholder" => '名称']
         ])
             ->addTopButton('addnew')
+            ->addTableColumn(['title' => '分组', 'field' => 'group_id', 'minWidth' => 100, 'type' => 'enum', 'options' => GroupService::getIdToTitle()])
             ->addTableColumn(['title' => '名称', 'field' => 'title', 'minWidth' => 100])
             ->addTableColumn(['title' => '视频', 'field' => 'url', 'minWidth' => 120, "type" => 'video'])
             ->addTableColumn(['title' => '创建时间', 'field' => 'create_time',  'minWidth' => 200])
@@ -71,6 +75,7 @@ class Mediavideo extends TenantController
         $builder = new FormBuilder();
         $builder->setMetaTitle('新增视频')
             ->setPostUrl(url('savePost'))
+            ->addFormItem('group_id', 'chosen', '分组', '分组', GroupService::getIdToTitle())
             ->addFormItem('video', 'video_detail', '上传视频', '上传视频');
 
         return $builder->show();
@@ -91,6 +96,7 @@ class Mediavideo extends TenantController
         $builder->setMetaTitle('编辑')
             ->setPostUrl(url('savePost'))
             ->addFormItem('id', 'hidden', 'ID', 'ID')
+            ->addFormItem('group_id', 'chosen', '分组', '分组', GroupService::getIdToTitle())
             ->addFormItem('video', 'video_detail', '上传视频', '上传视频', $data)
             ->setFormData($data);
 

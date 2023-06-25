@@ -3,6 +3,7 @@
 namespace app\tenant\controller;
 
 use app\common\model\MediaImage as ImageM;
+use app\common\service\MediaGroup as GroupService;
 use app\common\service\Tenant as TenantService;
 use app\TenantController;
 use app\common\service\Media as MediaService;
@@ -33,6 +34,7 @@ class Mediaimage extends TenantController
             !empty($post_data['search_key']) && $where[] = [
                 'title', 'like', '%' . $post_data['search_key'] . '%'
             ];
+            !empty($post_data['group_id']) && $where[] = ['group_id', '=', $post_data['group_id']];
             $query = $this->model->where($where);
             $total = $query->count();
             if ($total) {
@@ -48,9 +50,11 @@ class Mediaimage extends TenantController
         $builder = new ListBuilder();
         $builder->setTabNav(MediaService::mediaTabs(), MediaService::IMAGE)
             ->setSearch([
+                ['type' => 'select', 'name' => 'group_id', 'title' => '分组', 'options' => [0=>'全部'] + GroupService::getIdToTitle()],
             ['type' => 'text', 'name' => 'search_key', 'title' => '关键词', "placeholder" => '图片名称']
         ])
             ->addTopButton('addnew')
+            ->addTableColumn(['title' => '分组', 'field' => 'group_id', 'minWidth' => 100, 'type' => 'enum', 'options' => GroupService::getIdToTitle()])
             ->addTableColumn(['title' => '图片名称', 'field' => 'title', 'minWidth' => 100])
             ->addTableColumn(['title' => '图片', 'field' => 'url', 'minWidth' => 120, "type" => 'picture'])
             ->addTableColumn(['title' => '创建时间', 'field' => 'create_time',  'minWidth' => 200])
@@ -72,6 +76,7 @@ class Mediaimage extends TenantController
         $builder = new FormBuilder();
         $builder->setMetaTitle('新增图片')
             ->setPostUrl(url('savePost'))
+            ->addFormItem('group_id', 'chosen', '分组', '分组', GroupService::getIdToTitle())
             ->addFormItem('image', 'picture_detail', '上传图片', '上传图片');
 
         return $builder->show();
@@ -92,6 +97,7 @@ class Mediaimage extends TenantController
         $builder->setMetaTitle('编辑文本')
             ->setPostUrl(url('savePost'))
             ->addFormItem('id', 'hidden', 'ID', 'ID')
+            ->addFormItem('group_id', 'chosen', '分组', '分组', GroupService::getIdToTitle())
             ->addFormItem('image', 'picture_detail', '上传图片', '上传图片', $data)
             ->setFormData($data);
 

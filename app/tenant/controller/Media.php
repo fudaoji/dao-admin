@@ -9,6 +9,7 @@ use app\common\model\MediaVideo;
 use app\common\model\MediaLink;
 use app\common\model\Setting;
 use app\common\model\TenantApp;
+use app\common\service\MediaGroup as GroupService;
 use app\common\service\Tenant as TenantService;
 use app\common\service\Upload;
 use app\common\service\Media as MediaService;
@@ -126,6 +127,8 @@ class Media extends TenantController
             $this->tenantWhere()
         ];
         $search_key && $where[] = ['title', 'like', '%'.$search_key.'%'];
+        $group_id = input('group_id', -1);
+        $group_id >= 0 && $where[] = ['group_id', '=', $group_id];
 
         $query = $this->getModel($type)->where($where);
         $data_list = $query->order('id', 'desc')
@@ -133,13 +136,15 @@ class Media extends TenantController
 
         $pager = $data_list->appends(['type' => $type, 'search_key' => $search_key])->render();
         $assign = [
+            'group_id' => $group_id,
+            'groups' => [0=>'未分组'] + GroupService::getIdToTitle(),
             'data_list' => $data_list,
             'type' => $type,
             'pager' => $pager,
             'config' => dao_config('system.upload'),
             'field' => input('field', '') //目标input框
         ];
-        return $this->show($assign, $type);
+        return $this->show($assign);
     }
 
     /**
@@ -167,5 +172,27 @@ class Media extends TenantController
         }
     }
 
-
+    /**
+     * 设置分组
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    public function setGroupPost(){
+        $post_data = input();
+        $ids = $post_data['ids'];
+        $model = $this->getModel($post_data['type']);
+        Db::startTrans();
+        try {
+            $where = [
+                $this->tenantWhere(),
+                ['id', 'in', $ids]
+            ];
+            $model->where($where)->update(['group_id' => $post_data['group_id']]);
+            Db::commit();
+            return $this->success('操作成功!');
+        }catch (\Exception $e){
+            dao_log()->error($e->getMessage());
+            Db::rollback();
+            return $this->error('系统错误，请刷新重试或联系管理员');
+        }
+    }
 }

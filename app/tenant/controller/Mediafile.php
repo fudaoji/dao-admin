@@ -3,6 +3,7 @@
 namespace app\tenant\controller;
 
 use app\common\model\MediaFile as FileM;
+use app\common\service\MediaGroup as GroupService;
 use app\common\service\Tenant as TenantService;
 use app\common\service\Media as MediaService;
 use app\TenantController;
@@ -34,6 +35,7 @@ class Mediafile extends TenantController
             !empty($post_data['search_key']) && $where[] = [
                 'title', 'like', '%' . $post_data['search_key'] . '%'
             ];
+            !empty($post_data['group_id']) && $where[] = ['group_id', '=', $post_data['group_id']];
             $query = $this->model->where($where);
             $total = $query->count();
             if ($total) {
@@ -49,9 +51,11 @@ class Mediafile extends TenantController
         $builder = new ListBuilder();
         $builder->setTabNav(MediaService::mediaTabs(), MediaService::FILE)
             ->setSearch([
+                ['type' => 'select', 'name' => 'group_id', 'title' => '分组', 'options' => [0=>'全部'] + GroupService::getIdToTitle()],
             ['type' => 'text', 'name' => 'search_key', 'title' => '关键词', "placeholder" => '名称']
         ])
             ->addTopButton('addnew')
+            ->addTableColumn(['title' => '分组', 'field' => 'group_id', 'minWidth' => 100, 'type' => 'enum', 'options' => GroupService::getIdToTitle()])
             ->addTableColumn(['title' => '名称', 'field' => 'title', 'minWidth' => 80])
             ->addTableColumn(['title' => '文件链接', 'field' => 'url', 'minWidth' => 250])
             ->addTableColumn(['title' => '创建时间', 'field' => 'create_time',  'minWidth' => 200])
@@ -73,6 +77,7 @@ class Mediafile extends TenantController
         $builder = new FormBuilder();
         $builder->setMetaTitle('新增文件')
             ->setPostUrl(url('savePost'))
+            ->addFormItem('group_id', 'chosen', '分组', '分组', GroupService::getIdToTitle())
             ->addFormItem('file', 'file_detail', '上传文件', '上传文件');
 
         return $builder->show();
@@ -93,6 +98,7 @@ class Mediafile extends TenantController
         $builder->setMetaTitle('编辑文件')
             ->setPostUrl(url('savePost'))
             ->addFormItem('id', 'hidden', 'ID', 'ID')
+            ->addFormItem('group_id', 'chosen', '分组', '分组', GroupService::getIdToTitle())
             ->addFormItem('file', 'file_detail', '上传文件', '上传文件', $data)
             ->setFormData($data);
 
