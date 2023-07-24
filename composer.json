@@ -43,7 +43,7 @@
     "guzzlehttp/guzzle": "^7.5",
     "workerman/crontab": "^1.0",
     "webman/console": "^1.2",
-    "fudaoji/php-upload": "^1.0.1",
+    "fudaoji/php-upload": "^1.1",
     "webman/cors": "^1.0",
     "illuminate/database": "^8.83",
     "illuminate/events": "^8.83",
