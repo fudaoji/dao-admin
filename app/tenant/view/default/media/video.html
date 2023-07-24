@@ -80,12 +80,6 @@
             });
         });
 
-        $('.data-item').on('click', function () {
-            var old = $(this).find('.id').prop('checked');
-            $(this).find('.id').prop('checked', !old);
-            form.render('checkbox');
-        });
-
         //点击确认
         clickSure = function () {
             var list = [];

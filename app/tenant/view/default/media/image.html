@@ -74,12 +74,6 @@
             parent.layer.close(parent_index);
         };
 
-        $('.data-item').on('click', function () {
-            var old = $(this).find('.id').prop('checked');
-            $(this).find('.id').prop('checked', !old);
-            form.render('checkbox');
-        });
-
         $(function () {
             $("#picker-add").on('click', function () {
                 layer.open({
