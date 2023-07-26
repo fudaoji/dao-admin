@@ -444,8 +444,28 @@ CREATE TABLE `__PREFIX__tenant_rule`  (
 -- ----------------------------
 -- Records of dao_tenant_rule
 -- ----------------------------
-INSERT INTO `__PREFIX__tenant_rule` VALUES ('1', '', '系统管理', '0', '', '', '_self', '1', '0', '1626845872', '0', '1'), ('3', '', '员工管理', '4', '', '/tenant/tenant/index', '_self', '1', '0', '1671015946', '10', '1'), ('4', '', '组织架构', '1', 'fa fa-object-ungroup', '', '_self', '1', '0', '1671015931', '3', '1'), ('107', '', '角色管理', '4', '', '/tenant/tenantgroup/index', '_self', '1', '1604904540', '1671015979', '2', '1'), ('148', '', '配置管理', '1', 'fa fa-cogs', '/tenant/setting/index', '_self', '1', '1624803694', '1671339575', '4', '1'), ('151', '', '应用管理', '176', 'fa fa-cubes', '', '_self', '1', '1625725311', '1671063145', '10', '1'), ('162', '', '素材管理', '169', 'fa fa-archive', '/tenant/mediaimage/index', '_self', '1', '1626507555', '1672303131', '10', '1'), ('168', '', '部门管理', '4', '', '/tenant/department/index', '_self', '1', '1640786676', '1671016069', '5', '1'), ('169', '', '运营管理', '0', '', '', '_self', '1', '1640844673', '1650466761', '21', '1'), ('176', '', '应用中心', '0', 'fa fa-cloud-upload', '', '_self', '1', '1657205545', '1671063065', '10', '1'), ('177', '', '我的应用', '151', '', '/tenant/apps/index', '_self', '1', '1671063241', '1671063241', '10', '1'), ('178', '', '应用市场', '176', 'fa fa-cart-plus', '', '_self', '1', '1671527760', '1671527760', '5', '1'), ('179', '', '应用采购', '178', '', '/tenant/apps/store', '_self', '1', '1671527878', '1671527878', '10', '1'), ('180', '', '过期应用', '151', '', '/tenant/apps/overtime', '_self', '1', '1672295990', '1672295990', '1', '1'), ('181', '', '财务管理', '0', '', '', '_self', '1', '1678864689', '1678864704', '5', '1'), ('182', '', '账号资产', '181', 'fa fa-money', '', '_self', '1', '1678864755', '1678864755', '1', '1'), ('183', '', '钱包', '182', '', '/tenant/wallet/log', '_self', '1', '1678864816', '1678865800', '1', '1'), ('184', '', '订单管理', '181', 'fa fa-first-order', '', '_self', '1', '1678864853', '1678864853', '1', '1'), ('185', '', '应用订单', '184', '', '/tenant/orderapp/index', '_self', '1', '1678864882', '1678864882', '1', '1');
-
+INSERT INTO `__PREFIX__tenant_rule` VALUES (1, '', '系统管理', 0, '', '', '_self', 1, 0, 1626845872, 0, 1);
+INSERT INTO `__PREFIX__tenant_rule` VALUES (3, '', '员工管理', 4, '', '/tenant/tenant/index', '_self', 1, 0, 1671015946, 10, 1);
+INSERT INTO `__PREFIX__tenant_rule` VALUES (4, '', '组织架构', 1, 'fa fa-object-ungroup', '', '_self', 1, 0, 1671015931, 3, 1);
+INSERT INTO `__PREFIX__tenant_rule` VALUES (107, '', '角色管理', 4, '', '/tenant/tenantgroup/index', '_self', 1, 1604904540, 1671015979, 2, 1);
+INSERT INTO `__PREFIX__tenant_rule` VALUES (148, '', '配置管理', 1, 'fa fa-cogs', '/tenant/setting/index', '_self', 1, 1624803694, 1671339575, 4, 1);
+INSERT INTO `__PREFIX__tenant_rule` VALUES (151, '', '应用管理', 176, 'fa fa-cubes', '', '_self', 1, 1625725311, 1671063145, 10, 1);
+INSERT INTO `__PREFIX__tenant_rule` VALUES (162, '', '素材管理', 169, 'fa fa-archive', '', '_self', 1, 1626507555, 1690265494, 10, 1);
+INSERT INTO `__PREFIX__tenant_rule` VALUES (168, '', '部门管理', 4, '', '/tenant/department/index', '_self', 1, 1640786676, 1671016069, 5, 1);
+INSERT INTO `__PREFIX__tenant_rule` VALUES (169, '', '运营管理', 0, '', '', '_self', 1, 1640844673, 1650466761, 21, 1);
+INSERT INTO `__PREFIX__tenant_rule` VALUES (176, '', '应用中心', 0, 'fa fa-cloud-upload', '', '_self', 1, 1657205545, 1671063065, 10, 1);
+INSERT INTO `__PREFIX__tenant_rule` VALUES (177, '', '我的应用', 151, '', '/tenant/apps/index', '_self', 1, 1671063241, 1671063241, 10, 1);
+INSERT INTO `__PREFIX__tenant_rule` VALUES (178, '', '应用市场', 176, 'fa fa-cart-plus', '', '_self', 1, 1671527760, 1671527760, 5, 1);
+INSERT INTO `__PREFIX__tenant_rule` VALUES (179, '', '应用采购', 178, '', '/tenant/apps/store', '_self', 1, 1671527878, 1671527878, 10, 1);
+INSERT INTO `__PREFIX__tenant_rule` VALUES (180, '', '过期应用', 151, '', '/tenant/apps/overtime', '_self', 1, 1672295990, 1672295990, 1, 1);
+INSERT INTO `__PREFIX__tenant_rule` VALUES (181, '', '财务管理', 0, '', '', '_self', 1, 1678864689, 1678864704, 5, 1);
+INSERT INTO `__PREFIX__tenant_rule` VALUES (182, '', '账号资产', 181, 'fa fa-money', '', '_self', 1, 1678864755, 1678864755, 1, 1);
+INSERT INTO `__PREFIX__tenant_rule` VALUES (183, '', '钱包', 182, '', '/tenant/wallet/log', '_self', 1, 1678864816, 1678865800, 1, 1);
+INSERT INTO `__PREFIX__tenant_rule` VALUES (184, '', '订单管理', 181, 'fa fa-first-order', '', '_self', 1, 1678864853, 1678864853, 1, 1);
+INSERT INTO `__PREFIX__tenant_rule` VALUES (185, '', '应用订单', 184, '', '/tenant/orderapp/index', '_self', 1, 1678864882, 1678864882, 1, 1);
+INSERT INTO `__PREFIX__tenant_rule` VALUES (186, '', '系统公告', 1, 'fa fa-bullhorn', '/tenant/notice/index', '_self', 1, 1690246728, 1690246728, 1, 1);
+INSERT INTO `__PREFIX__tenant_rule` VALUES (187, '', '素材列表', 162, '', '/tenant/mediaimage/index', '_self', 1, 1690265482, 1690265482, 5, 1);
+INSERT INTO `__PREFIX__tenant_rule` VALUES (188, '', '素材分组', 162, '', '/tenant/mediagroup/index', '_self', 1, 1690265520, 1690265520, 1, 1);
 -- ----------------------------
 -- Table structure for dao_tenant_setting
 -- ----------------------------
@@ -569,3 +589,22 @@ CREATE TABLE `__PREFIX__notice_read` (
   PRIMARY KEY (`id`),
   KEY `uid` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=COMPACT COMMENT='已读公告';
+-- ----------------------------
+-- version 1.0.5
+-- ----------------------------
+CREATE TABLE `__PREFIX__media_group` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `create_time` int(10) unsigned NOT NULL DEFAULT '0',
+  `update_time` int(10) unsigned NOT NULL DEFAULT '0',
+  `company_id` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `title` (`title`,`admin_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='素材分组';
+
+ALTER TABLE `__PREFIX__media_file` ADD COLUMN `group_id` int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '分组id' ;
+ALTER TABLE `__PREFIX__media_image` ADD COLUMN `group_id` int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '分组id' ;
+ALTER TABLE `__PREFIX__media_text` ADD COLUMN `group_id` int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '分组id' ;
+ALTER TABLE `__PREFIX__media_link` ADD COLUMN `group_id` int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '分组id' ;
+ALTER TABLE `__PREFIX__media_video` ADD COLUMN `group_id` int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '分组id';
+ALTER TABLE `__PREFIX__media_voice` ADD COLUMN `group_id` int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '分组id' ;

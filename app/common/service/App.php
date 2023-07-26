@@ -12,6 +12,7 @@ use app\common\model\App as AppM;
 use app\common\model\AppInfo as AppInfoM;
 use app\common\model\AppCate as AppCateM;
 use app\admin\service\Database as DatabaseService;
+use app\common\service\File as FileService;
 use think\facade\Db;
 use app\common\model\TenantApp as TenantAppM;
 
@@ -129,6 +130,9 @@ class App extends Common
         $sql = trim(file_get_contents($sql_path));
         $sql = preg_replace('/\/\*[\s\S]*?\*\/|--.*?[\r\n]/m', '', $sql);
         $sql = str_replace("\r", "\n", $sql);
+        if(empty($sql)){
+            return  true;
+        }
         $sql = explode(";\n", $sql);
         $original = '`__PREFIX__';
         $prefix = '`'.DatabaseService::getTablePrefix();
@@ -362,5 +366,66 @@ class App extends Common
             'sale_num' => $app['sale_num'] - 1
         ]);
         return true;
+    }
+
+    /**
+     * 快速创建应用
+     * @param array $params
+     * @return bool|string
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    static function buildApp($params = []){
+        $addon_type = strtolower($params['type']);
+        $addon_name = strtolower($params['name']);
+        $addon_title = $params['title'];
+        $addon_version = $params['version'];
+        $addon_author = $params['author'];
+        $addon_desc = $params['desc'];
+        $addon_logo = $params['logo'];
+        $addon_path = plugin_path($addon_name);
+
+        try {
+            if(file_exists($addon_path)){
+                return "应用{$addon_name}已存在";
+            }
+            $pattern = '/^([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)$/';
+            if (! preg_match($pattern, $addon_name)) {
+                return '应用名不合法。 应用名称只支持小写字母、数字和下划线，且不能以数字开头！';
+            }
+
+            //1、解压应用模板
+            $plugin_template = plugin_path('__plugin__.zip');
+            if(! file_exists($plugin_template)){
+                return $plugin_template . "不存在";
+            }
+            $zip = new \ZipArchive;
+            $res = $zip->open($plugin_template);
+            if ($res === true) {
+                $zip->extractTo($addon_path);
+                $zip->close();
+            } else {
+                return  "解压".$plugin_template."失败，请检查是否有写入权限!";
+            }
+            $logo_name = 'logo.png';
+            file_put_contents(plugin_path($addon_name, 'public'.DS.$logo_name), file_get_contents($addon_logo));
+
+            //rename config/__PLUGIN_NAME__
+            if(is_string($res = FileService::renameFile(plugin_path($addon_name, 'config'.DS.'__PLUGIN_NAME__.php'), plugin_path($addon_name, 'config'.DS.$addon_name.'.php')))){
+                return $res;
+            }
+
+            //2、批量替换应用信息参数
+            if(($res = replace_in_files(plugin_path($addon_name),
+                    ['__PLUGIN_TYPE__', '__PLUGIN_NAME__', '__PLUGIN_TITLE__','__PLUGIN_DESC__', '__PLUGIN_VERSION__', '__PLUGIN_AUTHOR__', '__PLUGIN_LOGO__'],
+                    [$addon_type, $addon_name, $addon_title, $addon_desc, $addon_version, $addon_author, $logo_name],
+                    ['public']
+                )) !== true){
+                return $res;
+            }
+            return true;
+        }catch (\Exception $e){
+            @unlink($addon_path);
+            return '应用创建错误：' . (string)$e->getMessage();
+        }
     }
 }

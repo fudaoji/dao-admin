@@ -9,6 +9,8 @@
 
 namespace app\common\service;
 
+use Dao\Upload\Driver\Aliyun;
+use Dao\Upload\Driver\Qcloud;
 use Dao\Upload\Driver\Qiniu;
 use Dao\Upload\Upload as Uploader;
 use support\Request;
@@ -43,8 +45,10 @@ class Upload
      */
     public static function locations($id = null){
         $list = [
-            'local' => '本地',
-            'qiniu' => '七牛'
+            Uploader::LOCAL => '本地',
+            Uploader::QINIU => '七牛',
+            Uploader::ALIYUN => '阿里云',
+            Uploader::QCLOUD => '腾讯云'
         ];
         return isset($list[$id]) ? $list[$id] : $list;
     }
@@ -239,7 +243,26 @@ class Upload
     public static function driverConfig($driver = 'local'){
         $driver = strtolower($driver);
         switch($driver){
-            case 'qiniu':  //七牛
+            case Uploader::QCLOUD:  //腾讯云
+                $config = [
+                    'accessKey' => self::$setting['qcloud_ak'] ?: '',
+                    'secrectKey' => self::$setting['qcloud_sk'] ?: '',
+                    'bucket' => self::$setting['qcloud_bucket'] ?: '',
+                    'domain' => self::$setting['qcloud_domain'] ?: '',
+                    'region' => self::$setting['qcloud_region'] ?: '',
+                    'timeout' => 3600,
+                ];
+                break;
+            case Uploader::ALIYUN:  //阿里云
+                $config = [
+                    'accessKey' => self::$setting['aliyun_ak'] ?: '',
+                    'secrectKey' => self::$setting['aliyun_sk'] ?: '',
+                    'bucket' => self::$setting['aliyun_bucket'] ?: '',
+                    'domain' => self::$setting['aliyun_domain'] ?: '',
+                    'timeout' => 3600,
+                ];
+                break;
+            case Uploader::QINIU:  //七牛
                 $config = [
                     'accessKey' => self::$setting['qiniu_ak'] ?: '',
                     'secrectKey' => self::$setting['qiniu_sk'] ?: '',
@@ -407,15 +430,25 @@ class Upload
      * Author: fudaoji<fdj@kuryun.cn>
      */
     public static function fetchToOss($url = '', $key = ''){
+        $key = $key ?: md5($url);
+        $res = false;
         switch (self::$setting['driver']){
-            case 'qiniu':
+            case Uploader::QINIU:
                 $qiniu = new Qiniu(self::driverConfig(self::$setting['driver']));
-                $key = $key ?: md5($url);
                 if($qiniu->fetch($url, $key)){
-                    return $qiniu->downLink($key);
+                    $res = $qiniu->downLink($key);
                 }
+                break;
+            case Uploader::ALIYUN:
+                $aliyun = new Aliyun(self::driverConfig(self::$setting['driver']));
+                $res = $aliyun->putString(['string' => file_get_contents($url), 'key' => $key]);
+                break;
+            case Uploader::QCLOUD:
+                $qcloud = new Qcloud(self::driverConfig(self::$setting['driver']));
+                $res = $qcloud->putString(['string' => file_get_contents($url), 'key' => $key]);
+                break;
         }
-        return false;
+        return $res;
     }
 
     /**
@@ -426,18 +459,24 @@ class Upload
      * Author: fudaoji<fdj@kuryun.cn>
      */
     public static function putString($string = '', $key = ''){
+        $key = $key ?: get_rand_char(16);
         switch (self::$setting['driver']){
-            case 'qiniu':
-                $qiniu = new Qiniu(self::driverConfig(self::$setting['driver']));
-                $key = $key ?: get_rand_char(16);
-                if(($res = $qiniu->putString([
-                    'string' => $string,
-                    'key' => $key
-                ])) === false){
-                    return $qiniu->getError();
-                }
-                return ['url' => $res];
+            case Uploader::QCLOUD:
+                $client = new Qcloud(self::driverConfig(self::$setting['driver']));
+                break;
+            case Uploader::ALIYUN:
+                $client = new Aliyun(self::driverConfig(self::$setting['driver']));
+                break;
+            default:
+                $client = new Qiniu(self::driverConfig(self::$setting['driver']));
+                break;
         }
-        return "写入文件错误!";
+        if(($res = $client->putString([
+                'string' => $string,
+                'key' => $key
+            ])) === false){
+            return $client->getError();
+        }
+        return ['url' => $res];
     }
 }

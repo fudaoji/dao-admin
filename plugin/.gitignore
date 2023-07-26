@@ -1,2 +1,4 @@
 *
 !.gitignore
+!readme.md
+!/__plugin__.zip

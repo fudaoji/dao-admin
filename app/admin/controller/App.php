@@ -72,6 +72,9 @@ class App extends AdminController
             }
 
             if(($res = FileService::delDirRecursively($path, true)) === true){
+                if(! config('app.debug')){
+                    system_reload();
+                }
                 return $this->success('安装包删除成功');
             }else{
                 return $this->error('删除应用目录失败:' . $res);
@@ -199,6 +202,7 @@ class App extends AdminController
 
         $builder = new ListBuilder();
         $builder->setTabNav(self::tabList(), 'uninstall')
+            ->addTopButton('addnew', ['text' => '创建应用', 'href' => url('build'), 'class' => 'layui-btn-default'])
             ->addTableColumn(['title' => 'logo', 'field' => 'logo', 'type' => 'picture'])
             ->addTableColumn(['title' => '标识', 'field' => 'name'])
             ->addTableColumn(['title' => '名称', 'field' => 'title'])
@@ -206,7 +210,7 @@ class App extends AdminController
             ->addTableColumn(['title' => '简介', 'field' => 'desc'])
             ->addTableColumn(['title' => '操作', 'width' => 150, 'type' => 'toolbar'])
             ->addRightButton('self', ['text' => '安装', 'href' => url('installpost', ['name' => '__data_name__']), 'data-ajax' => true, 'data-confirm' => '确认安装吗？'])
-            ->addRightButton('delete', ['title' => '删除包', 'href' => url('removepost', ['name' => '__data_name__'])]);
+            ->addRightButton('delete', ['text' => '删除包', 'href' => url('removepost', ['name' => '__data_name__'])]);
         return $builder->show();
     }
 
@@ -243,6 +247,7 @@ class App extends AdminController
             ['type' => 'text', 'name' => 'search_key', 'title' => '搜索词','placeholder' => '应用名称或标识']
         ])
             ->addTopButton('addnew', ['text' => '采购应用', 'href' => url('appstore/index')])
+            ->addTopButton('addnew', ['text' => '创建应用', 'href' => url('build'), 'class' => 'layui-btn-default'])
             ->addTableColumn(['title' => 'logo', 'field' => 'logo', 'type' => 'picture'])
             ->addTableColumn(['title' => '标识', 'field' => 'name'])
             ->addTableColumn(['title' => '名称', 'field' => 'title'])
@@ -254,7 +259,7 @@ class App extends AdminController
             ->addTableColumn(['title' => '操作', 'width' => 150, 'type' => 'toolbar'])
             ->addRightButton('edit')
             ->addRightButton('edit', ['text' => '配置', 'lay-event' => 'appConsole','class' => 'layui-btn-warm'])
-            ->addRightButton('delete', ['title' => '卸载', 'href' => url('uninstallpost', ['name' => '__data_name__'])]);
+            ->addRightButton('delete', ['text' => '卸载', 'href' => url('uninstallpost', ['name' => '__data_name__'])]);
         return $builder->show();
     }
 
@@ -298,6 +303,41 @@ class App extends AdminController
             ->addFormItem('status', 'radio', '上架状态', '上架状态', Common::goodsStatus(), 'required')
             ->setFormData($data);
 
+        return $builder->show();
+    }
+
+    /**
+     * 创建应用
+     * @return mixed
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    public function build(){
+        if(request()->isPost()){
+            $post_data = input('post.');
+            if(($res = AppService::buildApp($post_data)) === true){
+                if(! config('app.debug')){
+                    system_reload();
+                }
+                return $this->success('创建成功, 请前往安装！', url('uninstallList'));
+            }else{
+                return $this->error($res);
+            }
+        }
+
+        $default_data = [
+            'version' => '1.0.0',
+            'author' => $this->adminInfo('realname')
+        ];
+        $builder = new FormBuilder();
+        $builder->setPostUrl(url('build'))
+            ->addFormItem('type', 'chosen_multi', '支持平台', '请选择应用的支持平台', Platform::types(), 'required')
+            ->addFormItem('name', 'text', '应用标识', '请输入唯一应用标识，支持小写字母、数字和下划线，且不能以数字开头', [], 'required minlength=2 maxlength=20')
+            ->addFormItem('title', 'text', '应用名称', '请输入应用名称，2-50长度', [], 'required minlength=2 maxlength=50')
+            ->addFormItem('version', 'text', '应用版本', '例如1.0.0', [], 'required')
+            ->addFormItem('logo', 'picture_url', '应用LOGO', '请上传比例为1:1的应用LOGO', [], 'required')
+            ->addFormItem('author', 'text', '作者', '应用作者', [], 'required maxlength=100')
+            ->addFormItem('desc', 'textarea', '应用描述', '200字内', [], 'maxlength=200')
+            ->setFormData($default_data);
         return $builder->show();
     }
 }

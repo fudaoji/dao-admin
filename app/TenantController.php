@@ -136,7 +136,6 @@ class TenantController extends BaseController
                 return $this->error("未修改数据无需提交", null, ['token' => token()]);
             }
         }catch (\Exception $e){
-            var_dump($e->getTraceAsString());
             $msg = $e->getMessage();
             return $this->error($msg, null, ['token' => token()]);
         }

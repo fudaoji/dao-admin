@@ -15,6 +15,22 @@ use League\Flysystem\UnableToDeleteDirectory;
 class File extends Common
 {
     /**
+     * 移动/重命名 文件或文件夹
+     * @param $ori
+     * @param $dest
+     * @return bool|string
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    static function renameFile($ori, $dest){
+        try {
+            rename($ori, $dest);
+        }catch (\Exception $e){
+            return $e->getMessage();
+        }
+        return true;
+    }
+
+    /**
      * 递归删除文件夹
      * @param $path
      * @param bool $del_dir
