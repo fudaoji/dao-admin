@@ -7,8 +7,34 @@ use think\helper\Str;
 use ky\Faconfig;
 use think\Model;
 use think\facade\Db;
+use think\cache\driver\Redis;
 
 require_once app_path() . DIRECTORY_SEPARATOR . 'define.php';
+
+if(! function_exists('text_ellipsis')){
+    /**
+     * 超过长度的字符串用...
+     * @param $text
+     * @param int $max
+     * @param string $suffix
+     * @return string
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    function text_ellipsis($text, $max = 1, $suffix='...'){
+        return strlen($text) > $max ? mb_substr($text, 0, $max) . $suffix : $text;
+    }
+}
+
+if(! function_exists('redis_client')){
+    /**
+     *
+     * @return Redis
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    function redis_client(){
+        return (new Redis(config('thinkcache.stores.redis')))->handler();
+    }
+}
 
 if(!function_exists('replace_in_files')){
     /**

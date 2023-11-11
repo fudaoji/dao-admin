@@ -104,6 +104,11 @@
 
         // 进行登录操作
         form.on('submit(reg)', function (data) {
+            if($('.login-btn').hasClass('layui-btn-disabled')){
+                return ;
+            }else{
+                $('.login-btn').addClass('layui-btn-disabled');
+            }
             data.field = Object.assign(data.field, {keeplogin: keepLogin});
             $.post(data.form.action, data.field, function (res) {
                 layer.msg(res.msg, {time: 1500}, function () {

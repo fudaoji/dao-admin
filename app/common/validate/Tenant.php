@@ -67,7 +67,7 @@ class Tenant extends Common
 
     /**
      * 修改
-     * @return Tenant
+     * @return Follow
      * Author: fudaoji<fdj@kuryun.cn>
      */
     public function sceneEdit(){
@@ -77,7 +77,7 @@ class Tenant extends Common
 
     /**
      * 修改
-     * @return Tenant
+     * @return Follow
      * Author: fudaoji<fdj@kuryun.cn>
      */
     public function sceneUpdatePwd(){

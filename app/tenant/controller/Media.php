@@ -2,13 +2,13 @@
 
 namespace app\tenant\controller;
 
+use app\common\constant\Platform;
 use app\common\model\MediaImage;
 use app\common\model\MediaFile;
 use app\common\model\MediaText;
 use app\common\model\MediaVideo;
 use app\common\model\MediaLink;
-use app\common\model\Setting;
-use app\common\model\TenantApp;
+use app\common\model\TenantApp as TenantAppM;
 use app\common\service\MediaGroup as GroupService;
 use app\common\service\Tenant as TenantService;
 use app\common\service\Upload;
@@ -109,6 +109,36 @@ class Media extends TenantController
             MediaService::LINK => $this->linkM,
         ];
         return isset($list[$type]) ? $list[$type] : null;
+    }
+
+    /**
+     * 选择app
+     * @return mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    public function app(){
+        $field = input('field', ''); //目标input框
+        $search_key = input('search_key', '');
+        $where = [
+            $this->tenantWhere('ta'),
+            ['app.status','=', 1],
+            ['ta.deadline','>', time()],
+            ['type','like', '%'.Platform::MINI.'%']
+        ];
+        $search_key && $where[] = ['title', 'like', '%'.$search_key.'%'];
+        $data_list = TenantAppM::alias('ta')
+            ->where($where)
+            ->join('app app', 'app.name=ta.app_name')
+            ->field(['app.*', 'ta.deadline'])
+            ->order(['ta.id' => 'desc'])
+            ->paginate(7);
+
+        $pager = $data_list->render();
+        $assign = ['data_list' => $data_list, 'pager' => $pager, 'field' => $field];
+        return $this->show($assign);
     }
 
     /**

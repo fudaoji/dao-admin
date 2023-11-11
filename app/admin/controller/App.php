@@ -256,9 +256,9 @@ class App extends AdminController
             ->addTableColumn(['title' => '实际销量', 'field' => 'sale_num'])
             ->addTableColumn(['title' => '虚拟销量', 'field' => 'sale_num_show'])
             ->addTableColumn(['title' => '状态', 'field' => 'status', 'type' => 'switch', 'text' => '上架|下架'])
-            ->addTableColumn(['title' => '操作', 'width' => 150, 'type' => 'toolbar'])
+            ->addTableColumn(['title' => '操作', 'width' => 170, 'type' => 'toolbar'])
             ->addRightButton('edit')
-            ->addRightButton('edit', ['text' => '配置', 'lay-event' => 'appConsole','class' => 'layui-btn-warm'])
+            ->addRightButton('edit', ['text' => '后台配置', 'lay-event' => 'appConsole','class' => 'layui-btn-warm'])
             ->addRightButton('delete', ['text' => '卸载', 'href' => url('uninstallpost', ['name' => '__data_name__'])]);
         return $builder->show();
     }

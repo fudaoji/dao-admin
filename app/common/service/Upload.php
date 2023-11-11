@@ -479,4 +479,19 @@ class Upload
         }
         return ['url' => $res];
     }
+
+    public function getClient($driver = Uploader::QCLOUD){
+        switch ($driver){
+            case Uploader::QCLOUD:
+                $client = new Qcloud(self::driverConfig($driver));
+                break;
+            case Uploader::ALIYUN:
+                $client = new Aliyun(self::driverConfig($driver));
+                break;
+            default:
+                $client = new Qiniu(self::driverConfig($driver));
+                break;
+        }
+        return $client;
+    }
 }

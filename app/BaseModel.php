@@ -140,7 +140,7 @@ class BaseModel extends Model
             $this->createTime && empty($data[$this->createTime]) && $data[$this->createTime] = time();
             $this->updateTime && empty($data[$this->updateTime]) && $data[$this->updateTime] = time();
         }
-        $data[$this->pk] = $this->insertGetId($data);
+        $data[$this->pk] = $this->strict(false)->insertGetId($data);
         return $data;
     }
 

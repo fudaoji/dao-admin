@@ -213,7 +213,7 @@ CREATE TABLE `__PREFIX__media_link`  (
   `create_time` int(10) NOT NULL DEFAULT 0,
   `update_time` int(10) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`, `company_id`) USING BTREE,
-  INDEX `admin_id`(`company_id`) USING BTREE,
+  INDEX `company_id`(`company_id`) USING BTREE,
   INDEX `title`(`title`) USING BTREE
 ) ENGINE = InnoDB  CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '分享链接素材库' ROW_FORMAT = Compact PARTITION BY HASH (company_id)
 PARTITIONS 10
@@ -599,7 +599,7 @@ CREATE TABLE `__PREFIX__media_group` (
   `update_time` int(10) unsigned NOT NULL DEFAULT '0',
   `company_id` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  KEY `title` (`title`,`admin_id`)
+  KEY `title` (`title`,`company_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='素材分组';
 
 ALTER TABLE `__PREFIX__media_file` ADD COLUMN `group_id` int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '分组id' ;

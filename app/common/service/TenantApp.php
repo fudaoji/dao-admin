@@ -15,6 +15,31 @@ use app\common\model\TenantApp as TenantAppM;
 class TenantApp
 {
     /**
+     * 获取可用app
+     * @param null $company_id
+     * @param array $where
+     * @return array|\think\Collection|\think\db\Query[]
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    static function getActiveApps($company_id = null, $where = []){
+        is_null($company_id) && $company_id = Tenant::getCompanyId();
+        $map = [
+            'app.status' => 1,
+            'ta.company_id' => $company_id
+        ];
+        $query = TenantAppM::alias('ta')
+            ->where($map)
+            ->where('ta.deadline','>', time())
+            ->join('app app', 'app.name=ta.app_name')
+            ->field(['app.*', 'ta.deadline']);
+        $where && $query = $query->where($where);
+        return $query->select();
+    }
+
+    /**
      * 验证是否有该应用权限
      * @param string $app_name
      * @param null $company_id
