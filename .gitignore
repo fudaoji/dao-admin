@@ -10,3 +10,4 @@ install.lock
 public/*.txt
 .well-known
 /data
+composer.lock
