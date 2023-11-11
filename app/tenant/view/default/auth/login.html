@@ -115,6 +115,7 @@
                     } else {
                         changeCode();
                         $('input[name=__token__]').val(res.data.token);
+                        $('.login-btn').removeClass('layui-btn-disabled');
                     }
                 });
             });
